@@ -1,0 +1,293 @@
+import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:isar/isar.dart';
+import 'package:malf/shared/logger.dart';
+import 'package:malf/shared/network/base_url.dart';
+import 'package:malf/shared/network/token.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:http/http.dart' as http;
+
+class SettingsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('setting'.tr()),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text('language_setting'.tr()),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => LanguageSettingsScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text("privacy_policy".tr()),
+            onTap: () {
+              launchUrl(
+                Uri.parse(
+                    'https://marsh-swordtail-f9e.notion.site/MALF-4c701b51a0c34c71b2047962374036d2?pvs=4'),
+              );
+            },
+          ),
+          ListTile(
+            title: Text("service_terms".tr()),
+            onTap: () {
+              launchUrl(
+                Uri.parse(
+                    'https://marsh-swordtail-f9e.notion.site/MALF-6807b32f4ad2497c8ec544d82a156435?pvs=4'),
+              );
+            },
+          ),
+          ListTile(
+            title: Text("app_version".tr()),
+            subtitle: Text('1.0.0'),
+            onTap: () async {
+              // try {
+              //   final image =
+              //       await ImagePicker().pickImage(source: ImageSource.gallery);
+
+              //   http.MultipartRequest request =
+              //       http.MultipartRequest('POST', Uri.parse("$baseUrl/user/student-id"));
+
+              //   request.files.add(await http.MultipartFile.fromPath(
+              //       'image', image!.path));
+
+              //   String token = Token().refreshToken;
+
+              //   request.headers['Authorization'] = token;
+              //   request.headers['Content-Type'] = 'multipart/form-data;';
+
+              //   final response = await request.send();
+              //   if (response.statusCode == 200) {
+              //     logger.d('요청이 성공적으로 처리되었습니다.');
+              //   } else {
+              //     logger.e('요청이 실패하였습니다. 상태 코드: ${response.statusCode}');
+              //     logger.e("이유 : ${response.reasonPhrase}");
+              //     logger.e("요청 : ${response.request}");
+              //   }
+              // } on Exception catch (e) {
+              //   logger.e(e);
+              // }
+            },
+          ),
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                    child: Text("delete_account".tr(),
+                        style: TextStyle(color: Colors.red)),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (contexnt) => AlertDialog(
+                          title: Text("delete_account_title".tr()),
+                          content: Text(
+                              "delete_account_message".tr()),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(contexnt).pop(),
+                              child: Text('cancel'.tr()),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Dio dio = new Dio(BaseOptions(
+                                    baseUrl: baseUrl,
+                                    headers: {
+                                      "Authorization": Token().refreshToken
+                                    }));
+
+                                try {
+                                  final response =
+                                      await dio.delete('/user/profile');
+                                  if (response.statusCode == 200) {
+                                    Token().deleteToken();
+                                    Navigator.of(contexnt).pop();
+                                    context.go('/login');
+                                  } else {
+                                    Navigator.of(contexnt).pop();
+                                  }
+                                } on Exception catch (e) {
+                                  // TODO
+                                  Navigator.of(contexnt).pop();
+                                }
+                              },
+                              child: Text('confirm'.tr()),
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+                TextButton(
+                    child: Text('logout'.tr()),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (contexnt) => AlertDialog(
+                          title: Text("logout_title".tr()),
+                          content: Text(
+                              "logout_title".tr()),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('cancel'.tr()),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Token().deleteToken();
+                                Navigator.of(contexnt).pop();
+                                context.go('/login');
+                              },
+                              child: Text('confirm'.tr()),
+                            )
+                          ],
+                        ),
+                      );
+                    })
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LanguageSettingsScreen extends StatefulWidget {
+  const LanguageSettingsScreen({super.key});
+
+  @override
+  State<LanguageSettingsScreen> createState() => _LanguageSettingsScreenState();
+}
+
+class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
+  bool _isEnglish = true;
+  bool _isKorean = false;
+  bool _isJapanese = false;
+  bool _isChinese = false;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (context.locale.languageCode) {
+      case 'en':
+        _isEnglish = true;
+        _isChinese = false;
+        _isJapanese = false;
+        _isKorean = false;
+        break;
+      case 'ko':
+        _isEnglish = false;
+        _isChinese = false;
+        _isJapanese = false;
+        _isKorean = true;
+        break;
+      case 'ja':
+        _isEnglish = false;
+        _isChinese = false;
+        _isJapanese = true;
+        _isKorean = false;
+        break;
+      case 'zh':
+        _isEnglish = false;
+        _isChinese = true;
+        _isJapanese = false;
+        _isKorean = false;
+        break;
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("language_setting".tr()),
+      ),
+      body: ListView(
+        children: [
+          ListTile(
+            onTap: () {
+              setState(() {
+                context.setLocale(Locale('en'));
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+            },
+            title: Text('english'.tr()),
+            trailing: _isEnglish ? Icon(Icons.check) : null,
+          ),
+          ListTile(
+            title: Text('korean'.tr()),
+            onTap: () {
+              setState(() {
+                context.setLocale(Locale('ko'));
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+            },
+            trailing: _isKorean ? Icon(Icons.check) : null,
+          ),
+          ListTile(
+            title: Text('chinese'.tr()),
+            onTap: () {
+              setState(() {
+                context.setLocale(Locale('zh'));
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+            },
+            trailing: _isChinese ? Icon(Icons.check) : null,
+          ),
+          ListTile(
+            title: Text('japanese'.tr()),
+            onTap: () {
+              setState(() {
+                context.setLocale(Locale('ja'));
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+            },
+            trailing: _isJapanese ? Icon(Icons.check) : null,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PolicySettingsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Policy'),
+      ),
+      body: Center(
+        child: Text('Policy Settings'),
+      ),
+    );
+  }
+}
+
+class TermsSettingsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Terms'),
+      ),
+      body: Center(
+        child: Text('Terms Settings'),
+      ),
+    );
+  }
+}
