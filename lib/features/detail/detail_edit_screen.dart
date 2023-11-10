@@ -64,7 +64,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList,
   bool isUploaded = false;
 
   for (int i = 0; i < imageList.length; i++) {
-    imageFileList.add(await compressImage(File(imageList[i].path)));
+    imageFileList.add(await compressImage(File(imageList[i].path),70));
   }
   Directory tempDir = await getTemporaryDirectory();
   String tempPath = tempDir.path;
@@ -221,13 +221,13 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
     locationController = TextEditingController(text: location);
     switch (category) {
       case 1:
-        categoryChosen = "중국어/한국어";
+        categoryChosen = "chinese".tr();
         break;
       case 2:
-        categoryChosen = "영어/한국어";
+        categoryChosen = "english".tr();
         break;
       case 3:
-        categoryChosen = "일본어/한국어";
+        categoryChosen = "japanese".tr();
         break;
       default:
         categoryChosenBool = false;
@@ -687,11 +687,11 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                       message: "choose_category_notice".tr(),
                       actions: [
                         AlertDialogAction(
-                            key: "1", label: "chinese/korean".tr()),
+                            key: "1", label: "chinese".tr()),
                         AlertDialogAction(
-                            key: "2", label: "english/korean".tr()),
+                            key: "2", label: "english".tr()),
                         AlertDialogAction(
-                            key: "3", label: "japanese/korean".tr()),
+                            key: "3", label: "japanese".tr()),
                       ]).then((value) {
                     logger.i(value);
                     setState(() {
@@ -699,15 +699,15 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                       switch (value) {
                         case "1":
                           category = 1;
-                          categoryChosen = "chinese/korean".tr();
+                          categoryChosen = "chinese".tr();
                           break;
                         case "2":
                           category = 2;
-                          categoryChosen = "english/korean".tr();
+                          categoryChosen = "english".tr();
                           break;
                         case "3":
                           category = 3;
-                          categoryChosen = "japanese/korean".tr();
+                          categoryChosen = "japanese".tr();
                           break;
                         default:
                           categoryChosenBool = false;

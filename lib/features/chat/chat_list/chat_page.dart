@@ -77,7 +77,6 @@ class _ChatPageState extends State<ChatPage> {
     double maxWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 144, 148, 156),
       appBar: AppBar(
         backgroundColor: Colors.white,
         leadingWidth: 0,
@@ -96,71 +95,151 @@ class _ChatPageState extends State<ChatPage> {
           //TODO: 필터
 
           //TODO: 새로고침
-          SafeArea(
-            child: IconButton(
-                iconSize: maxHeight * 0.05,
-                onPressed: () {
-                  setState(() {
-                    _loadChattingListData();
-                  });
-                },
-                icon: const Icon(Icons.refresh)),
-          ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await _loadChattingListData();
+        },
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: chattingListData.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(
-                          color: Colors.black,
-                        ),
-                      ),
-                      elevation: 16,
-                      shadowColor: Colors.grey,
-                      child: ListTile(
-                        style: ListTileStyle.drawer,
-                        leading: CircleAvatar(
-                            radius: 25,
-                            backgroundImage: ExtendedNetworkImageProvider(
-                              baseUrl +
-                                  "/" +
-                                  chattingListData[index].picture[0],
-                              cache: true,
-                            )),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: chattingListData.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () async {
+                                await context.push(
+                                    '/chatRoom/${chattingListData[index].postId}');
+                              },
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: SizedBox(
+                                  height: 88,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 16.0),
+                                        child: ExtendedImage.network(
+                                          baseUrl +
+                                              "/" +
+                                              chattingListData[index]
+                                                  .picture[0],
+                                          width: 56,
+                                          height: 56,
+                                          fit: BoxFit.cover,
+                                          cache: true,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 12, 0, 0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                      chattingListData[index]
+                                                          .title,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 17,
+                                                      )),
+                                                ),
+                                                Icon(Icons.person),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 8),
+                                                  child: Text(
+                                                      "${chattingListData[index].personnel}"),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                      // Column(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.center,
+                                      //   crossAxisAlignment:
+                                      //       CrossAxisAlignment.center,
+                                      //   children: [
+                                      //     Padding(
+                                      //       padding: const EdgeInsets.all(8.0),
+                                      //       child: Badge(
+                                      //         label: Text(" N ",
+                                      //             style: TextStyle(
+                                      //                 fontSize: 12,
+                                      //                 fontWeight:
+                                      //                     FontWeight.bold)),
+                                      //       ),
+                                      //     ),
+                                      //   ],
+                                      // )
+                                    ],
+                                  ),
+                                  // child: ListTile(
+                                  //   // style: ListTileStyle.drawer,
+                                  //   leading: CircleAvatar(
+                                  //       radius: 30,
+                                  //       backgroundImage: ExtendedNetworkImageProvider(
+                                  //         baseUrl +
+                                  //             "/" +
+                                  //             chattingListData[index].picture[0],
+                                  //         cache: true,
+                                  //       )),
 
-                        title: Text(chattingListData[index].title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17,
-                            )),
-                        subtitle:
-                            Text("👥 :${chattingListData[index].personnel}"),
-                        // Text(chattingListData[index].postId.toString()),
-                        // trailing: Text(
-                        //   "👥 :"+chattingListData[index].personnel.toString()
-                        //   ),
-                        onTap: () async {
-                          await context.push(
-                              '/chatRoom/${chattingListData[index].postId}');
-                          setState(() {
-                            _loadChattingListData();
-                          });
-                        },
-                      ),
-                    );
-                  }),
+                                  //   title: Text(chattingListData[index].title,
+                                  //       style: TextStyle(
+                                  //         fontWeight: FontWeight.bold,
+                                  //         fontSize: 17,
+                                  //       )),
+                                  //   // subtitle:
+                                  //   //     Text("👥 :${chattingListData[index].personnel}"),
+                                  //   // Text(chattingListData[index].postId.toString()),
+                                  //   trailing: Text(
+                                  //     "👥 :"+chattingListData[index].personnel.toString()
+                                  //     ),
+                                  //   onTap: () async {
+                                  //     await context.push(
+                                  //         '/chatRoom/${chattingListData[index].postId}');
+                                  //     setState(() {
+                                  //       _loadChattingListData();
+                                  //     });
+                                  //   },
+                                  // ),
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

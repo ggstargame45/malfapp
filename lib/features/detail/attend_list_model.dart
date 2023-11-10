@@ -12,10 +12,10 @@ class AttendListData with _$AttendListData {
     // @JsonKey(name: 'user_status') required int userStatus,
     @JsonKey(name: 'user_type') required int userType,
     @JsonKey(name: 'nation') required int nation,
-    @JsonKey(name: 'nickname') required String nickname,
-    // @JsonKey(name: 'profile_pic')
-    // @PicListConverter()
-    // required List<String> profilePic,
+    @JsonKey(name: 'nick_name') required String nickname,
+    @JsonKey(name: 'profile_pic')
+    @PicListConverter()
+    required List<String> profilePic,
   }) = _AttendListData;
 
   factory AttendListData.fromJson(Map<String, dynamic> json) =>

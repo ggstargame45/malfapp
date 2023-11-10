@@ -42,15 +42,28 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   String? chatRoomImage;
 
   Future<void> addMessage(Message data) async {
+    logger.d(data.sender);
+    logger.d(Token().refreshToken);
     if (UserMap().userMap[data.sender] == null) {
-      final dio = Dio(BaseOptions(
-          baseUrl: baseUrl,
-          headers: {'Authorization': Token().refreshToken},
-          responseType: ResponseType.json));
-      final response = await dio.get("/user/profile/${data.sender}");
-      final copyData = response.data['data'];
-      if (copyData != []) {
-        UserMap().userMap[data.sender] = ProfileData.fromJson(copyData[0]);
+      try {
+        final dio = Dio(BaseOptions(
+            baseUrl: baseUrl,
+            headers: {'Authorization': Token().refreshToken},
+            responseType: ResponseType.json));
+        final response = await dio.get("/user/profile/${data.sender}");
+        final copyData = response.data['data'];
+        if (copyData != []) {
+          if (copyData[0]['able_language'] == null) {
+            copyData[0]['able_language'] = "[]";
+          }
+          if (copyData[0]['user_temperature'] == null) {
+            copyData[0]['user_temperature'] = 365;
+          }
+          UserMap().userMap[data.sender] = ProfileData.fromJson(copyData[0]);
+        }
+      } on Exception catch (e) {
+        // TODO
+        logger.e(e);
       }
     }
     _messages.insert(0, data);
@@ -92,15 +105,24 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> getChatDetail() async {
-    final chatRoomDetailData = await Dio(BaseOptions(
-            baseUrl: baseUrl, headers: {'Authorization': Token().refreshToken}))
-        .get("/bulletin-board/posts/${widget.roomId}");
-    //logger.d(chatRoomDetailData.data['data'][0]);
-    title = chatRoomDetailData.data['data'][0]['title'];
-    authorNickname = chatRoomDetailData.data['data'][0]['author_nickname'];
-    location = chatRoomDetailData.data['data'][0]['meeting_location'];
-    chatRoomImage =
-        jsonDecode(chatRoomDetailData.data['data'][0]['meeting_pic'])[0];
+    try {
+      final dio = Dio(BaseOptions(
+          baseUrl: baseUrl,
+          headers: {'Authorization': Token().refreshToken},
+          responseType: ResponseType.json));
+
+      final chatRoomDetailData =
+          await dio.get("/bulletin-board/posts/${widget.roomId}");
+      // logger.d(chatRoomDetailData.data['data'][0]);
+      title = chatRoomDetailData.data['data'][0]['title'];
+      authorNickname = chatRoomDetailData.data['data'][0]['author_nickname'];
+      location = chatRoomDetailData.data['data'][0]['meeting_location'];
+      chatRoomImage =
+          jsonDecode(chatRoomDetailData.data['data'][0]['meeting_pic'])[0];
+    } on Exception catch (e) {
+      // TODO
+      logger.e(e);
+    }
     if (mounted) {
       setState(() {});
     }
@@ -110,8 +132,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void initState() {
     super.initState();
     _connectSocket();
-    getChatDetail();
-    getInitChat();
+
+
+    start();
+
+  }
+
+  Future<void> start() async {
+    await getChatDetail();
+    await getInitChat();
   }
 
   @override
@@ -141,15 +170,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> getInitChat() async {
-    final chatValue = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      headers: {'Authorization': Token().refreshToken},
-    ));
+    try {
+      final chatValue = Dio(BaseOptions(
+          headers: {'Authorization': Token().refreshToken},
+          contentType: "application/json; charset=utf-8"));
+      logger.d("Authorization: ${Token().refreshToken}");
+      logger.d("$baseUrl/chat/chats/${widget.roomId}");
 
-    final val = await chatValue.get("/chat/chats/${widget.roomId}");
-    _messages.clear();
-    for (int i = 0; i < val.data['data'].length; i++) {
-      addMessage(Message.fromJson(val.data['data'][i]));
+      final val = await chatValue.get("$baseUrl/chat/chats/${widget.roomId}");
+      _messages.clear();
+      for (int i = 0; i < val.data['data'].length; i++) {
+        addMessage(Message.fromJson(val.data['data'][i]));
+      }
+    } on Exception catch (e) {
+      // TODO
+      logger.e(e);
     }
   }
 
@@ -171,7 +206,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          
           backgroundColor: Colors.white,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
@@ -193,7 +227,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     position: RelativeRect.fromLTRB(100, 100, 0, 0),
                     items: [
                       PopupMenuItem(
-                        child: Text("report".tr()),
                         value: 1,
                         onTap: () {
                           context.push("/report", extra: {
@@ -202,9 +235,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             "title": title
                           });
                         },
+                        child: Text("report".tr()),
                       ),
                       PopupMenuItem(
-                        child: Text("leave".tr()),
                         value: 2,
                         onTap: () async {
                           // _socket.emit("leave", {"room": widget.roomId, "sender": Token().userUniqId});
@@ -227,6 +260,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text("fail".tr()))); //"채팅방 나가기 실패"
                         },
+                        child: Text("leave".tr()),
                       ),
                     ],
                   );
@@ -356,9 +390,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: ExtendedNetworkImageProvider(
-                                    baseUrl +
-                                        "/" +
-                                        (chatRoomImage ?? "ad/1.png"),
+                                    "$baseUrl/${chatRoomImage ?? "ad/1.png"}",
                                   ),
                                   fit: BoxFit.cover),
                               color: Colors.black12,

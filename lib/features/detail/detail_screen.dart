@@ -1,3 +1,5 @@
+
+
 import 'package:country_code/country_code.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:isar/isar.dart';
 import 'package:malf/features/detail/detail_model.dart';
+import 'package:malf/features/home/home_page_controller.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
@@ -13,6 +16,7 @@ import 'package:like_button/like_button.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 import 'package:fl_country_code_picker/fl_country_code_picker.dart' as FCCP;
 
@@ -31,14 +35,16 @@ class _DetailScreenState extends State<DetailScreen> {
   int currentForeign = 0;
   bool subscribeCheck = false;
   bool insideCheck = false;
+  bool likeCheck = false;
+  int likeCount = 0;
 
   Future<dynamic> insideRequest() async {
     try {
-      final response = await Dio(BaseOptions(
-              baseUrl: baseUrl,
-              headers: {'Authorization': Token().refreshToken},
-              responseType: ResponseType.json))
-          .get("/chatroom/${widget.postId}/members");
+      final dio = Dio(BaseOptions(
+          baseUrl: baseUrl,
+          headers: {'Authorization': Token().refreshToken},
+          responseType: ResponseType.json));
+      final response = await dio.get("/chatroom/${widget.postId}/members");
       return response.data["data"];
     } catch (error) {
       logger.e(error);
@@ -48,11 +54,11 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<dynamic> subscribeRequest() async {
     try {
-      final response = await Dio(BaseOptions(
-              baseUrl: baseUrl,
-              headers: {'Authorization': Token().refreshToken},
-              responseType: ResponseType.json))
-          .get("/chatroom/${widget.postId}/agreement");
+      final dio = Dio(BaseOptions(
+          baseUrl: baseUrl,
+          headers: {'Authorization': Token().refreshToken},
+          responseType: ResponseType.json));
+      final response = await dio.get("/chatroom/${widget.postId}/agreement");
       return response.data["data"];
     } catch (error) {
       logger.e(error);
@@ -62,11 +68,23 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<void> checkSubscribe() async {
     subscribeCheck = false;
+    final List<dynamic> jsonData = [];
 
-    final List<dynamic> jsonData = await subscribeRequest();
+    try {
+      final dio = Dio(BaseOptions(
+          baseUrl: baseUrl,
+          headers: {'Authorization': Token().refreshToken},
+          responseType: ResponseType.json));
+      final response = await dio.get("/user/${Token().userUniqId}/applylist");
+      jsonData.addAll(response.data["data"]);
+    } catch (error) {
+      logger.e(error);
+    }
+
     for (var element in jsonData) {
-      if (element["user_uniq_id"] == Token().userUniqId) {
+      if (element["post_id"] == widget.postId) {
         subscribeCheck = true;
+        break;
       }
     }
 
@@ -95,6 +113,8 @@ class _DetailScreenState extends State<DetailScreen> {
         responseType: ResponseType.json));
     final response = await dio.get("/bulletin-board/posts/${widget.postId}");
     detailData = DetailData.fromJson(response.data['data'][0]);
+    likeCheck = detailData!.likeCheck == 1 ? true : false;
+    likeCount = detailData!.likeCount;
 
     logger.d(detailData);
     currentLocal = 0;
@@ -111,6 +131,7 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     }
     await checkInside();
+    await checkSubscribe();
     if (mounted) {
       setState(() {});
     }
@@ -126,7 +147,10 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          shadowColor: Colors.grey,
+          elevation: 1,
           backgroundColor: AppColors.white,
           leading: IconButton(
             icon: const Icon(
@@ -460,7 +484,6 @@ class _DetailScreenState extends State<DetailScreen> {
           ]),
         ),
         bottomSheet: Container(
-          height: 60,
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
               color: Colors.white,
@@ -470,15 +493,34 @@ class _DetailScreenState extends State<DetailScreen> {
                 width: 1,
               ))),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+            padding: EdgeInsets.fromLTRB(
+                16, 0, 0, MediaQuery.of(context).padding.bottom),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 LikeButton(
-                  likeCount: detailData == null ? 0 : detailData!.likeCount,
-                  isLiked:
-                      detailData == null ? false : detailData!.likeCheck == 1,
-                  onTap: null,
+                  likeCount: likeCount,
+                  isLiked: likeCheck,
+                  animationDuration: const Duration(milliseconds: 500),
+                  onTap: (isLiked) async {
+                    final dio = Dio(BaseOptions(
+                        baseUrl: baseUrl,
+                        headers: {'Authorization': Token().refreshToken},
+                        responseType: ResponseType.json));
+                    final response = await dio.post(
+                        "/bulletin-board/posts/${detailData!.postId}/like");
+                    if (response.statusCode == 200) {
+                      likeCheck = !isLiked;
+                      if (isLiked) {
+                        likeCount--;
+                      } else {
+                        likeCount++;
+                      }
+                      return !isLiked;
+                    }
+                    likeCheck = isLiked;
+                    return isLiked;
+                  },
                 ),
                 Expanded(
                     child: Padding(
@@ -505,10 +547,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                           },
                                           responseType: ResponseType.json));
                                       try {
-                                        await dodo.delete(
-                                            "/chatroom/" +
-                                                detailData!.postId.toString() +
-                                                "/subscribe");
+                                        await dodo.delete("/chatroom/" +
+                                            detailData!.postId.toString() +
+                                            "/subscribe");
                                       } on Exception catch (e) {
                                         // TODO
                                       }
@@ -525,10 +566,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                           },
                                           responseType: ResponseType.json));
                                       try {
-                                        await dodo.post(
-                                            "/chatroom/" +
-                                                detailData!.postId.toString() +
-                                                "/subscribe");
+                                        await dodo.post("/chatroom/" +
+                                            detailData!.postId.toString() +
+                                            "/subscribe");
                                       } on Exception catch (e) {
                                         // TODO
                                       }
@@ -544,16 +584,16 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 }
 
-void detailMoreSheet(context, DetailData? detailData) {
+void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
   if (detailData == null) {
     return;
   }
   showModalBottomSheet(
-      context: context,
+      context: contexta,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
+      builder: (contextb) => Container(
             padding: const EdgeInsets.only(top: 8),
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(contextb).size.width,
             height: 260,
             decoration: const BoxDecoration(
                 color: Colors.white,
@@ -575,7 +615,7 @@ void detailMoreSheet(context, DetailData? detailData) {
                 if (detailData.userUniqId == Token().userUniqId)
                   GestureDetector(
                     onTap: () async {
-                      context.pop();
+                      contextb.pop();
                       try {
                         final _dio = Dio(BaseOptions(
                             baseUrl: baseUrl,
@@ -584,7 +624,7 @@ void detailMoreSheet(context, DetailData? detailData) {
                         final response = await _dio.delete(
                           "/bulletin-board/posts/${detailData.postId}}",
                         );
-                        context.pop();
+                        contexta.pop();
                         logger.d(response.data);
                         //return response.statusCode;
                       } catch (error) {
@@ -593,7 +633,7 @@ void detailMoreSheet(context, DetailData? detailData) {
                     },
                     child: Container(
                         padding: const EdgeInsets.all(15),
-                        width: MediaQuery.sizeOf(context).width,
+                        width: MediaQuery.sizeOf(contextb).width,
                         height: 60,
                         child: Row(
                           children: [
@@ -611,6 +651,36 @@ void detailMoreSheet(context, DetailData? detailData) {
                           ],
                         )),
                   ),
+                if (detailData.userUniqId != Token().userUniqId)
+                  GestureDetector(
+                    onTap: () async {
+                      contextb.pop();
+                      await contexta.push("/report", extra: {
+                        "reportType": "post",
+                        "id": detailData.postId.toString(),
+                        "title": detailData.title
+                      });
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.all(15),
+                        width: MediaQuery.sizeOf(contextb).width,
+                        height: 60,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.report_outlined,
+                              color: Color.fromARGB(138, 158, 158, 158),
+                              size: 30,
+                            ),
+                            Text(
+                              "report".tr(), //개시물 신고하기
+                              style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontWeight: FontWeight.w700),
+                            )
+                          ],
+                        )),
+                  ),
                 Divider(
                   height: 1,
                   thickness: 1,
@@ -619,14 +689,16 @@ void detailMoreSheet(context, DetailData? detailData) {
                 if (detailData.userUniqId == Token().userUniqId)
                   GestureDetector(
                     onTap: () async {
-                      await context.push('/edit', extra: detailData);
-                      context
+                      contextb.pop();
+                      await contexta.push('/edit', extra: detailData);
+                      pagingController.refresh();
+                      contexta
                         ..go('/home')
                         ..push('/detail/${detailData.postId}');
                     },
                     child: Container(
                         padding: const EdgeInsets.all(15),
-                        width: MediaQuery.sizeOf(context).width,
+                        width: MediaQuery.sizeOf(contextb).width,
                         height: 60,
                         child: Row(
                           children: [
@@ -647,27 +719,87 @@ void detailMoreSheet(context, DetailData? detailData) {
                 if (detailData.userUniqId != Token().userUniqId)
                   GestureDetector(
                     onTap: () async {
-                      await context.push("/report", extra: {
-                        "reportType": "post",
-                        "id": detailData.postId.toString(),
-                        "title": detailData.title
-                      });
+                      showDialog(
+                          context: contextb,
+                          builder: (contextc) {
+                            return AlertDialog(
+                              title: Text("block".tr()),
+                              content: Text("block_meeting".tr()),
+                              actions: [
+                                TextButton(
+                                    onPressed: () async {
+                                      bool onlyDetail = true;
+                                      await showDialog(
+                                          context: contextc,
+                                          builder: (contextd) {
+                                            return AlertDialog(
+                                              content:
+                                                  Text("block_additional".tr()),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      onlyDetail = false;
+                                                      contextd.pop();
+                                                    },
+                                                    child: Text("block".tr())),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      onlyDetail = true;
+                                                      contextd.pop();
+                                                    },
+                                                    child: Text("no".tr()))
+                                              ],
+                                            );
+                                          });
+                                      
+                                      contextc.pop();
+                                      contextb.pop();
+                                      contexta.pop();
+                                      if (onlyDetail) {
+                                        BlockSet().addBlockMeeting(
+                                          postId: detailData.postId,
+                                          title: detailData.title,
+                                          authorNickname:
+                                              detailData.authorNickname,
+                                        );
+                                      } else {
+                                        BlockSet().addBlockUser(
+                                            uniqId: detailData.userUniqId,
+                                            nickname:
+                                                detailData.authorNickname);
+                                      }
+                                      
+                                      pagingController.refresh();
+                                      ScaffoldMessenger.of(contexta)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "unblock_message".tr())));
+                                    },
+                                    child: Text("confirm".tr())),
+                                TextButton(
+                                    onPressed: () {
+                                      contextc.pop();
+                                    },
+                                    child: Text("cancel".tr()))
+                              ],
+                            );
+                          });
                     },
                     child: Container(
                         padding: const EdgeInsets.all(15),
-                        width: MediaQuery.sizeOf(context).width,
+                        width: MediaQuery.sizeOf(contextb).width,
                         height: 60,
                         child: Row(
                           children: [
                             Icon(
-                              Icons.mode_edit_outlined,
+                              Icons.block_outlined,
                               color: Color.fromARGB(138, 158, 158, 158),
                               size: 30,
                             ),
                             Text(
-                              "report".tr(), //개시물 신고하기
+                              "block".tr(), //개시물 신고하기
                               style: TextStyle(
-                                  color: Colors.redAccent,
+                                  color: Colors.pinkAccent,
                                   fontWeight: FontWeight.w700),
                             )
                           ],
@@ -682,7 +814,7 @@ void detailMoreSheet(context, DetailData? detailData) {
                   height: 50,
                   child: FilledButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      contextb.pop();
                     },
                     child: Text('cancel'.tr()),
                   ),

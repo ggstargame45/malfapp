@@ -15,8 +15,8 @@ class ListItemData with _$ListItemData {
     @JsonKey(name: 'user_type') required int userType,
     @JsonKey(name: 'capacity_local') required int capacityLocal,
     @JsonKey(name: 'capacity_travel') required int capacityTravel,
-    //@JsonKey(name: 'amount_local') required int amountLocal,
-    //@JsonKey(name: 'amount_travel') required int amountTravel,
+    @JsonKey(name: "user_uniq_id") required String userUniqId,
+    
     @JsonKey(name: 'meeting_pic')
     @PicListConverter()
     required List<String> meetingPic,
@@ -26,6 +26,11 @@ class ListItemData with _$ListItemData {
     @JsonKey(name: 'meeting_start_time')
     @DateTimeConverter()
     required DateTime meetingStartTime,
+    
+    @JsonKey(name: 'post_status') required int postStatus,
+    @JsonKey(name: 'like_count') required int likeCount,
+    @JsonKey(name: 'local_participation') required int localParticipation,
+    @JsonKey(name: 'travel_participation') required int travelParticipation,
   }) = _ListItemData;
 
   factory ListItemData.fromJson(Map<String, dynamic> json) =>

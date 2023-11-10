@@ -33,9 +33,9 @@ mixin _$ListItemData {
   @JsonKey(name: 'capacity_local')
   int get capacityLocal => throw _privateConstructorUsedError;
   @JsonKey(name: 'capacity_travel')
-  int get capacityTravel =>
-      throw _privateConstructorUsedError; //@JsonKey(name: 'amount_local') required int amountLocal,
-//@JsonKey(name: 'amount_travel') required int amountTravel,
+  int get capacityTravel => throw _privateConstructorUsedError;
+  @JsonKey(name: "user_uniq_id")
+  String get userUniqId => throw _privateConstructorUsedError;
   @JsonKey(name: 'meeting_pic')
   @PicListConverter()
   List<String> get meetingPic =>
@@ -46,6 +46,14 @@ mixin _$ListItemData {
   @JsonKey(name: 'meeting_start_time')
   @DateTimeConverter()
   DateTime get meetingStartTime => throw _privateConstructorUsedError;
+  @JsonKey(name: 'post_status')
+  int get postStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: 'like_count')
+  int get likeCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'local_participation')
+  int get localParticipation => throw _privateConstructorUsedError;
+  @JsonKey(name: 'travel_participation')
+  int get travelParticipation => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -67,11 +75,16 @@ abstract class $ListItemDataCopyWith<$Res> {
       @JsonKey(name: 'user_type') int userType,
       @JsonKey(name: 'capacity_local') int capacityLocal,
       @JsonKey(name: 'capacity_travel') int capacityTravel,
+      @JsonKey(name: "user_uniq_id") String userUniqId,
       @JsonKey(name: 'meeting_pic') @PicListConverter() List<String> meetingPic,
       @JsonKey(name: 'meeting_location') String meetingLocation,
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
-      DateTime meetingStartTime});
+      DateTime meetingStartTime,
+      @JsonKey(name: 'post_status') int postStatus,
+      @JsonKey(name: 'like_count') int likeCount,
+      @JsonKey(name: 'local_participation') int localParticipation,
+      @JsonKey(name: 'travel_participation') int travelParticipation});
 }
 
 /// @nodoc
@@ -94,9 +107,14 @@ class _$ListItemDataCopyWithImpl<$Res, $Val extends ListItemData>
     Object? userType = null,
     Object? capacityLocal = null,
     Object? capacityTravel = null,
+    Object? userUniqId = null,
     Object? meetingPic = null,
     Object? meetingLocation = null,
     Object? meetingStartTime = null,
+    Object? postStatus = null,
+    Object? likeCount = null,
+    Object? localParticipation = null,
+    Object? travelParticipation = null,
   }) {
     return _then(_value.copyWith(
       postId: null == postId
@@ -127,6 +145,10 @@ class _$ListItemDataCopyWithImpl<$Res, $Val extends ListItemData>
           ? _value.capacityTravel
           : capacityTravel // ignore: cast_nullable_to_non_nullable
               as int,
+      userUniqId: null == userUniqId
+          ? _value.userUniqId
+          : userUniqId // ignore: cast_nullable_to_non_nullable
+              as String,
       meetingPic: null == meetingPic
           ? _value.meetingPic
           : meetingPic // ignore: cast_nullable_to_non_nullable
@@ -139,6 +161,22 @@ class _$ListItemDataCopyWithImpl<$Res, $Val extends ListItemData>
           ? _value.meetingStartTime
           : meetingStartTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      postStatus: null == postStatus
+          ? _value.postStatus
+          : postStatus // ignore: cast_nullable_to_non_nullable
+              as int,
+      likeCount: null == likeCount
+          ? _value.likeCount
+          : likeCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      localParticipation: null == localParticipation
+          ? _value.localParticipation
+          : localParticipation // ignore: cast_nullable_to_non_nullable
+              as int,
+      travelParticipation: null == travelParticipation
+          ? _value.travelParticipation
+          : travelParticipation // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -159,11 +197,16 @@ abstract class _$$ListItemDataImplCopyWith<$Res>
       @JsonKey(name: 'user_type') int userType,
       @JsonKey(name: 'capacity_local') int capacityLocal,
       @JsonKey(name: 'capacity_travel') int capacityTravel,
+      @JsonKey(name: "user_uniq_id") String userUniqId,
       @JsonKey(name: 'meeting_pic') @PicListConverter() List<String> meetingPic,
       @JsonKey(name: 'meeting_location') String meetingLocation,
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
-      DateTime meetingStartTime});
+      DateTime meetingStartTime,
+      @JsonKey(name: 'post_status') int postStatus,
+      @JsonKey(name: 'like_count') int likeCount,
+      @JsonKey(name: 'local_participation') int localParticipation,
+      @JsonKey(name: 'travel_participation') int travelParticipation});
 }
 
 /// @nodoc
@@ -184,9 +227,14 @@ class __$$ListItemDataImplCopyWithImpl<$Res>
     Object? userType = null,
     Object? capacityLocal = null,
     Object? capacityTravel = null,
+    Object? userUniqId = null,
     Object? meetingPic = null,
     Object? meetingLocation = null,
     Object? meetingStartTime = null,
+    Object? postStatus = null,
+    Object? likeCount = null,
+    Object? localParticipation = null,
+    Object? travelParticipation = null,
   }) {
     return _then(_$ListItemDataImpl(
       postId: null == postId
@@ -217,6 +265,10 @@ class __$$ListItemDataImplCopyWithImpl<$Res>
           ? _value.capacityTravel
           : capacityTravel // ignore: cast_nullable_to_non_nullable
               as int,
+      userUniqId: null == userUniqId
+          ? _value.userUniqId
+          : userUniqId // ignore: cast_nullable_to_non_nullable
+              as String,
       meetingPic: null == meetingPic
           ? _value._meetingPic
           : meetingPic // ignore: cast_nullable_to_non_nullable
@@ -229,6 +281,22 @@ class __$$ListItemDataImplCopyWithImpl<$Res>
           ? _value.meetingStartTime
           : meetingStartTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      postStatus: null == postStatus
+          ? _value.postStatus
+          : postStatus // ignore: cast_nullable_to_non_nullable
+              as int,
+      likeCount: null == likeCount
+          ? _value.likeCount
+          : likeCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      localParticipation: null == localParticipation
+          ? _value.localParticipation
+          : localParticipation // ignore: cast_nullable_to_non_nullable
+              as int,
+      travelParticipation: null == travelParticipation
+          ? _value.travelParticipation
+          : travelParticipation // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -244,13 +312,18 @@ class _$ListItemDataImpl implements _ListItemData {
       @JsonKey(name: 'user_type') required this.userType,
       @JsonKey(name: 'capacity_local') required this.capacityLocal,
       @JsonKey(name: 'capacity_travel') required this.capacityTravel,
+      @JsonKey(name: "user_uniq_id") required this.userUniqId,
       @JsonKey(name: 'meeting_pic')
       @PicListConverter()
       required final List<String> meetingPic,
       @JsonKey(name: 'meeting_location') required this.meetingLocation,
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
-      required this.meetingStartTime})
+      required this.meetingStartTime,
+      @JsonKey(name: 'post_status') required this.postStatus,
+      @JsonKey(name: 'like_count') required this.likeCount,
+      @JsonKey(name: 'local_participation') required this.localParticipation,
+      @JsonKey(name: 'travel_participation') required this.travelParticipation})
       : _meetingPic = meetingPic;
 
   factory _$ListItemDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -277,11 +350,10 @@ class _$ListItemDataImpl implements _ListItemData {
   @override
   @JsonKey(name: 'capacity_travel')
   final int capacityTravel;
-//@JsonKey(name: 'amount_local') required int amountLocal,
-//@JsonKey(name: 'amount_travel') required int amountTravel,
+  @override
+  @JsonKey(name: "user_uniq_id")
+  final String userUniqId;
   final List<String> _meetingPic;
-//@JsonKey(name: 'amount_local') required int amountLocal,
-//@JsonKey(name: 'amount_travel') required int amountTravel,
   @override
   @JsonKey(name: 'meeting_pic')
   @PicListConverter()
@@ -300,10 +372,22 @@ class _$ListItemDataImpl implements _ListItemData {
   @JsonKey(name: 'meeting_start_time')
   @DateTimeConverter()
   final DateTime meetingStartTime;
+  @override
+  @JsonKey(name: 'post_status')
+  final int postStatus;
+  @override
+  @JsonKey(name: 'like_count')
+  final int likeCount;
+  @override
+  @JsonKey(name: 'local_participation')
+  final int localParticipation;
+  @override
+  @JsonKey(name: 'travel_participation')
+  final int travelParticipation;
 
   @override
   String toString() {
-    return 'ListItemData(postId: $postId, title: $title, authorNickname: $authorNickname, authorNation: $authorNation, userType: $userType, capacityLocal: $capacityLocal, capacityTravel: $capacityTravel, meetingPic: $meetingPic, meetingLocation: $meetingLocation, meetingStartTime: $meetingStartTime)';
+    return 'ListItemData(postId: $postId, title: $title, authorNickname: $authorNickname, authorNation: $authorNation, userType: $userType, capacityLocal: $capacityLocal, capacityTravel: $capacityTravel, userUniqId: $userUniqId, meetingPic: $meetingPic, meetingLocation: $meetingLocation, meetingStartTime: $meetingStartTime, postStatus: $postStatus, likeCount: $likeCount, localParticipation: $localParticipation, travelParticipation: $travelParticipation)';
   }
 
   @override
@@ -323,12 +407,22 @@ class _$ListItemDataImpl implements _ListItemData {
                 other.capacityLocal == capacityLocal) &&
             (identical(other.capacityTravel, capacityTravel) ||
                 other.capacityTravel == capacityTravel) &&
+            (identical(other.userUniqId, userUniqId) ||
+                other.userUniqId == userUniqId) &&
             const DeepCollectionEquality()
                 .equals(other._meetingPic, _meetingPic) &&
             (identical(other.meetingLocation, meetingLocation) ||
                 other.meetingLocation == meetingLocation) &&
             (identical(other.meetingStartTime, meetingStartTime) ||
-                other.meetingStartTime == meetingStartTime));
+                other.meetingStartTime == meetingStartTime) &&
+            (identical(other.postStatus, postStatus) ||
+                other.postStatus == postStatus) &&
+            (identical(other.likeCount, likeCount) ||
+                other.likeCount == likeCount) &&
+            (identical(other.localParticipation, localParticipation) ||
+                other.localParticipation == localParticipation) &&
+            (identical(other.travelParticipation, travelParticipation) ||
+                other.travelParticipation == travelParticipation));
   }
 
   @JsonKey(ignore: true)
@@ -342,9 +436,14 @@ class _$ListItemDataImpl implements _ListItemData {
       userType,
       capacityLocal,
       capacityTravel,
+      userUniqId,
       const DeepCollectionEquality().hash(_meetingPic),
       meetingLocation,
-      meetingStartTime);
+      meetingStartTime,
+      postStatus,
+      likeCount,
+      localParticipation,
+      travelParticipation);
 
   @JsonKey(ignore: true)
   @override
@@ -369,13 +468,20 @@ abstract class _ListItemData implements ListItemData {
       @JsonKey(name: 'user_type') required final int userType,
       @JsonKey(name: 'capacity_local') required final int capacityLocal,
       @JsonKey(name: 'capacity_travel') required final int capacityTravel,
+      @JsonKey(name: "user_uniq_id") required final String userUniqId,
       @JsonKey(name: 'meeting_pic')
       @PicListConverter()
       required final List<String> meetingPic,
       @JsonKey(name: 'meeting_location') required final String meetingLocation,
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
-      required final DateTime meetingStartTime}) = _$ListItemDataImpl;
+      required final DateTime meetingStartTime,
+      @JsonKey(name: 'post_status') required final int postStatus,
+      @JsonKey(name: 'like_count') required final int likeCount,
+      @JsonKey(name: 'local_participation')
+      required final int localParticipation,
+      @JsonKey(name: 'travel_participation')
+      required final int travelParticipation}) = _$ListItemDataImpl;
 
   factory _ListItemData.fromJson(Map<String, dynamic> json) =
       _$ListItemDataImpl.fromJson;
@@ -401,8 +507,10 @@ abstract class _ListItemData implements ListItemData {
   @override
   @JsonKey(name: 'capacity_travel')
   int get capacityTravel;
-  @override //@JsonKey(name: 'amount_local') required int amountLocal,
-//@JsonKey(name: 'amount_travel') required int amountTravel,
+  @override
+  @JsonKey(name: "user_uniq_id")
+  String get userUniqId;
+  @override
   @JsonKey(name: 'meeting_pic')
   @PicListConverter()
   List<String> get meetingPic;
@@ -413,6 +521,18 @@ abstract class _ListItemData implements ListItemData {
   @JsonKey(name: 'meeting_start_time')
   @DateTimeConverter()
   DateTime get meetingStartTime;
+  @override
+  @JsonKey(name: 'post_status')
+  int get postStatus;
+  @override
+  @JsonKey(name: 'like_count')
+  int get likeCount;
+  @override
+  @JsonKey(name: 'local_participation')
+  int get localParticipation;
+  @override
+  @JsonKey(name: 'travel_participation')
+  int get travelParticipation;
   @override
   @JsonKey(ignore: true)
   _$$ListItemDataImplCopyWith<_$ListItemDataImpl> get copyWith =>

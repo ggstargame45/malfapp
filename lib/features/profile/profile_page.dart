@@ -44,9 +44,29 @@ class _ProfilePageState extends State<ProfilePage>
 
     Dio dio = Dio(BaseOptions(
         baseUrl: baseUrl, headers: {"Authorization": Token().refreshToken}));
-
+    logger.d("what : ${Token().userUniqId}");
     final response = await dio.get("/user/profile/${Token().userUniqId}");
-    var copyData = response.data['data'][0];
+    logger.d("response : ${response.data['data']}");
+    if (response.data['data'].isEmpty) {
+      logger.d("badhit");
+      response.data['data'].add({
+        "user_uniq_id": Token().userUniqId,
+        "nickname": "nickname",
+        "user_status": -1,
+        "user_type": 0,
+        "nation": 410,
+        "gender": 0,
+        "birthday": "2021-09-01",
+        "profile_pic": "[\"default.jpeg\"]",
+        "description": "description",
+        "interests": "interests",
+        "able_language": "[1, 2, 3]",
+        "user_temperature": 365,
+        "created_at": "2021-09-01",
+        "updated_at": "2021-09-01"
+      });
+    }
+    var copyData = response.data['data'][0] ?? {};
 
     if (response.data['data'][0]['description'] == null) {
       copyData['description'] = "";
@@ -56,6 +76,9 @@ class _ProfilePageState extends State<ProfilePage>
     }
     if (response.data['data'][0]['able_language'] == null) {
       copyData['able_language'] = "[]";
+    }
+    if (response.data['data'][0]['user_temperature'] == null) {
+      copyData['user_temperature'] = 365;
     }
     if (response.data['data'] != []) {
       profileData = ProfileData.fromJson(copyData);
@@ -85,6 +108,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     logger.i('ProfilePage build');
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
             title: Text(
               'my_page'.tr(),
@@ -202,7 +226,10 @@ class _ProfilePageState extends State<ProfilePage>
                                   maxWidth: maxWidth * 0.5,
                                 ),
                                 child: Text(
-                                  profileData!.nickname+CountryCode.parse(profileData!.nation.toString()).symbol,
+                                  profileData!.nickname +
+                                      CountryCode.parse(
+                                              profileData!.nation.toString())
+                                          .symbol,
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -242,7 +269,7 @@ class _ProfilePageState extends State<ProfilePage>
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(color: Colors.black),
+                            side: BorderSide(color: Colors.grey.shade300),
                           ),
                         ),
                       ),
@@ -255,7 +282,6 @@ class _ProfilePageState extends State<ProfilePage>
                         'edit_profile'.tr(),
                         style: TextStyle(
                           fontSize: 15,
-                          fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
@@ -265,7 +291,7 @@ class _ProfilePageState extends State<ProfilePage>
               ),
               //관심사 텍스트
               Padding(
-                padding: const EdgeInsets.only(top:20),
+                padding: const EdgeInsets.only(top: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -297,8 +323,8 @@ class _ProfilePageState extends State<ProfilePage>
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 14,
-                                  color: Color.fromARGB(255, 125, 125, 125),
-                                  fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 125, 125, 125),
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ))
@@ -308,7 +334,7 @@ class _ProfilePageState extends State<ProfilePage>
 
               //사용가능 언어 텍스트
               Padding(
-                padding: const EdgeInsets.only(top:20),
+                padding: const EdgeInsets.only(top: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -339,8 +365,8 @@ class _ProfilePageState extends State<ProfilePage>
                                   ableLanguage,
                                   style: TextStyle(
                                     fontSize: 14,
-                                  color: Color.fromARGB(255, 125, 125, 125),
-                                  fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 125, 125, 125),
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ))
@@ -348,23 +374,24 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
               ),
 
-              //프로필 설명 텍스트
+              //프로필 설명 텍스트const EdgeInsets.fromLTRB(16, 16, 8, 0),color: const Color.fromARGB(255, 240, 243, 248),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16,16,8,0),
+                padding: const EdgeInsets.fromLTRB(16, 16, 8, 0),
                 child: Row(
                   children: [
                     Container(
-                      constraints: BoxConstraints(
-                        maxWidth: maxWidth * 0.8,
-                      ),
-                      child: Text(
-                        profileData?.description ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),)
-                    )
+                        constraints: BoxConstraints(
+                          maxWidth: maxWidth * 0.8,
+                        ),
+                        child: Text(
+                          profileData?.description ?? "",
+                          maxLines: 30,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ))
                   ],
                 ),
               ),

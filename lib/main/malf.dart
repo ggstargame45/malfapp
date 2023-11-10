@@ -18,10 +18,10 @@ class MalfApp extends StatelessWidget {
       locale: context.locale,
       title: 'Malf Application',
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      // darkTheme: AppTheme.darkTheme,
       
       // themeMode: themeMode,
-      //debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       
 

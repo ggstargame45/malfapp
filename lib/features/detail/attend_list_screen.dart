@@ -40,44 +40,14 @@ class _AttendListScreenState extends State<AttendListScreen> {
           continue;
         }
         attendList.add(AttendListData.fromJson(element));
-        if (UserMap().userMap[element["user_uniq_id"]] == null) {
-          final dio = Dio(BaseOptions(
-              baseUrl: baseUrl,
-              headers: {'Authorization': Token().refreshToken},
-              responseType: ResponseType.json));
-          final response =
-              await dio.get("/user/profile/${element["user_uniq_id"]}");
-          final copyData = response.data['data'];
-          if (copyData != []) {
-            UserMap().userMap[element["user_uniq_id"]] =
-                ProfileData.fromJson(copyData[0]);
-          }
-        }
       }
     }
     jsonData = await insideRequest();
     for (var element in jsonData) {
       insideList.add(AttendListData.fromJson(element));
-
-      if (UserMap().userMap[element["user_uniq_id"]] == null) {
-        final dio = Dio(BaseOptions(
-            baseUrl: baseUrl,
-            headers: {'Authorization': Token().refreshToken},
-            responseType: ResponseType.json));
-        final response =
-            await dio.get("/user/profile/${element["user_uniq_id"]}");
-        final copyData = response.data['data'];
-        if (copyData != []) {
-          UserMap().userMap[element["user_uniq_id"]] =
-              ProfileData.fromJson(copyData[0]);
-        }
-      }
     }
+    setState(() {});
 
-    // logger.d(jsonData);
-    if (mounted) {
-      setState(() {});
-    }
     // jsonData.forEach((element) {
     //   homeListData.add(ListItemData.fromJson(element));
     // }
@@ -119,64 +89,24 @@ class _AttendListScreenState extends State<AttendListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadChattingListData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadChattingListData();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Attend List'),
+        title: Text('attendance'.tr()),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-//
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: ListView.builder(
-            //       shrinkWrap: true,
-            //       physics: const NeverScrollableScrollPhysics(),
-            //       itemCount: chattingListData.length,
-            //       itemBuilder: (context, index) {
-            //         return Card(
-            //           shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.circular(15),
-            //             side: BorderSide(
-            //               color: Colors.black,
-            //             ),
-            //           ),
-            //           elevation: 16,
-            //           shadowColor: Colors.grey,
-            //           child: ListTile(
-            //             style: ListTileStyle.drawer,
-            //             leading: CircleAvatar(
-            //                 radius: 25,
-            //                 backgroundImage: ExtendedNetworkImageProvider(
-            //                   baseUrl +
-            //                       "/" +
-            //                       chattingListData[index].picture[0],
-            //                   cache: true,
-            //                 )),
-            //             title: Text(chattingListData[index].title),
-            //             subtitle:
-            //                 Text(chattingListData[index].postId.toString()),
-            //             trailing: Text("2"
-            //                 //chattingListData[index].personnel.toString()
-            //                 ),
-            //             onTap: () {
-            //               GoRouter.of(context).push(
-            //                   '/chatRoom/${chattingListData[index].postId}');
-            //             },
-            //           ),
-            //         );
-            //       }),
-            // ),
-//
-            if (widget.isHost)
+            if (widget.isHost && attendList.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
+                child: ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: attendList.length,
@@ -203,7 +133,7 @@ class _AttendListScreenState extends State<AttendListScreen> {
                                     width: 50,
                                     height: 50,
                                     child: ExtendedImage.network(
-                                      "$baseUrl/${UserMap().userMap[attendList[index].userUniqId]?.profilePic[0]}",
+                                      "$baseUrl/${attendList[index].profilePic[0]}",
                                       cache: true,
                                       shape: BoxShape.circle,
                                       fit: BoxFit.cover,
@@ -217,35 +147,20 @@ class _AttendListScreenState extends State<AttendListScreen> {
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 8.0),
                                     child: RoundedBackgroundText(
-                                      ((UserMap()
-                                                          .userMap[
-                                                              attendList[index]
-                                                                  .userUniqId]
-                                                          ?.userType ??
-                                                      0) ==
-                                                  0
+                                      (attendList[index].userType == 0
                                               ? "foreigner"
                                               : "local")
                                           .tr(),
                                       style: TextStyle(
                                           fontSize: 12,
-                                          color: (UserMap()
-                                                          .userMap[
-                                                              attendList[index]
-                                                                  .userUniqId]
-                                                          ?.userType ??
-                                                      0) ==
-                                                  0
-                                              ? AppColors.primary
-                                              : AppColors.white),
-                                      backgroundColor: (UserMap()
-                                                      .userMap[attendList[index]
-                                                          .userUniqId]
-                                                      ?.userType ??
-                                                  0) ==
-                                              0
-                                          ? AppColors.extraLightGrey
-                                          : AppColors.primary,
+                                          color:
+                                              (attendList[index].userType) == 0
+                                                  ? AppColors.primary
+                                                  : AppColors.white),
+                                      backgroundColor:
+                                          attendList[index].userType == 0
+                                              ? AppColors.extraLightGrey
+                                              : AppColors.primary,
                                       innerRadius: 20.0,
                                       outerRadius: 20.0,
                                     ),
@@ -270,7 +185,7 @@ class _AttendListScreenState extends State<AttendListScreen> {
                                       ),
                                     ),
                                     child: Text(
-                                      "거절",
+                                      "reject".tr(),
                                       style: TextStyle(color: Colors.black),
                                     ),
                                     onPressed: () async {
@@ -312,7 +227,7 @@ class _AttendListScreenState extends State<AttendListScreen> {
                                         ),
                                       ),
                                       child: Text(
-                                        "승인",
+                                        "accept".tr(),
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       onPressed: () async {
@@ -324,6 +239,7 @@ class _AttendListScreenState extends State<AttendListScreen> {
                                                     Token().refreshToken
                                               },
                                               responseType: ResponseType.json));
+                                          logger.d("/chatroom/${widget.postId}/agreement/?id=${attendList[index].userUniqId}");
                                           logger.d(await dio.post(
                                               "/chatroom/${widget.postId}/agreement/?id=${attendList[index].userUniqId}"));
                                           _loadChattingListData();
@@ -337,128 +253,87 @@ class _AttendListScreenState extends State<AttendListScreen> {
                               )
                             ],
                           ),
-
-                          // Row(children: [
-
-                          // if(widget.isHost) TextButton(
-                          //   child: Text("강퇴"),
-                          //   onPressed: () async {
-                          //       // final dio = Dio(BaseOptions(
-                          //       //     baseUrl: baseUrl,
-                          //       //     headers: {'Authorization': Token().refreshToken},
-                          //       //     responseType: ResponseType.json));
-                          //       // final response = await dio.delete("/chatroom/${widget.postId}/agreement/${attendList[index].userUniqId}");
-                          //       // logger.d(response.data);
-                          //       // _loadChattingListData();
-                          //   },
-                          // ),
-                          // ]),
                         ),
                       );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider();
                     }),
               ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: insideList.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        GoRouter.of(context).push(
-                            '/profileOther/${insideList[index].userUniqId}');
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(
-                            color: Colors.black,
+            if (insideList.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: insideList.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          GoRouter.of(context).push(
+                              '/profileOther/${insideList[index].userUniqId}');
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            side: BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
+                          elevation: 16,
+                          shadowColor: Colors.grey,
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: ExtendedImage.network(
+                                      "$baseUrl/${insideList[index].profilePic[0]}",
+                                      cache: true,
+                                      shape: BoxShape.circle,
+                                      fit: BoxFit.cover,
+                                    )),
+                              ),
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 8.0),
+                                    child: RoundedBackgroundText(
+                                      ((insideList[index].userType) == 0
+                                              ? "foreigner"
+                                              : "local")
+                                          .tr(),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color:
+                                              (insideList[index].userType) == 0
+                                                  ? AppColors.primary
+                                                  : AppColors.white),
+                                      backgroundColor:
+                                          (insideList[index].userType) == 0
+                                              ? AppColors.extraLightGrey
+                                              : AppColors.primary,
+                                      innerRadius: 20.0,
+                                      outerRadius: 20.0,
+                                    ),
+                                  ),
+                                  Text(insideList[index].nickname),
+                                ],
+                              )),
+                            ],
                           ),
                         ),
-                        elevation: 16,
-                        shadowColor: Colors.grey,
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: ExtendedImage.network(
-                                    "$baseUrl/${UserMap().userMap[insideList[index].userUniqId]?.profilePic[0]}",
-                                    cache: true,
-                                    shape: BoxShape.circle,
-                                    fit: BoxFit.cover,
-                                  )),
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 8.0),
-                                  child: RoundedBackgroundText(
-                                    ((UserMap()
-                                                        .userMap[
-                                                            insideList[index]
-                                                                .userUniqId]
-                                                        ?.userType ??
-                                                    0) ==
-                                                0
-                                            ? "foreigner"
-                                            : "local")
-                                        .tr(),
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: (UserMap()
-                                                        .userMap[
-                                                            insideList[index]
-                                                                .userUniqId]
-                                                        ?.userType ??
-                                                    0) ==
-                                                0
-                                            ? AppColors.primary
-                                            : AppColors.white),
-                                    backgroundColor: (UserMap()
-                                                    .userMap[insideList[index]
-                                                        .userUniqId]
-                                                    ?.userType ??
-                                                0) ==
-                                            0
-                                        ? AppColors.extraLightGrey
-                                        : AppColors.primary,
-                                    innerRadius: 20.0,
-                                    outerRadius: 20.0,
-                                  ),
-                                ),
-                                Text(insideList[index].nickname),
-                              ],
-                            )),
-                          ],
-                        ),
-
-                        // Row(children: [
-
-                        // if(widget.isHost) TextButton(
-                        //   child: Text("강퇴"),
-                        //   onPressed: () async {
-                        //       // final dio = Dio(BaseOptions(
-                        //       //     baseUrl: baseUrl,
-                        //       //     headers: {'Authorization': Token().refreshToken},
-                        //       //     responseType: ResponseType.json));
-                        //       // final response = await dio.delete("/chatroom/${widget.postId}/agreement/${attendList[index].userUniqId}");
-                        //       // logger.d(response.data);
-                        //       // _loadChattingListData();
-                        //   },
-                        // ),
-                        // ]),
-                      ),
-                    );
-                  }),
-            ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider();
+                    }),
+              ),
           ],
         ),
       ),

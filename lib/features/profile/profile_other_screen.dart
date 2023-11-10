@@ -5,11 +5,13 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:malf/features/home/home_page_controller.dart';
 import 'package:malf/features/profile/profile_model.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
+import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:malf/shared/usecases/nation_image.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 
@@ -57,6 +59,9 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
     if (response.data['data'][0]['able_language'] == null) {
       copyData['able_language'] = "[]";
     }
+    if (response.data['data'][0]['user_temperature'] == null) {
+      copyData['user_temperature'] = 365;
+    }
     if (response.data['data'] != []) {
       profileData = ProfileData.fromJson(copyData);
     }
@@ -85,6 +90,7 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
 
     logger.i('ProfilePage build');
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
             title: Text(
               'profile'.tr(),
@@ -93,23 +99,63 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             actions: [
+              if (profileData != null && profileData!.userUniqId!=Token().userUniqId)
               IconButton(
                 onPressed: () async {
                   showMenu(
                     context: context,
                     position: RelativeRect.fromLTRB(100, 100, 0, 0),
                     items: [
-                      PopupMenuItem(
-                        child: Text("신고하기"),
-                        value: 1,
-                        onTap: () {
-                          context.push("/report", extra: {
-                            "reportType": "user",
-                            "id": widget.userUniqId,
-                            "title": profileData?.nickname ?? ""
-                          });
-                        },
-                      ),
+                        PopupMenuItem(
+                          value: 1,
+                          onTap: () {
+                            context.push("/report", extra: {
+                              "reportType": "user",
+                              "id": widget.userUniqId,
+                              "title": profileData?.nickname ?? ""
+                            });
+                          },
+                          child: Text("report".tr()),
+                        ),
+                        if(!BlockSet().blockUserUniqIdSet.contains(profileData!.userUniqId))
+                        PopupMenuItem(
+                          value: 2,
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("block".tr()),
+                                    content: Text("block_additional".tr()),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () async {
+                                            BlockSet().addBlockUser(
+                                                uniqId: profileData!.userUniqId,
+                                                nickname:
+                                                    profileData!.nickname);
+                                            pagingController.refresh();
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                                        "unblock_message"
+                                                            .tr())));
+                                            context.pop();
+                                            context.pop();
+                                            
+                                          },
+                                          child: Text("block".tr())),
+                                      TextButton(
+                                          onPressed: () {
+                                            context.pop();
+                                          },
+                                          child: Text("cancel".tr()))
+                                    ],
+                                  );
+                                });
+                          },
+                          child: Text("block".tr()),
+                        ),
                     ],
                   );
                 },

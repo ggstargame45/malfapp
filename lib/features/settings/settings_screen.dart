@@ -18,7 +18,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('setting'.tr()),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -29,9 +29,15 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => LanguageSettingsScreen(),
+                  builder: (context) => const LanguageSettingsScreen(),
                 ),
               );
+            },
+          ),
+          ListTile(
+            title: Text("block_list".tr()),
+            onTap: () {
+              context.push('/blockList');
             },
           ),
           ListTile(
@@ -53,8 +59,24 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
+            title: Text("contact_with_us".tr()),
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                          title: Text("contact_with_us".tr()),
+                          content: Text(
+                              "${"contact_with_us_message".tr()}\nmalfcorp@gmail.com"),
+                          actions: [
+                            TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('cancel'.tr())),
+                          ]));
+            },
+          ),
+          ListTile(
             title: Text("app_version".tr()),
-            subtitle: Text('1.0.0'),
+            subtitle: const Text("1.2.1"),
             onTap: () async {
               // try {
               //   final image =
@@ -90,14 +112,13 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 TextButton(
                     child: Text("delete_account".tr(),
-                        style: TextStyle(color: Colors.red)),
+                        style: const TextStyle(color: Colors.red)),
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (contexnt) => AlertDialog(
                           title: Text("delete_account_title".tr()),
-                          content: Text(
-                              "delete_account_message".tr()),
+                          content: Text("delete_account_message".tr()),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(contexnt).pop(),
@@ -105,7 +126,7 @@ class SettingsScreen extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () async {
-                                Dio dio = new Dio(BaseOptions(
+                                Dio dio = Dio(BaseOptions(
                                     baseUrl: baseUrl,
                                     headers: {
                                       "Authorization": Token().refreshToken
@@ -139,8 +160,7 @@ class SettingsScreen extends StatelessWidget {
                         context: context,
                         builder: (contexnt) => AlertDialog(
                           title: Text("logout_title".tr()),
-                          content: Text(
-                              "logout_title".tr()),
+                          content: Text("logout_title".tr()),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(),
@@ -149,8 +169,10 @@ class SettingsScreen extends StatelessWidget {
                             TextButton(
                               onPressed: () {
                                 Token().deleteToken();
-                                Navigator.of(contexnt).pop();
-                                context.go('/login');
+
+                                context
+                                  ..pop()
+                                  ..go('/login');
                               },
                               child: Text('confirm'.tr()),
                             )
@@ -217,76 +239,48 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
           ListTile(
             onTap: () {
               setState(() {
-                context.setLocale(Locale('en'));
+                context.setLocale(const Locale('en'));
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("restart_apply".tr())));
             },
             title: Text('english'.tr()),
-            trailing: _isEnglish ? Icon(Icons.check) : null,
+            trailing: _isEnglish ? const Icon(Icons.check) : null,
           ),
           ListTile(
             title: Text('korean'.tr()),
             onTap: () {
               setState(() {
-                context.setLocale(Locale('ko'));
+                context.setLocale(const Locale('ko'));
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("restart_apply".tr())));
             },
-            trailing: _isKorean ? Icon(Icons.check) : null,
+            trailing: _isKorean ? const Icon(Icons.check) : null,
           ),
           ListTile(
             title: Text('chinese'.tr()),
             onTap: () {
               setState(() {
-                context.setLocale(Locale('zh'));
+                context.setLocale(const Locale('zh'));
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("restart_apply".tr())));
             },
-            trailing: _isChinese ? Icon(Icons.check) : null,
+            trailing: _isChinese ? const Icon(Icons.check) : null,
           ),
           ListTile(
             title: Text('japanese'.tr()),
             onTap: () {
               setState(() {
-                context.setLocale(Locale('ja'));
+                context.setLocale(const Locale('ja'));
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('어플을 재시작해야 적용됩니다.')));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("restart_apply".tr())));
             },
-            trailing: _isJapanese ? Icon(Icons.check) : null,
+            trailing: _isJapanese ? const Icon(Icons.check) : null,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class PolicySettingsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Policy'),
-      ),
-      body: Center(
-        child: Text('Policy Settings'),
-      ),
-    );
-  }
-}
-
-class TermsSettingsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Terms'),
-      ),
-      body: Center(
-        child: Text('Terms Settings'),
       ),
     );
   }

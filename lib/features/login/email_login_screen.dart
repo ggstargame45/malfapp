@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:malf/shared/logger.dart';
@@ -18,7 +19,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Email Login'),
+        title: Text('email_login'.tr()),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -58,7 +59,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
               ),
               SizedBox(height: 16.0),
               FloatingActionButton(
-                child: Text('Login'),
+                child: Text('login'.tr()),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
@@ -69,7 +70,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       });
                       logger.d(response.data);
                       if(response.statusCode==200){
-                        await Token().setToken(
+                        Token().setToken(
                           response.data['token']['refreshToken'],
                           response.data['token']['accessToken']);
                       context
@@ -80,12 +81,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     } on Exception catch (e) {
                       // TODO
                       logger.e(e);
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Login failed'),
                       ),
                     );
+                    }
+                    
                   }
                 },
               ),

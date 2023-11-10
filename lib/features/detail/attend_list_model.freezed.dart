@@ -27,8 +27,11 @@ mixin _$AttendListData {
   int get userType => throw _privateConstructorUsedError;
   @JsonKey(name: 'nation')
   int get nation => throw _privateConstructorUsedError;
-  @JsonKey(name: 'nickname')
+  @JsonKey(name: 'nick_name')
   String get nickname => throw _privateConstructorUsedError;
+  @JsonKey(name: 'profile_pic')
+  @PicListConverter()
+  List<String> get profilePic => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,7 +49,10 @@ abstract class $AttendListDataCopyWith<$Res> {
       {@JsonKey(name: 'user_uniq_id') String userUniqId,
       @JsonKey(name: 'user_type') int userType,
       @JsonKey(name: 'nation') int nation,
-      @JsonKey(name: 'nickname') String nickname});
+      @JsonKey(name: 'nick_name') String nickname,
+      @JsonKey(name: 'profile_pic')
+      @PicListConverter()
+      List<String> profilePic});
 }
 
 /// @nodoc
@@ -66,6 +72,7 @@ class _$AttendListDataCopyWithImpl<$Res, $Val extends AttendListData>
     Object? userType = null,
     Object? nation = null,
     Object? nickname = null,
+    Object? profilePic = null,
   }) {
     return _then(_value.copyWith(
       userUniqId: null == userUniqId
@@ -84,6 +91,10 @@ class _$AttendListDataCopyWithImpl<$Res, $Val extends AttendListData>
           ? _value.nickname
           : nickname // ignore: cast_nullable_to_non_nullable
               as String,
+      profilePic: null == profilePic
+          ? _value.profilePic
+          : profilePic // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -100,7 +111,10 @@ abstract class _$$AttendListDataImplCopyWith<$Res>
       {@JsonKey(name: 'user_uniq_id') String userUniqId,
       @JsonKey(name: 'user_type') int userType,
       @JsonKey(name: 'nation') int nation,
-      @JsonKey(name: 'nickname') String nickname});
+      @JsonKey(name: 'nick_name') String nickname,
+      @JsonKey(name: 'profile_pic')
+      @PicListConverter()
+      List<String> profilePic});
 }
 
 /// @nodoc
@@ -118,6 +132,7 @@ class __$$AttendListDataImplCopyWithImpl<$Res>
     Object? userType = null,
     Object? nation = null,
     Object? nickname = null,
+    Object? profilePic = null,
   }) {
     return _then(_$AttendListDataImpl(
       userUniqId: null == userUniqId
@@ -136,6 +151,10 @@ class __$$AttendListDataImplCopyWithImpl<$Res>
           ? _value.nickname
           : nickname // ignore: cast_nullable_to_non_nullable
               as String,
+      profilePic: null == profilePic
+          ? _value._profilePic
+          : profilePic // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -147,7 +166,11 @@ class _$AttendListDataImpl implements _AttendListData {
       {@JsonKey(name: 'user_uniq_id') required this.userUniqId,
       @JsonKey(name: 'user_type') required this.userType,
       @JsonKey(name: 'nation') required this.nation,
-      @JsonKey(name: 'nickname') required this.nickname});
+      @JsonKey(name: 'nick_name') required this.nickname,
+      @JsonKey(name: 'profile_pic')
+      @PicListConverter()
+      required final List<String> profilePic})
+      : _profilePic = profilePic;
 
   factory _$AttendListDataImpl.fromJson(Map<String, dynamic> json) =>
       _$$AttendListDataImplFromJson(json);
@@ -163,12 +186,21 @@ class _$AttendListDataImpl implements _AttendListData {
   @JsonKey(name: 'nation')
   final int nation;
   @override
-  @JsonKey(name: 'nickname')
+  @JsonKey(name: 'nick_name')
   final String nickname;
+  final List<String> _profilePic;
+  @override
+  @JsonKey(name: 'profile_pic')
+  @PicListConverter()
+  List<String> get profilePic {
+    if (_profilePic is EqualUnmodifiableListView) return _profilePic;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_profilePic);
+  }
 
   @override
   String toString() {
-    return 'AttendListData(userUniqId: $userUniqId, userType: $userType, nation: $nation, nickname: $nickname)';
+    return 'AttendListData(userUniqId: $userUniqId, userType: $userType, nation: $nation, nickname: $nickname, profilePic: $profilePic)';
   }
 
   @override
@@ -182,13 +214,15 @@ class _$AttendListDataImpl implements _AttendListData {
                 other.userType == userType) &&
             (identical(other.nation, nation) || other.nation == nation) &&
             (identical(other.nickname, nickname) ||
-                other.nickname == nickname));
+                other.nickname == nickname) &&
+            const DeepCollectionEquality()
+                .equals(other._profilePic, _profilePic));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, userUniqId, userType, nation, nickname);
+  int get hashCode => Object.hash(runtimeType, userUniqId, userType, nation,
+      nickname, const DeepCollectionEquality().hash(_profilePic));
 
   @JsonKey(ignore: true)
   @override
@@ -207,11 +241,13 @@ class _$AttendListDataImpl implements _AttendListData {
 
 abstract class _AttendListData implements AttendListData {
   const factory _AttendListData(
-          {@JsonKey(name: 'user_uniq_id') required final String userUniqId,
-          @JsonKey(name: 'user_type') required final int userType,
-          @JsonKey(name: 'nation') required final int nation,
-          @JsonKey(name: 'nickname') required final String nickname}) =
-      _$AttendListDataImpl;
+      {@JsonKey(name: 'user_uniq_id') required final String userUniqId,
+      @JsonKey(name: 'user_type') required final int userType,
+      @JsonKey(name: 'nation') required final int nation,
+      @JsonKey(name: 'nick_name') required final String nickname,
+      @JsonKey(name: 'profile_pic')
+      @PicListConverter()
+      required final List<String> profilePic}) = _$AttendListDataImpl;
 
   factory _AttendListData.fromJson(Map<String, dynamic> json) =
       _$AttendListDataImpl.fromJson;
@@ -226,8 +262,12 @@ abstract class _AttendListData implements AttendListData {
   @JsonKey(name: 'nation')
   int get nation;
   @override
-  @JsonKey(name: 'nickname')
+  @JsonKey(name: 'nick_name')
   String get nickname;
+  @override
+  @JsonKey(name: 'profile_pic')
+  @PicListConverter()
+  List<String> get profilePic;
   @override
   @JsonKey(ignore: true)
   _$$AttendListDataImplCopyWith<_$AttendListDataImpl> get copyWith =>

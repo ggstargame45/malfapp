@@ -13,12 +13,14 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:malf/shared/logger.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/permission.dart';
+import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/usecases/image_compress.dart';
 
 String subUri = '/bulletin-board/posts/';
@@ -56,16 +58,16 @@ class PostingBody {
 
 Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
   var imageFileList = <File>[];
-  var request;
+  MultipartRequest request;
   StreamedResponse? response;
-  bool isUploaded = false;
+  int isUploaded = 0;
 
   for (int i = 0; i < imageList.length; i++) {
-    imageFileList.add(await compressImage(File(imageList[i].path)));
+    imageFileList.add(await compressImage(File(imageList[i].path), 70));
   }
 
   try {
-    while (!isUploaded) {
+    while (isUploaded < 10) {
       request = http.MultipartRequest('POST', Uri.parse(baseUrl + subUri));
       try {
         for (int i = 0; i < imageList.length; i++) {
@@ -94,18 +96,21 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
 
       request.fields.addAll(mapdata);
       StreamedResponse response = await request.send();
+      logger.d(response.reasonPhrase);
       if (response.statusCode == 200) {
         logger.d('요청이 성공적으로 처리되었습니다.');
         return true;
       } else {
         logger.e('요청이 실패하였습니다. 상태 코드: ${response.statusCode}');
       }
+      isUploaded++;
     }
   } on Exception catch (e) {
     // TODO
     logger.e(e);
     return false;
   }
+  return false;
 }
 
 Future<Uint8List> fileToByte(XFile file) async {
@@ -161,7 +166,7 @@ class _WriteScreenState extends State<WriteScreen> {
       ),
       body: SingleChildScrollView(
         controller: ScrollController(
-          initialScrollOffset: 210,
+          initialScrollOffset: 600,
         ),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         reverse: true,
@@ -399,7 +404,7 @@ class _WriteScreenState extends State<WriteScreen> {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                         decoration: InputDecoration(
-                          hintText: "write_content_hint".tr(),
+                          hintText: "${"write_content_hint".tr()}${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}",
                           hintStyle: const TextStyle(
                             color: Color(0xFFBEBEBE),
                             fontSize: 16,
@@ -438,12 +443,9 @@ class _WriteScreenState extends State<WriteScreen> {
                       title: "choose_category_notice".tr(),
                       message: "choose_category_notice".tr(),
                       actions: [
-                        AlertDialogAction(
-                            key: "1", label: "chinese/korean".tr()),
-                        AlertDialogAction(
-                            key: "2", label: "english/korean".tr()),
-                        AlertDialogAction(
-                            key: "3", label: "japanese/korean".tr()),
+                        AlertDialogAction(key: "1", label: "chinese".tr()),
+                        AlertDialogAction(key: "2", label: "english".tr()),
+                        AlertDialogAction(key: "3", label: "japanese".tr()),
                       ]).then((value) {
                     logger.i(value);
                     setState(() {
@@ -451,15 +453,15 @@ class _WriteScreenState extends State<WriteScreen> {
                       switch (value) {
                         case "1":
                           category = 1;
-                          categoryChosen = "chinese/korean".tr();
+                          categoryChosen = "chinese".tr();
                           break;
                         case "2":
                           category = 2;
-                          categoryChosen = "english/korean".tr();
+                          categoryChosen = "english".tr();
                           break;
                         case "3":
                           category = 3;
-                          categoryChosen = "japanese/korean".tr();
+                          categoryChosen = "japanese".tr();
                           break;
                         default:
                           categoryChosenBool = false;
@@ -709,70 +711,64 @@ class _WriteScreenState extends State<WriteScreen> {
                 ),
               ),
             ),
-            Row(
+            Column(
               children: [
                 Column(
                   children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-                          child: Text(
-                            "${"local_capacity".tr()} : $localCapacity ",
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 128, 128, 128),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                      child: Text(
+                        "${"local_capacity".tr()} : $localCapacity ",
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 128, 128, 128),
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
+                      ),
                     ),
-                    Slider(
-                      value: localCapacity.toDouble(),
-                      min: 1,
-                      max: 20,
-                      divisions: 19,
-                      label: localCapacity.toString(),
-                      onChanged: (double value) {
-                        setState(() {
-                          localCapacity = value.toInt();
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Slider(
+                        value: localCapacity.toDouble(),
+                        min: 1,
+                        max: 20,
+                        divisions: 19,
+                        label: localCapacity.toString(),
+                        onChanged: (double value) {
+                          setState(() {
+                            localCapacity = value.toInt();
+                          });
+                        },
+                      ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                      child: Text(
+                        "${"foreigner_capacity".tr()} : $travelCapacity ",
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 128, 128, 128),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Slider(
+                        value: travelCapacity.toDouble(),
+                        min: 1,
+                        max: 20,
+                        divisions: 19,
+                        label: travelCapacity.toString(),
+                        onChanged: (double value) {
+                          setState(() {
+                            travelCapacity = value.toInt();
+                          });
+                        },
+                      ),
+                    )
                   ],
                 ),
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-                          child: Text(
-                            "${"foreigner_capacity".tr()} : $travelCapacity ",
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 128, 128, 128),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Slider(
-                      value: travelCapacity.toDouble(),
-                      min: 1,
-                      max: 20,
-                      divisions: 19,
-                      label: travelCapacity.toString(),
-                      onChanged: (double value) {
-                        setState(() {
-                          travelCapacity = value.toInt();
-                        });
-                      },
-                    ),
-                  ],
-                )
               ],
             ),
             Row(
@@ -780,12 +776,17 @@ class _WriteScreenState extends State<WriteScreen> {
               children: [
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: Container(
-                      height: MediaQuery.of(context).size.height * 0.065,
+                      height: 56,
                       child: ElevatedButton(
                         child: Text(
                           "make_meeting".tr(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         onPressed: () async {
                           if (title == "" || content == "") {
@@ -803,24 +804,64 @@ class _WriteScreenState extends State<WriteScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text("picture_unchose_warning".tr())));
                           } else {
-                            if (await postPosting(
-                                PostingBody(
-                                  title: title,
-                                  content: content,
-                                  meeting_start_time:
-                                      meetingDate.toIso8601String(),
-                                  category: category.toString(),
-                                  meeting_location: location,
-                                  capacity_local: localCapacity.toString(),
-                                  capacity_travel: travelCapacity.toString(),
-                                ),
-                                imageList)) {
-                              logger.i("글쓰기 성공");
-                              context.pop();
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('fail'.tr())));
-                            }
+                            showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (BuildContext contextn) {
+                                  return AlertDialog(
+                                    content: Text("${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () async {
+                                          showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return LoadingAnimationWidget
+                                                    .inkDrop(
+                                                  color: AppColors.primary,
+                                                  size: 100,
+                                                );
+                                              });
+
+                                          if (await postPosting(
+                                              PostingBody(
+                                                title: title,
+                                                content: content,
+                                                meeting_start_time: meetingDate
+                                                    .toIso8601String(),
+                                                category: category.toString(),
+                                                meeting_location: location,
+                                                capacity_local:
+                                                    localCapacity.toString(),
+                                                capacity_travel:
+                                                    travelCapacity.toString(),
+                                              ),
+                                              imageList)) {
+                                            logger.i("글쓰기 성공");
+                                            context.pop();
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content:
+                                                        Text('fail'.tr())));
+                                          }
+                                          context.pop();
+                                          context.pop();
+                                        },
+                                        child: const Text('confirm').tr(),
+                                      ),
+                                      TextButton(
+                                          onPressed: () {
+                                            contextn.pop();
+                                          },
+                                          child: const Text('cancel',
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                              )).tr())
+                                    ],
+                                  );
+                                });
                           }
                         },
                       )),
@@ -829,7 +870,8 @@ class _WriteScreenState extends State<WriteScreen> {
             ),
             Padding(
                 padding: EdgeInsets.only(
-                    bottom: (MediaQuery.of(context).viewInsets.bottom))),
+                    bottom: (MediaQuery.of(context).viewInsets.bottom)),
+                child: Container()),
           ],
         ),
       ),

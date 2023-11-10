@@ -105,7 +105,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
     if (isChanged) {
       for (int i = 0; i < imageList.length; i++) {
-        imageFileList.add(await compressImage(File(imageList[i].path)));
+        imageFileList.add(await compressImage(File(imageList[i].path),93));
       }
     } else {
       final Directory tempDir = await getTemporaryDirectory();
@@ -819,11 +819,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               !japaneseAble) {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content:
-                                    Text("profile_edit_language_check".tr())));
+                                    Text("profile_edit_language_title".tr())));
                           } else if (interestController.text == "") {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content:
-                                    Text("profile_edit_interest_check".tr())));
+                                    Text("profile_edit_interest_title".tr())));
                           } else {
                             ableLanguage.clear();
                             if (chineseAble) ableLanguage.add(1);

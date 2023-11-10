@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -64,7 +65,7 @@ class _AddImageStateState extends State<AddImageState> {
     // request에 사진 업로드
     for (int i = 0; i < imageList.length; i++) {
       request.files
-          .add(await http.MultipartFile.fromPath('image', (await compressImage(File(imageList[i].path))).path));
+          .add(await http.MultipartFile.fromPath('image', (await compressImage(File(imageList[i].path),50)).path));
     }
             
 
@@ -112,7 +113,7 @@ class _AddImageStateState extends State<AddImageState> {
                         );
                       },
                     )
-                  : const Center(child: Text("이미지를 선택하세요.")),
+                  :  Center(child: Text("pick_photo".tr())),
             ),
             const SizedBox(
               height: 10,
@@ -122,14 +123,14 @@ class _AddImageStateState extends State<AddImageState> {
                 _pickImageCamera();
               },
               icon: const Icon(Icons.camera),
-              label: const Text('camera'),
+              label: Text('camera'.tr()),
             ),
             OutlinedButton.icon(
               onPressed: () {
                 _pickImageGallery();
               },
               icon: const Icon(Icons.image),
-              label: const Text('gallery'),
+              label: Text('gallery'.tr()),
             ),
             const SizedBox(
               height: 10,
@@ -148,13 +149,13 @@ class _AddImageStateState extends State<AddImageState> {
                       Navigator.pop(context);}
                     },
                     icon: const Icon(Icons.check),
-                    label: const Text('select')),
+                    label: Text('send'.tr())),
                 TextButton.icon(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.close),
-                    label: const Text('close')),
+                    label:  Text('close'.tr())),
               ],
             )
           ]),

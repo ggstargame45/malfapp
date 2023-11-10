@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>CFBundleURLTypes</key>
+    	<array>
+    		<dict>
+    			<key>CFBundleTypeRole</key>
+    			<string>Editor</string>
+    			<key>CFBundleURLName</key>
+    			<string>com.malf.malf</string>
+    			<key>CFBundleURLSchemes</key>
+    			<array>
+    				<string>Malf</string>
+    			</array>
+    		</dict>
+    	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -27,9 +40,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera for uploading</string>
+	<string>Allow camera access to add photos for writing meet-ups, profile, and sending chats.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photos for uploading</string>
+	<string>Allow photo access to add photos for writing meet-ups, profile, and sending chats.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -43,6 +56,13 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>kr</string>
+		<string>ja</string>
+		<string>zh</string>
 	</array>
 </dict>
 </plist>

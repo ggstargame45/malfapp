@@ -5,7 +5,7 @@ import 'package:malf/shared/logger.dart';
 
 import 'package:jwt_decode/jwt_decode.dart';
 
-class Token{
+class Token {
   static final Token _singletonModel = Token._internal();
   String refreshToken = "";
   String accessToken = "";
@@ -13,21 +13,19 @@ class Token{
   factory Token() => _singletonModel;
   Token._internal();
 
-  void tokenInit() async {
+  void tokenInit() {
     final isar = Isar.getInstance();
-    final token = await isar!.iTokens.get(1);
+    final token = isar!.iTokens.getSync(1);
     if (token != null) {
       refreshToken = token.refreshToken;
       accessToken = token.accessToken;
       userUniqId = token.userUniqId;
-    }
-    else{
+    } else {
       logger.e("token is null");
     }
-
   }
 
-  Future<void> setToken(String refreshToken, String accessToken) async {
+  void setToken(String refreshToken, String accessToken) {
     this.refreshToken = refreshToken;
     this.accessToken = accessToken;
     userUniqId = Jwt.parseJwt(refreshToken)['user_uniq_id'];
@@ -38,19 +36,23 @@ class Token{
     token.refreshToken = refreshToken;
     token.accessToken = accessToken;
     token.userUniqId = userUniqId;
-    await isar!.writeTxn(() async {
-      await isar.iTokens.put(token);
+    isar!.writeTxnSync(() {
+      isar.iTokens.putSync(token);
     });
   }
 
-  Future<void> deleteToken() async {
+  void deleteToken() {
     final isar = Isar.getInstance();
-    await isar!.writeTxn(() async {
-      await isar.iTokens.clear();
+    isar!.writeTxnSync(() {
+      isar.iTokens.clearSync();
     });
+    refreshToken = "";
+    accessToken = "";
+    userUniqId = "";
+    logger.d("delete token");
   }
-  
-  void setRefreshToken(String token){
+
+  void setRefreshToken(String token) {
     refreshToken = token;
   }
 
@@ -75,15 +77,12 @@ class Token{
   //     }
   //   }
   // }
-
 }
 
-
-bool tokenCheck(){
-  if(Token().refreshToken == ""){
+bool tokenCheck() {
+  if (Token().refreshToken == "") {
     return false;
-  }else{
+  } else {
     return true;
   }
 }
-
