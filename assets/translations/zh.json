@@ -138,8 +138,13 @@
 "contact_with_us_message": "如果您有任何疑问或查询，请随时发送电子邮件给我们。",
 "block": "拉黑",
 "block_list": "拉黑列表",
+"unblock_message" : "您可以在设置中取消阻止",
 "user" : "用户",
     "unblock" : "取消拉黑",
-    "no" : "否"
+    "no" : "否",
+    "my_meeting" : "我的聚会",
+    "school_auth_progress" : "学校认证正在进行中，并将在 24 小时内完成。您想更改您的照片吗？"
+    
+
 
 }

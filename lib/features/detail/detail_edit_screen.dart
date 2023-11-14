@@ -64,7 +64,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList,
   bool isUploaded = false;
 
   for (int i = 0; i < imageList.length; i++) {
-    imageFileList.add(await compressImage(File(imageList[i].path),70));
+    imageFileList.add(await compressImage(File(imageList[i].path), 70));
   }
   Directory tempDir = await getTemporaryDirectory();
   String tempPath = tempDir.path;
@@ -298,7 +298,7 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                       onPressed: () async {
                         if (imageList.length < 10) {
                           try {
-                            if(!(await photoPermission())) return;
+                            if (!(await photoPermission())) return;
                             final image =
                                 await picker.pickMultiImage(); // 갤러리에서 이미지 뽑아옴
                             if (imageList.length +
@@ -552,7 +552,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   color: Color.fromARGB(255, 128, 128, 128),
-                  
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -581,7 +580,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                           controller: titleController,
                           style: const TextStyle(
                             fontSize: 16,
-                            
                             fontWeight: FontWeight.w500,
                           ),
                           decoration: InputDecoration(
@@ -589,7 +587,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                             hintStyle: const TextStyle(
                               color: Color(0xFFBEBEBE),
                               fontSize: 16,
-                              
                               fontWeight: FontWeight.w500,
                             ),
                             border: InputBorder.none,
@@ -610,7 +607,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   color: Color.fromARGB(255, 128, 128, 128),
-                  
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -642,15 +638,12 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                         keyboardType: TextInputType.multiline,
                         maxLines: 10,
                         style: const TextStyle(
-                            fontSize: 16,
-                            
-                            fontWeight: FontWeight.w500),
+                            fontSize: 16, fontWeight: FontWeight.w500),
                         decoration: InputDecoration(
                           hintText: "write_content_hint".tr(),
                           hintStyle: const TextStyle(
                             color: Color(0xFFBEBEBE),
                             fontSize: 16,
-                            
                             fontWeight: FontWeight.w500,
                           ),
                           border: InputBorder.none,
@@ -672,7 +665,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   color: Color.fromARGB(255, 128, 128, 128),
-                  
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -686,12 +678,9 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                       title: "choose_category_notice".tr(),
                       message: "choose_category_notice".tr(),
                       actions: [
-                        AlertDialogAction(
-                            key: "1", label: "chinese".tr()),
-                        AlertDialogAction(
-                            key: "2", label: "english".tr()),
-                        AlertDialogAction(
-                            key: "3", label: "japanese".tr()),
+                        AlertDialogAction(key: "1", label: "chinese".tr()),
+                        AlertDialogAction(key: "2", label: "english".tr()),
+                        AlertDialogAction(key: "3", label: "japanese".tr()),
                       ]).then((value) {
                     logger.i(value);
                     setState(() {
@@ -742,13 +731,11 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                               ? const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
-                                  
                                   fontWeight: FontWeight.w500,
                                 )
                               : const TextStyle(
                                   color: Color(0xFFBEBEBE),
                                   fontSize: 16,
-                                  
                                   fontWeight: FontWeight.w500,
                                 ),
                         ),
@@ -808,7 +795,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                                   style: const TextStyle(
                                     color: Color(0xFFBEBEBE),
                                     fontSize: 14,
-                                    
                                     fontWeight: FontWeight.w500,
                                   )),
                             ],
@@ -876,15 +862,13 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                                   style: const TextStyle(
                                     color: Color(0xFFBEBEBE),
                                     fontSize: 14,
-                                    
                                     fontWeight: FontWeight.w500,
                                   )),
                             ],
                           ),
                           Row(
                             children: [
-                              Text(
-                                  meetingTime.toString().substring(10, 15),
+                              Text(meetingTime.toString().substring(10, 15),
                                   style: const TextStyle(fontSize: 18)),
                             ],
                           ),
@@ -903,7 +887,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   color: Color.fromARGB(255, 128, 128, 128),
-                  
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -932,7 +915,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                           controller: locationController,
                           style: const TextStyle(
                             fontSize: 16,
-                            
                             fontWeight: FontWeight.w500,
                           ),
                           decoration: InputDecoration(
@@ -940,7 +922,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                             hintStyle: const TextStyle(
                               color: Color(0xFFBEBEBE),
                               fontSize: 16,
-                              
                               fontWeight: FontWeight.w500,
                             ),
                             border: InputBorder.none,
@@ -961,77 +942,68 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   color: Color.fromARGB(255, 128, 128, 128),
-                  
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            Row(
+            Column(
               children: [
                 Column(
                   children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-                          child: Text(
-                            "${"local_capacity".tr()} : $localCapacity ",
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 128, 128, 128),
-                              
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                      child: Text(
+                        "${"local_capacity".tr()} : $localCapacity ",
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 128, 128, 128),
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
+                      ),
                     ),
-                    Slider(
-                      value: localCapacity.toDouble(),
-                      min: 1,
-                      max: 20,
-                      divisions: 19,
-                      label: localCapacity.toString(),
-                      onChanged: (double value) {
-                        setState(() {
-                          localCapacity = value.toInt();
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Slider(
+                        value: localCapacity.toDouble(),
+                        min: 1,
+                        max: 20,
+                        divisions: 19,
+                        label: localCapacity.toString(),
+                        onChanged: (double value) {
+                          setState(() {
+                            localCapacity = value.toInt();
+                          });
+                        },
+                      ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                      child: Text(
+                        "${"foreigner_capacity".tr()} : $travelCapacity ",
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 128, 128, 128),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Slider(
+                        value: travelCapacity.toDouble(),
+                        min: 1,
+                        max: 20,
+                        divisions: 19,
+                        label: travelCapacity.toString(),
+                        onChanged: (double value) {
+                          setState(() {
+                            travelCapacity = value.toInt();
+                          });
+                        },
+                      ),
+                    )
                   ],
                 ),
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-                          child: Text(
-                            "${"foreigner_capacity".tr()} : $travelCapacity ",
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 128, 128, 128),
-                              
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Slider(
-                      value: travelCapacity.toDouble(),
-                      min: 1,
-                      max: 20,
-                      divisions: 19,
-                      label: travelCapacity.toString(),
-                      onChanged: (double value) {
-                        setState(() {
-                          travelCapacity = value.toInt();
-                        });
-                      },
-                    ),
-                  ],
-                )
               ],
             ),
             Row(

@@ -1,11 +1,8 @@
-
-
 import 'package:country_code/country_code.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:isar/isar.dart';
 import 'package:malf/features/detail/detail_model.dart';
 import 'package:malf/features/home/home_page_controller.dart';
 import 'package:malf/shared/logger.dart';
@@ -18,7 +15,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
-import 'package:fl_country_code_picker/fl_country_code_picker.dart' as FCCP;
 
 class DetailScreen extends StatefulWidget {
   final int postId;
@@ -37,6 +33,8 @@ class _DetailScreenState extends State<DetailScreen> {
   bool insideCheck = false;
   bool likeCheck = false;
   int likeCount = 0;
+  var _animationController;
+  var _animation;
 
   Future<dynamic> insideRequest() async {
     try {
@@ -183,7 +181,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
                   detailMoreSheet(context, detailData);
                 }),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
           ],
@@ -198,8 +196,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: Swiper(
                   viewportFraction: 0.8,
                   scale: 0.9,
-                  pagination: SwiperPagination(),
-                  control: SwiperControl(),
+                  pagination: const SwiperPagination(),
+                  control: const SwiperControl(),
                   scrollDirection: Axis.horizontal,
                   itemCount: detailData!.meetingPic
                       .length, // Assume banners is a list of your banner data.
@@ -220,9 +218,66 @@ class _DetailScreenState extends State<DetailScreen> {
                                         0.6,
                                     alignment: Alignment.center,
                                     child: ExtendedImage.network(
-                                        "$baseUrl/${detailData!.meetingPic[index]}",
-                                        cache: true,
-                                        fit: BoxFit.contain),
+                                      "$baseUrl/${detailData!.meetingPic[index]}",
+                                      cache: true,
+                                      //     initGestureConfigHandler: (state) {
+                                      //   return GestureConfig(
+                                      //     minScale: 0.9,
+                                      //     animationMinScale: 0.7,
+                                      //     maxScale: 3.0,
+                                      //     animationMaxScale: 3.5,
+                                      //     speed: 1.0,
+                                      //     inertialSpeed: 100.0,
+                                      //     initialScale: 1.0,
+                                      //     inPageView: false,
+                                      //     initialAlignment:
+                                      //         InitialAlignment.center,
+                                      //   );
+                                      // },
+                                      fit: BoxFit.contain,
+                                      // onDoubleTap:
+                                      //     (ExtendedImageGestureState state) {
+                                      //   ///you can use define pointerDownPosition as you can,
+                                      //   ///default value is double tap pointer down postion.
+                                      //   var pointerDownPosition =
+                                      //       state.pointerDownPosition;
+                                      //   double? begin =
+                                      //       state.gestureDetails?.totalScale;
+                                      //   double end;
+
+                                      //   //remove old
+                                      //   _animation
+                                      //       ?.removeListener(animationListener);
+
+                                      //   //stop pre
+                                      //   _animationController.stop();
+
+                                      //   //reset to use
+                                      //   _animationController.reset();
+
+                                      //   if (begin == doubleTapScales[0]) {
+                                      //     end = doubleTapScales[1];
+                                      //   } else {
+                                      //     end = doubleTapScales[0];
+                                      //   }
+
+                                      //   animationListener = () {
+                                      //     //print(_animation.value);
+                                      //     state.handleDoubleTap(
+                                      //         scale: _animation.value,
+                                      //         doubleTapPosition:
+                                      //             pointerDownPosition);
+                                      //   };
+                                      //   _animation = _animationController.drive(
+                                      //       Tween<double>(
+                                      //           begin: begin, end: end));
+
+                                      //   _animation
+                                      //       .addListener(animationListener);
+
+                                      //   _animationController.forward();
+                                      // },
+                                    ),
                                   ),
                                 );
                               });
@@ -231,7 +286,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.width / 2,
                           child: ExtendedImage.network(
-                            baseUrl + "/" + detailData!.meetingPic[index],
+                            "$baseUrl/${detailData!.meetingPic[index]}",
                             fit: BoxFit.cover,
                             cache: true,
                           ),
@@ -257,7 +312,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-                    child: Container(
+                    child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.85,
                       child: Text(detailData!.title,
                           style: const TextStyle(
@@ -272,20 +327,22 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.85,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.9,
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.location_on_outlined,
                             color: Colors.grey,
                           ),
-                          SelectableText(
-                              "${"place".tr()} : ${detailData!.meetingLocation}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              )),
+                          Flexible(
+                            child: SelectableText(
+                                "${"place".tr()} : ${detailData!.meetingLocation}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                )),
+                          ),
                         ],
                       ),
                     ),
@@ -298,28 +355,21 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-                    child: Container(
+                    child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.85,
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.calendar_month,
                             color: Colors.grey,
                           ),
-                          Text("date".tr() + " : ",
+                          Text("${"date".tr()} : ",
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
                               )),
                           Text(
-                              "${detailData!.meetingStartTime.year}.${detailData!.meetingStartTime.month}.${detailData!.meetingStartTime.day} | " +
-                                  (detailData!.meetingStartTime.hour < 10
-                                      ? "0" +
-                                          detailData!.meetingStartTime.hour
-                                              .toString()
-                                      : detailData!.meetingStartTime.hour
-                                          .toString()) +
-                                  " : ${detailData!.meetingStartTime.minute < 10 ? "0${detailData!.meetingStartTime.minute}" : detailData!.meetingStartTime.minute}",
+                              "${detailData!.meetingStartTime.year}.${detailData!.meetingStartTime.month}.${detailData!.meetingStartTime.day} | ${detailData!.meetingStartTime.hour < 10 ? "0${detailData!.meetingStartTime.hour}" : detailData!.meetingStartTime.hour.toString()} : ${detailData!.meetingStartTime.minute < 10 ? "0${detailData!.meetingStartTime.minute}" : detailData!.meetingStartTime.minute}",
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
@@ -341,53 +391,73 @@ class _DetailScreenState extends State<DetailScreen> {
                         context.push(
                             '/attendList/${detailData!.postId}/${detailData!.userUniqId == Token().userUniqId ? 1 : 0}');
                       },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.people_alt_outlined,
                               color: Colors.grey,
                             ),
-                            Text("people_count".tr() + " : ",
+                            Text("${"people_count".tr()} :",
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
                                 )),
-                            Text("foreigner".tr() + " ",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 113, 162, 254),
-                                )),
-                            Text(currentForeign.toString(),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                )),
-                            Text(
-                                "/" +
-                                    detailData!.capacityTravel.toString() +
-                                    " | ",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                )),
-                            Text("local".tr() + " ",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 97, 195, 255),
-                                )),
-                            Text(currentLocal.toString(),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                )),
-                            Text("/" + detailData!.capacityTravel.toString(),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                )),
-                            Icon(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                  child: Row(
+                                    children: [
+                                      Text("${"foreigner".tr()} ",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color.fromARGB(
+                                                255, 113, 162, 254),
+                                          )),
+                                      Text(currentForeign.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          )),
+                                      Text("/${detailData!.capacityTravel}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  child: Row(
+                                    children: [
+                                      Text("${"local".tr()} ",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color.fromARGB(
+                                                255, 97, 195, 255),
+                                          )),
+                                      Text(currentLocal.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          )),
+                                      Text("/${detailData!.capacityTravel}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Icon(
                               Icons.arrow_forward_ios_sharp,
                               color: Colors.grey,
                               size: 14,
@@ -399,7 +469,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                 ],
               ),
-            Divider(
+            const Divider(
               height: 1,
               thickness: 0.5,
               indent: 16,
@@ -420,7 +490,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       child: CircleAvatar(
                         radius: 30,
                         backgroundImage: ExtendedImage.network(
-                          baseUrl + "/" + detailData!.authorPic[0],
+                          "$baseUrl/${detailData!.authorPic[0]}",
                           fit: BoxFit.cover,
                           cache: true,
                         ).image,
@@ -433,7 +503,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                           child: RoundedBackgroundText(
-                            "${detailData!.userType == 0 ? "foreigner" : "local"}"
+                            (detailData!.userType == 0 ? "foreigner" : "local")
                                 .tr(),
                             style: TextStyle(
                                 fontSize: 12,
@@ -447,11 +517,10 @@ class _DetailScreenState extends State<DetailScreen> {
                             outerRadius: 20.0,
                           ),
                         ),
-                        Container(
+                        SizedBox(
                           width: MediaQuery.of(context).size.width * 0.6,
                           child: Text(
-                              detailData!.authorNickname +
-                                  " ${CountryCode.tryParse("${detailData!.authorNation}")?.symbol ?? "?"}",
+                              "${detailData!.authorNickname} ${CountryCode.tryParse("${detailData!.authorNation}")?.symbol ?? "?"}",
                               style: const TextStyle(
                                 fontSize: 18,
                               )),
@@ -468,7 +537,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.85,
                       child: SelectableText(detailData!.content,
                           style: const TextStyle(
@@ -547,9 +616,8 @@ class _DetailScreenState extends State<DetailScreen> {
                                           },
                                           responseType: ResponseType.json));
                                       try {
-                                        await dodo.delete("/chatroom/" +
-                                            detailData!.postId.toString() +
-                                            "/subscribe");
+                                        await dodo.delete(
+                                            "/chatroom/${detailData!.postId}/subscribe");
                                       } on Exception catch (e) {
                                         // TODO
                                       }
@@ -566,9 +634,8 @@ class _DetailScreenState extends State<DetailScreen> {
                                           },
                                           responseType: ResponseType.json));
                                       try {
-                                        await dodo.post("/chatroom/" +
-                                            detailData!.postId.toString() +
-                                            "/subscribe");
+                                        await dodo.post(
+                                            "/chatroom/${detailData!.postId}/subscribe");
                                       } on Exception catch (e) {
                                         // TODO
                                       }
@@ -637,14 +704,14 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                         height: 60,
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.delete_outline_rounded,
                               color: Colors.redAccent,
                               size: 30,
                             ),
                             Text(
                               "post_delete".tr(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.redAccent,
                                   fontWeight: FontWeight.w700),
                             )
@@ -667,21 +734,21 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                         height: 60,
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.report_outlined,
                               color: Color.fromARGB(138, 158, 158, 158),
                               size: 30,
                             ),
                             Text(
                               "report".tr(), //개시물 신고하기
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.redAccent,
                                   fontWeight: FontWeight.w700),
                             )
                           ],
                         )),
                   ),
-                Divider(
+                const Divider(
                   height: 1,
                   thickness: 1,
                   color: Colors.grey,
@@ -702,14 +769,14 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                         height: 60,
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.mode_edit_outlined,
                               color: Color.fromARGB(138, 158, 158, 158),
                               size: 30,
                             ),
                             Text(
                               "edit".tr(), //게시물 수정하기
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Color.fromARGB(138, 158, 158, 158),
                                   fontWeight: FontWeight.w700),
                             )
@@ -751,7 +818,7 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                                               ],
                                             );
                                           });
-                                      
+
                                       contextc.pop();
                                       contextb.pop();
                                       contexta.pop();
@@ -768,7 +835,7 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                                             nickname:
                                                 detailData.authorNickname);
                                       }
-                                      
+
                                       pagingController.refresh();
                                       ScaffoldMessenger.of(contexta)
                                           .showSnackBar(SnackBar(
@@ -791,14 +858,14 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                         height: 60,
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.block_outlined,
                               color: Color.fromARGB(138, 158, 158, 158),
                               size: 30,
                             ),
                             Text(
                               "block".tr(), //개시물 신고하기
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.pinkAccent,
                                   fontWeight: FontWeight.w700),
                             )

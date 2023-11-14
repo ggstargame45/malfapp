@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:country_code/country_code.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:extended_image/extended_image.dart';
@@ -13,6 +14,8 @@ import 'package:malf/features/profile/profile_model.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:malf/shared/theme/app_colors.dart';
+import 'package:rounded_background_text/rounded_background_text.dart';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -40,6 +43,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   String? location;
   String? authorNickname;
   String? chatRoomImage;
+  int? authorNation;
+  int? userType;
+  DateTime? meetingStartTime;
 
   Future<void> addMessage(Message data) async {
     logger.d(data.sender);
@@ -113,10 +119,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
       final chatRoomDetailData =
           await dio.get("/bulletin-board/posts/${widget.roomId}");
-      // logger.d(chatRoomDetailData.data['data'][0]);
+      logger.d(chatRoomDetailData.data['data'][0]);
+
       title = chatRoomDetailData.data['data'][0]['title'];
       authorNickname = chatRoomDetailData.data['data'][0]['author_nickname'];
       location = chatRoomDetailData.data['data'][0]['meeting_location'];
+      authorNation = chatRoomDetailData.data['data'][0]['author_nation'];
+      userType = chatRoomDetailData.data['data'][0]['user_type'];
+      meetingStartTime = DateTime.parse(
+          chatRoomDetailData.data['data'][0]['meeting_start_time']);
+
       chatRoomImage =
           jsonDecode(chatRoomDetailData.data['data'][0]['meeting_pic'])[0];
     } on Exception catch (e) {
@@ -133,9 +145,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     super.initState();
     _connectSocket();
 
-
     start();
-
   }
 
   Future<void> start() async {
@@ -369,7 +379,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               return Visibility(
                 visible: !iskeyboardVisible,
                 child: Container(
-                  height: 100,
+                  height: 108,
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -397,25 +407,122 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),
                         ),
-                        SizedBox(
-                          width: 300,
-                          height: 80,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width-96),
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(authorNickname?.toString() ?? ""),
+                                    Text(
+                                      "${CountryCode.tryParse("$authorNation")?.symbol ?? "?"} ",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        "${authorNickname?.toString() ?? ""} ",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(8, 0, 8.0, 0),
+                                      child: RoundedBackgroundText(
+                                        "${userType == 0 ? "foreigner".tr() : "local".tr()} ",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: userType == 0
+                                                ? AppColors.primary
+                                                : AppColors.white),
+                                        backgroundColor: userType == 0
+                                            ? AppColors.extraLightGrey
+                                            : AppColors.primary,
+                                        innerRadius: 20.0,
+                                        outerRadius: 20.0,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 Text(title?.toString() ?? "",
+                                maxLines: 2,
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
-                                Row(
-                                  children: [Text(location?.toString() ?? "")],
-                                )
+                                Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 8.0, 0, 0),
+                                              child: Row(
+                                                children: [
+                                                  Flexible(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    234,
+                                                                    234,
+                                                                    234),
+                                                            width: 2),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
+                                                        color: Color.fromARGB(
+                                                            255, 247, 247, 247),
+                                                      ),
+                                                      child: Text(
+                                                        " ${location} ",
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: const TextStyle(
+                                                          fontFamily:
+                                                              'Pretendard',
+                                                          fontSize: 12,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              234,
+                                                              234,
+                                                              234),
+                                                          width: 2),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10.0)),
+                                                      color: Color.fromARGB(
+                                                          255, 247, 247, 247),
+                                                    ),
+                                                    child: Text(
+                                                      " ${meetingStartTime?.year}.${meetingStartTime?.month}.${meetingStartTime?.day} | ${(meetingStartTime?.hour??0) < 10 ? "0${meetingStartTime?.hour}" : meetingStartTime?.hour} : ${(meetingStartTime?.minute??0) < 10 ? "0${meetingStartTime?.minute}" : meetingStartTime?.minute} ",
+                                                      style: const TextStyle(
+                                                        fontFamily:
+                                                            'Pretendard',
+                                                        fontSize: 12,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                               ]),
                         )
                       ]),

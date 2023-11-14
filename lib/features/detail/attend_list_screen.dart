@@ -99,6 +99,15 @@ class _AttendListScreenState extends State<AttendListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('attendance'.tr()),
+        leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: AppColors.black,
+            ),
+            onPressed: () {
+              context.pop();
+            },
+          ),
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -22,6 +22,7 @@ import 'package:malf/features/chat/chat_list/chat_page.dart';
 import 'package:malf/features/chat/chat_room/chat_room_screen.dart';
 
 import 'package:malf/shared/network/base_url.dart';
+import 'package:malf/shared/widgets/meeting_list_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -243,5 +244,13 @@ GoRouter appRouter = GoRouter(
         path: '/emailLogin',
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => EmailLoginScreen()),
+    //TODO: 모임 글 목록
+    GoRoute(path: '/meetingList/:kind/:id', parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          return MeetingListScreen(
+            kind: state.pathParameters['kind']!,
+            kindId: int.parse(state.pathParameters['id']??"1"),
+          );
+        }),
   ],
 );

@@ -161,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> patchAvailable() async {
     bool isUpdated = false;
-    while(!shorebirdCodePush.isShorebirdAvailable()){
+    while (shorebirdCodePush.isShorebirdAvailable()) {
       await showDialog(
           barrierDismissible: false,
           context: context,
@@ -211,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           });
     }
-    if(isUpdated){
+    if (isUpdated) {
       Restart.restartApp();
     }
   }
@@ -639,6 +639,19 @@ class _AuthScreenState extends State<AuthScreen> {
           },
           onNavigationRequest: (NavigationRequest request) {
             logger.i('allowing navigation to ${request.url}');
+            if (request.url.startsWith(
+                'https://malftravel.com/auth/${widget.kind}/callback')) {
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  barrierColor: Colors.black,
+                  builder: (BuildContext context) {
+                    return LoadingAnimationWidget.inkDrop(
+                      color: AppColors.primary,
+                      size: 100,
+                    );
+                  });
+            }
             return NavigationDecision.navigate;
           },
         ),
@@ -667,7 +680,12 @@ class _AuthScreenState extends State<AuthScreen> {
       'user_type': 1,
       'nation': 410,
       'gender': 1,
-      'nickname': RandomNames(context.locale.languageCode=="zh"?Zone.china:context.locale.languageCode=="ja"?Zone.japan:Zone.us).name(),
+      'nickname': RandomNames(context.locale.languageCode == "zh"
+              ? Zone.china
+              : context.locale.languageCode == "ja"
+                  ? Zone.japan
+                  : Zone.us)
+          .name(),
       'birthday': "2021-10-10T10:10:10",
       'default_language': -1,
       "description": "first_profile_description".tr(),

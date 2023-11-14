@@ -9,8 +9,8 @@ Future<File> compressImage(File file,int quality) async {
   logger.i("uncompressed : ${file.lengthSync()}");
   final result = await FlutterImageCompress.compressAndGetFile(
     file.absolute.path,
-    "${file.path}compress.jpg",
-    quality: quality-20,
+    "${file.path}compress.jpeg",
+    quality: quality,
   );
   logger.i("compressed : ${File(result!.path).lengthSync()}");
   return File(result.path);

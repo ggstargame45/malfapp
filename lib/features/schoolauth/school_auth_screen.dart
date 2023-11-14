@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -6,7 +7,81 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:malf/shared/logger.dart';
+import 'package:malf/shared/network/base_url.dart';
+import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/permission.dart';
+import 'package:http/http.dart' as http;
+import 'package:malf/shared/usecases/image_compress.dart';
+
+class PostingBody {}
+
+Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
+  var imageFileList = <File>[];
+  http.MultipartRequest request;
+  http.StreamedResponse? response;
+  int isUploaded = 0;
+
+  for (int i = 0; i < imageList.length; i++) {
+    imageFileList.add(await compressImage(File(imageList[i].path), 93));
+  }
+
+  try {
+    while (isUploaded < 1) {
+      request =
+          http.MultipartRequest('POST', Uri.parse("$baseUrl/user/student-id"));
+      try {
+        for (int i = 0; i < imageList.length; i++) {
+          request.files.add(await http.MultipartFile.fromPath(
+              'image', imageFileList[i].path));
+        }
+      } on Exception catch (e) {
+        // TODO
+        logger.e(e);
+        return false;
+      }
+      // Map<String, String> mapdata = {
+      //     // 'title': "data.title",
+      //     'content': "data.content",
+      //     // 'meeting_start_time': data.meeting_start_time,
+      //     // 'category': data.category,
+      //     // 'meeting_location': data.meeting_location,
+      //     // 'capacity_local': data.capacity_local,
+      //     // 'capacity_travel': data.capacity_travel,
+      // };
+
+      String token = Token().refreshToken;
+
+      request.headers['Authorization'] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3VuaXFfaWQiOiJnXzExMzA2NDE3NTg0OTEwNDQyOTIzOSIsImlhdCI6MTY5OTgzMDI3OSwiZXhwIjoxNzMxMzY2Mjc5fQ.JnanTnzb1TELuWLigFcRFDzR0llIuId2QZ3PU_hYomE";
+      request.headers['Content-Type'] = 'multipart/form-data;';
+
+      // request.files;
+      // request.fields.addAll(mapdata);
+    
+      await request.send().then((value) {
+        response = value;
+        if (response != null) {
+          response!.stream.transform(utf8.decoder).listen((value) {
+            logger.d("asda: $value");
+          });
+          logger.d(response!.reasonPhrase);
+          if (response!.statusCode == 200) {
+            logger.d('요청이 성공적으로 처리되었습니다.');
+            return true;
+          } else {
+            logger.e('요청이 실패하였습니다. 상태 코드: ${response!.statusCode}');
+          }
+        }
+      });
+
+      isUploaded++;
+    }
+  } on Exception catch (e) {
+    // TODO
+    logger.e(e);
+    return false;
+  }
+  return false;
+}
 
 class SchoolAuthScreen extends StatefulWidget {
   const SchoolAuthScreen({super.key});
@@ -29,6 +104,7 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    logger.d("SchoolAuthScreessn");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -273,73 +349,72 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                     ),
                   ),
                 ),
-                
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                                decoration: ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        16), // ClipRRect의 모서리 설정
+                                    child: Stack(
+                                      children: [
+                                        Image.file(
+                                          File(imageList[index].path),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.15,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.15,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Positioned(
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.015,
+                                            child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.03,
+                                                child: FloatingActionButton(
+                                                  backgroundColor:
+                                                      const Color(0xFFD3D3D3),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      imageList.removeAt(index);
+                                                    });
+                                                  }, // 해당 이미지 삭제
+                                                  child: const Icon(Icons.close,
+                                                      size: 15,
+                                                      color: Colors.white),
+                                                )))
+                                      ],
+                                    )));
+                          },
+                          separatorBuilder: (BuildContext context, int index) =>
+                              const VerticalDivider(),
+                          itemCount: imageList.length),
+                    ),
+                  ),
+                )
               ],
             ),
-            Column(
-              children: [
-                Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.15,
-                        child: ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  ),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          16), // ClipRRect의 모서리 설정
-                                      child: Stack(
-                                        children: [
-                                          Image.file(
-                                            File(imageList[index].path),
-                                            height:
-                                                MediaQuery.of(context).size.height *
-                                                    0.15,
-                                            width:
-                                                MediaQuery.of(context).size.height *
-                                                    0.15,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Positioned(
-                                              right: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.015,
-                                              child: SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.03,
-                                                  child: FloatingActionButton(
-                                                    backgroundColor:
-                                                        const Color(0xFFD3D3D3),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        imageList.removeAt(index);
-                                                      });
-                                                    }, // 해당 이미지 삭제
-                                                    child: const Icon(Icons.close,
-                                                        size: 15,
-                                                        color: Colors.white),
-                                                  )))
-                                        ],
-                                      )));
-                            },
-                            separatorBuilder: (BuildContext context, int index) =>
-                                const VerticalDivider(),
-                            itemCount: imageList.length),
-                      ),
-                    )),
-              ],
-            )
+
             //TODO:서버에서도 텍스트 받기가 가능해야함
             // Padding(
             //   padding: const EdgeInsets.fromLTRB(16, 8, 0, 16),
@@ -412,7 +487,9 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ))),
                       child: Text("submit".tr()),
-                      onPressed: () async {},
+                      onPressed: () async {
+                        await postPosting(PostingBody(), imageList);
+                      },
                     )),
               )),
             ],

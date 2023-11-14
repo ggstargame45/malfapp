@@ -144,7 +144,7 @@
 "user" : "사용자",
 "unblock" : "차단 해제",
 "no" : "아니요",
-    "block_list" : "차단 목록"
-
-
+    "block_list" : "차단 목록",
+    "my_meeting" : "내 모임",
+    "school_auth_inprogress" : "학교 인증이 진행 중이며 24시간 이내에 인증이 완료됩니다. 사진을 변경하시겠습니까?"
 }

@@ -11,7 +11,7 @@ import 'package:cupertino_icons/cupertino_icons.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -23,7 +23,7 @@ import 'package:malf/shared/permission.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/usecases/image_compress.dart';
 
-String subUri = '/bulletin-board/posts/';
+const String subUri = '/bulletin-board/posts/';
 
 class PostingBody {
   String title;
@@ -58,7 +58,7 @@ class PostingBody {
 
 Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
   var imageFileList = <File>[];
-  MultipartRequest request;
+  http.MultipartRequest request;
   StreamedResponse? response;
   int isUploaded = 0;
 

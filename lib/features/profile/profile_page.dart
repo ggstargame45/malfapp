@@ -1,6 +1,7 @@
 import 'package:country_code/country_code.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:extended_image/extended_image.dart';
@@ -127,6 +128,8 @@ class _ProfilePageState extends State<ProfilePage>
         extendBodyBehindAppBar: true,
         body: SingleChildScrollView(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(
                 clipBehavior: Clip.none,
@@ -299,7 +302,7 @@ class _ProfilePageState extends State<ProfilePage>
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: Icon(
-                        Icons.favorite,
+                        CupertinoIcons.heart_solid,
                         color: Colors.red,
                       ),
                     ),
@@ -379,24 +382,77 @@ class _ProfilePageState extends State<ProfilePage>
                 padding: const EdgeInsets.fromLTRB(16, 16, 8, 0),
                 child: Row(
                   children: [
-                    Container(
-                        constraints: BoxConstraints(
-                          maxWidth: maxWidth * 0.8,
+                    Flexible(
+                      child: Text(
+                        profileData?.description ?? "",
+                        maxLines: 50,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                         ),
-                        child: Text(
-                          profileData?.description ?? "",
-                          maxLines: 30,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ))
+                      ),
+                    )
                   ],
                 ),
               ),
+              Divider(),
+              Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+              child: Text(
+                "my_meeting".tr(),
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 128, 128, 128),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(CupertinoIcons.heart_circle_fill, color: Colors.red),
+              title: Text(
+                "like_meeting".tr(),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () {
+                context.push('/meetingList/like/0');
+              },
+            ),
+            ListTile(
+              leading: Icon(CupertinoIcons.check_mark_circled_solid, color: AppColors.primary),
+              title: Text(
+                "attend_meeting".tr(),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () {
+                context.push('/meetingList/apply/0');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.edit_square, color: Colors.blue),
+              title: Text(
+                "made_meeting".tr(),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () {
+                context.push('/meetingList/write/0');
+              },
+            ),
+            
+
+              
 
               //TODO:본인이 참가신청한 모임 리스트뷰와 본인이 좋아요 누른 모임 리스트뷰를 tabbar로 구현
+              
               //         Column(
               //   mainAxisAlignment: MainAxisAlignment.spaceAround,
               //   children: <Widget>[

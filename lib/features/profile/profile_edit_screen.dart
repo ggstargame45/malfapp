@@ -24,8 +24,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:malf/shared/usecases/image_compress.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-String baseUri = 'https://malftravel.com/';
-String subUri = 'user/profile/';
+const String baseUri = 'https://malftravel.com/';
+const String subUri = 'user/profile/';
 
 class PostingBody {
   String userType;

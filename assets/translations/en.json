@@ -144,5 +144,8 @@
 "user" : "User",
     "unblock" : "Unblock",
     "no" : "No",
-    "block_list" : "Block List"
+    "block_list" : "Block List",
+    "my_meeting" : "My Meetings",
+    "school_auth_progress":"School accreditation is in progress and will be completed within 24 hours. Would you like to change your photo?"
+
 }

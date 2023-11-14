@@ -22,6 +22,7 @@ import 'package:malf/features/home/home_page_controller.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 
+
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
@@ -36,8 +37,6 @@ class _HomePageState extends State<HomePage> {
   final _pageSize = 10;
 
   // List<String> adList = [];
-
-  
 
   @override
   void initState() {
@@ -128,8 +127,8 @@ class _HomePageState extends State<HomePage> {
                             child: Swiper(
                               viewportFraction: 0.8,
                               scale: 0.9,
-                              pagination: SwiperPagination(),
-                              control: SwiperControl(),
+                              pagination: const SwiperPagination(),
+                              control: const SwiperControl(),
                               scrollDirection: Axis.horizontal,
                               itemCount:
                                   1, // Assume banners is a list of your banner data.
@@ -174,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                                             width: 60,
                                             decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: Color.fromARGB(
+                                                  color: const Color.fromARGB(
                                                       255, 71, 145, 255),
                                                   width: 2),
                                               borderRadius:
@@ -184,13 +183,13 @@ class _HomePageState extends State<HomePage> {
                                                   color: Colors.grey.shade600,
                                                   spreadRadius: 0.5,
                                                   blurRadius: 5,
-                                                  offset: Offset(4,
+                                                  offset: const Offset(4,
                                                       4), // changes position of shadow
                                                 ),
                                               ],
                                               color: Colors.white,
                                             ),
-                                            child: Column(
+                                            child: const Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
@@ -228,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                                             width: 60,
                                             decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: Color.fromARGB(
+                                                  color: const Color.fromARGB(
                                                       255, 71, 145, 255),
                                                   width: 2),
                                               borderRadius:
@@ -238,13 +237,13 @@ class _HomePageState extends State<HomePage> {
                                                   color: Colors.grey.shade600,
                                                   spreadRadius: 0.5,
                                                   blurRadius: 5,
-                                                  offset: Offset(4,
+                                                  offset: const Offset(4,
                                                       4), // changes position of shadow
                                                 ),
                                               ],
                                               color: Colors.white,
                                             ),
-                                            child: Column(
+                                            child: const Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
@@ -282,7 +281,7 @@ class _HomePageState extends State<HomePage> {
                                             width: 60,
                                             decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: Color.fromARGB(
+                                                  color: const Color.fromARGB(
                                                       255, 71, 145, 255),
                                                   width: 2),
                                               borderRadius:
@@ -292,13 +291,13 @@ class _HomePageState extends State<HomePage> {
                                                   color: Colors.grey.shade600,
                                                   spreadRadius: 0.5,
                                                   blurRadius: 5,
-                                                  offset: Offset(4,
+                                                  offset: const Offset(4,
                                                       4), // changes position of shadow
                                                 ),
                                               ],
                                               color: Colors.white,
                                             ),
-                                            child: Column(
+                                            child: const Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
@@ -412,7 +411,7 @@ class _HomePageState extends State<HomePage> {
                                               children: [
                                                 Text(
                                                   "${CountryCode.tryParse("${item.authorNation}")?.symbol ?? "?"} ",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 16,
                                                   ),
                                                 ),
@@ -422,7 +421,7 @@ class _HomePageState extends State<HomePage> {
                                                     maxLines: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 14,
                                                       color: Colors.grey,
                                                     ),
@@ -470,46 +469,51 @@ class _HomePageState extends State<HomePage> {
                                                       0, 8.0, 0, 0),
                                               child: Row(
                                                 children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Color.fromARGB(
-                                                              255,
-                                                              234,
-                                                              234,
-                                                              234),
-                                                          width: 2),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0)),
-                                                      color: Color.fromARGB(
-                                                          255, 247, 247, 247),
-                                                    ),
-                                                    child: Text(
-                                                      " ${item.meetingLocation} ",
-                                                      style: const TextStyle(
-                                                        fontFamily:
-                                                            'Pretendard',
-                                                        fontSize: 12,
-                                                        color: Colors.black,
+                                                  Flexible(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color:
+                                                                const Color.fromARGB(
+                                                                    255,
+                                                                    234,
+                                                                    234,
+                                                                    234),
+                                                            width: 2),
+                                                        borderRadius:
+                                                            const BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
+                                                        color: const Color.fromARGB(
+                                                            255, 247, 247, 247),
+                                                      ),
+                                                      child: Text(
+                                                        " ${item.meetingLocation} ",
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: const TextStyle(
+                                                          fontFamily:
+                                                              'Pretendard',
+                                                          fontSize: 12,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                   Container(
                                                     decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: Color.fromARGB(
+                                                          color: const Color.fromARGB(
                                                               255,
                                                               234,
                                                               234,
                                                               234),
                                                           width: 2),
                                                       borderRadius:
-                                                          BorderRadius.all(
+                                                          const BorderRadius.all(
                                                               Radius.circular(
                                                                   10.0)),
-                                                      color: Color.fromARGB(
+                                                      color: const Color.fromARGB(
                                                           255, 247, 247, 247),
                                                     ),
                                                     child: Text(
@@ -589,14 +593,14 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.grey,
                                                       )),
                                                   //TODO: need space between
-                                                  Spacer(),
+                                                  const Spacer(),
 
                                                   Padding(
                                                     padding: const EdgeInsets
                                                         .fromLTRB(8, 0, 8.0, 0),
                                                     child: Row(
                                                       children: [
-                                                        Icon(
+                                                        const Icon(
                                                           CupertinoIcons
                                                               .heart_fill,
                                                           color: Colors.red,
@@ -682,24 +686,25 @@ class _HomePageState extends State<HomePage> {
               await context.push('/write');
               // _pagingController.refresh();
             } 
-            // else if (status == -1) {
-            //   logger.d("status : $status");
+            // else if (true
+            //     // status == -1
+            //     ) {
             //   showDialog(
             //       context: context,
-            //       builder: (BuildContext contexts) {
+            //       builder: (BuildContext context) {
             //         return AlertDialog(
-            //           title: Text("알림"),
-            //           content: Text("학생증 인증이 필요합니다."),
+            //           title: const Text("알림"),
+            //           content: const Text("학생증 인증이 필요합니다."),
             //           actions: [
             //             TextButton(
             //                 onPressed: () async {
-            //                   contexts.push("/schoolAuth");
-            //                   // contexts.pop();
+            //                   await context.push("/schoolAuth");
+            //                   context.pop();
             //                 },
             //                 child: Text("next".tr())),
             //             TextButton(
             //                 onPressed: () {
-            //                   contexts.pop();
+            //                   context.pop();
             //                 },
             //                 child: Text("cancel".tr())),
             //           ],

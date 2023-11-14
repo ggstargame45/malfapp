@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:malf/features/home/home_list_model.dart';
+import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
@@ -210,29 +211,32 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                       0, 8.0, 0, 0),
                                               child: Row(
                                                 children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Color.fromARGB(
-                                                              255,
-                                                              234,
-                                                              234,
-                                                              234),
-                                                          width: 2),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0)),
-                                                      color: Color.fromARGB(
-                                                          255, 247, 247, 247),
-                                                    ),
-                                                    child: Text(
-                                                      " ${categoryListData[index].meetingLocation} ",
-                                                      style: const TextStyle(
-                                                        fontFamily:
-                                                            'Pretendard',
-                                                        fontSize: 12,
-                                                        color: Colors.black,
+                                                  Flexible(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Color.fromARGB(
+                                                                255,
+                                                                234,
+                                                                234,
+                                                                234),
+                                                            width: 2),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0)),
+                                                        color: Color.fromARGB(
+                                                            255, 247, 247, 247),
+                                                      ),
+                                                      child: Text(
+                                                        " ${categoryListData[index].meetingLocation} ",
+                                                        maxLines: 2,
+                                                        style: const TextStyle(
+                                                          fontFamily:
+                                                              'Pretendard',
+                                                          fontSize: 12,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
