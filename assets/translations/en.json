@@ -27,7 +27,7 @@
     "logout message": "You will be return to login screen.",
     "delete_account": "Delete Account",
     "delete_account_title": "Delete your MALF account",
-    "delete_account_message": "If you delete your account, all your information will be permanently deleted and can’t be recovered. Also, you won't be able to rejoin for 45 days.",
+    "delete_account_message": "If you delete your account, all your information will be permanently deleted and can’t be recovered.",
     "korean": "Korean",
     "english": "English",
     "chinese": "Chinese",
@@ -147,5 +147,4 @@
     "block_list" : "Block List",
     "my_meeting" : "My Meetings",
     "school_auth_progress":"School accreditation is in progress and will be completed within 24 hours. Would you like to change your photo?"
-
 }

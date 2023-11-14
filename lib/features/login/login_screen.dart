@@ -161,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> patchAvailable() async {
     bool isUpdated = false;
-    while (shorebirdCodePush.isShorebirdAvailable()) {
+    while (!shorebirdCodePush.isShorebirdAvailable()) {
       await showDialog(
           barrierDismissible: false,
           context: context,
