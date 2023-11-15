@@ -21,13 +21,8 @@ class HomeListProvider {
           await dio.get("/bulletin-board/posts/?page=$pageNo&limit=$limit");
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['data'];
-        List<ListItemData> result = data
-            .map((e) => ListItemData.fromJson(e))
-            .where((element) =>
-                (DateTime.now().isBefore(element.meetingStartTime)) &&
-                (!BlockSet().blockUserUniqIdSet.contains(element.userUniqId)) &&
-                (!BlockSet().blockMeetingPostIdSet.contains(element.postId)))
-            .toList();
+        List<ListItemData> result =
+            data.map((e) => ListItemData.fromJson(e)).toList();
         logger.i("result: $result");
         return result;
       } else {

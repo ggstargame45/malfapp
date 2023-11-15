@@ -292,7 +292,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         onTap: () {
                           final GlobalKey<ExtendedImageGestureState>
                               gestureKey =
-                              GlobalKey<ExtendedImageGestureState>();
+                          GlobalKey<ExtendedImageGestureState>();
                           final GlobalKey<ExtendedImageEditorState> editorKey =
                               GlobalKey<ExtendedImageEditorState>();
                           showDialog(
@@ -300,25 +300,25 @@ class _DetailScreenState extends State<DetailScreen> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  actions: [
-                                    IconButton(
-                                        onPressed: () async {
-                                          // Navigator.pop(context);
-                                          final EditImageInfo fileData =
-                                              await cropImageDataWithNativeLibrary(
-                                                  state:
-                                                      editorKey.currentState!);
-                                          final String? fileFath =
-                                              await ImageSaver.save(
-                                                  'extended_image_cropped_image.jpg',
-                                                  fileData.data!);
-                                          logger.d('save image : $fileFath');
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.black,
-                                        ))
-                                  ],
+                                  // actions: [
+                                  //   IconButton(
+                                  //       onPressed: () async {
+                                  //         // Navigator.pop(context);
+                                  //         final EditImageInfo fileData =
+                                  //             await cropImageDataWithNativeLibrary(
+                                  //                 state:
+                                  //                     editorKey.currentState!);
+                                  //         final String? fileFath =
+                                  //             await ImageSaver.save(
+                                  //                 'extended_image_cropped_image.jpg',
+                                  //                 fileData.data!);
+                                  //         logger.d('save image : $fileFath');
+                                  //       },
+                                  //       icon: const Icon(
+                                  //         Icons.close,
+                                  //         color: Colors.black,
+                                  //       ))
+                                  // ],
                                   content: Container(
                                     width:
                                         MediaQuery.of(context).size.width * 0.8,
@@ -332,52 +332,52 @@ class _DetailScreenState extends State<DetailScreen> {
                                             "$baseUrl/${detailData!.meetingPic[index]}",
                                             cache: true,
                                             fit: BoxFit.contain,
-                                            mode: ExtendedImageMode.editor,
-                                            enableLoadState: true,
-                                            extendedImageEditorKey: editorKey,
-                                            cacheRawData: true,
-                                            //maxBytes: 1024 * 50,
-                                            initEditorConfigHandler:
-                                                (ExtendedImageState? state) {
-                                              return EditorConfig(
-                                                  maxScale: 4.0,
-                                                  cropRectPadding:
-                                                      const EdgeInsets.all(
-                                                          20.0),
-                                                  hitTestSize: 20.0,
-                                                  initCropRectType:
-                                                      InitCropRectType
-                                                          .imageRect,
-                                                  cropAspectRatio:
-                                                      CropAspectRatios.ratio4_3,
-                                                  editActionDetailsIsChanged:
-                                                      (EditActionDetails?
-                                                          details) {
-                                                    //print(details?.totalScale);
-                                                  });
-                                            },
-                                            // mode: ExtendedImageMode.gesture,
-                                            // extendedImageGestureKey: gestureKey,
-                                            // initGestureConfigHandler:
-                                            //     (ExtendedImageState state) {
-                                            //   return GestureConfig(
-                                            //     minScale: 0.9,
-                                            //     animationMinScale: 0.7,
-                                            //     maxScale: 4.0,
-                                            //     animationMaxScale: 4.5,
-                                            //     speed: 1.0,
-                                            //     inertialSpeed: 100.0,
-                                            //     initialScale: 1.0,
-                                            //     inPageView: false,
-                                            //     initialAlignment:
-                                            //         InitialAlignment.center,
-                                            //     reverseMousePointerScrollDirection:
-                                            //         true,
-                                            //     gestureDetailsIsChanged:
-                                            //         (GestureDetails?
-                                            //             details) {},
-                                            //   );
+                                            // mode: ExtendedImageMode.editor,
+                                            // enableLoadState: true,
+                                            // extendedImageEditorKey: editorKey,
+                                            // cacheRawData: true,
+                                            // //maxBytes: 1024 * 50,
+                                            // initEditorConfigHandler:
+                                            //     (ExtendedImageState? state) {
+                                            //   return EditorConfig(
+                                            //       maxScale: 4.0,
+                                            //       cropRectPadding:
+                                            //           const EdgeInsets.all(
+                                            //               20.0),
+                                            //       hitTestSize: 20.0,
+                                            //       initCropRectType:
+                                            //           InitCropRectType
+                                            //               .imageRect,
+                                            //       cropAspectRatio:
+                                            //           CropAspectRatios.ratio4_3,
+                                            //       editActionDetailsIsChanged:
+                                            //           (EditActionDetails?
+                                            //               details) {
+                                            //         //print(details?.totalScale);
+                                            //       });
                                             // },
+                                            mode: ExtendedImageMode.gesture,
+                                            extendedImageGestureKey: gestureKey,
+                                            initGestureConfigHandler:
+                                                (ExtendedImageState state) {
+                                              return GestureConfig(
+                                                minScale: 0.9,
+                                                animationMinScale: 0.7,
+                                                maxScale: 4.0,
+                                                animationMaxScale: 4.5,
+                                                speed: 1.0,
+                                                inertialSpeed: 100.0,
+                                                initialScale: 1.0,
+                                                inPageView: false,
+                                                initialAlignment:
+                                                    InitialAlignment.center,
+                                                reverseMousePointerScrollDirection:
+                                                    true,
+                                                gestureDetailsIsChanged:
+                                                    (GestureDetails?
+                                                        details) {},
+                                              );
+                                            },
                                           ),
                                         ),
                                       ],
@@ -994,4 +994,50 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
               ],
             ),
           ));
+}
+
+Widget aa(String url, GlobalKey<ExtendedImageEditorState> editorKey) {
+  return ExtendedImage.network(
+    url,
+    cache: true,
+    fit: BoxFit.contain,
+    mode: ExtendedImageMode.editor,
+    enableLoadState: true,
+    extendedImageEditorKey: editorKey,
+    cacheRawData: true,
+    //maxBytes: 1024 * 50,
+    initEditorConfigHandler: (ExtendedImageState? state) {
+      return EditorConfig(
+          maxScale: 4.0,
+          cropRectPadding: const EdgeInsets.all(20.0),
+          hitTestSize: 20.0,
+          initCropRectType: InitCropRectType.imageRect,
+          cropAspectRatio: CropAspectRatios.ratio4_3,
+          editActionDetailsIsChanged: (EditActionDetails? details) {
+            //print(details?.totalScale);
+          });
+    },
+    // mode: ExtendedImageMode.gesture,
+    // extendedImageGestureKey: gestureKey,
+    // initGestureConfigHandler:
+    //     (ExtendedImageState state) {
+    //   return GestureConfig(
+    //     minScale: 0.9,
+    //     animationMinScale: 0.7,
+    //     maxScale: 4.0,
+    //     animationMaxScale: 4.5,
+    //     speed: 1.0,
+    //     inertialSpeed: 100.0,
+    //     initialScale: 1.0,
+    //     inPageView: false,
+    //     initialAlignment:
+    //         InitialAlignment.center,
+    //     reverseMousePointerScrollDirection:
+    //         true,
+    //     gestureDetailsIsChanged:
+    //         (GestureDetails?
+    //             details) {},
+    //   );
+    // },
+  );
 }
