@@ -24,6 +24,7 @@ class HomeListProvider {
         List<ListItemData> result = data
             .map((e) => ListItemData.fromJson(e))
             .where((element) =>
+                (DateTime.now().isBefore(element.meetingStartTime)) &&
                 (!BlockSet().blockUserUniqIdSet.contains(element.userUniqId)) &&
                 (!BlockSet().blockMeetingPostIdSet.contains(element.postId)))
             .toList();

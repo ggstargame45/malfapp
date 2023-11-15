@@ -147,5 +147,10 @@
 "no" : "아니요",
     "block_list" : "차단 목록",
     "my_meeting" : "내 모임",
-    "school_auth_inprogress" : "학교 인증이 진행 중이며 24시간 이내에 인증이 완료됩니다. 사진을 변경하시겠습니까?"
+    "school_auth_progress" : "학교 인증이 진행 중이며 24시간 이내에 인증이 완료됩니다. 사진을 변경하시겠습니까?",
+    "notification" : "알림",
+    "apply_rejected" : "참여신청이 거절되었습니다.",
+    "apply_accepted" : "참여신청이 승인되었습니다.",
+    "review_notification" : "모임 후기를 남기러 갈까요?"
+
 }

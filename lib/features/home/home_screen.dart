@@ -30,27 +30,28 @@ class _HomeScreenState extends State<HomeScreen> {
           // unselectedItemColor: Colors.grey
           destinations: [
             NavigationDestination(
-              selectedIcon: const Icon(Icons.home, color: AppColors.primary, size: 24),
+              selectedIcon:
+                  const Icon(Icons.home, color: AppColors.primary, size: 24),
               icon: const Icon(Icons.home, color: Colors.grey, size: 24),
               label: 'home'.tr(),
             ),
             NavigationDestination(
-                selectedIcon: const Icon(Icons.chat, color: AppColors.primary, size: 24),
-                icon: const Icon(
-                  Icons.chat,
-                  color: Colors.grey, size: 24
-                ),
+                selectedIcon:
+                    const Icon(Icons.chat, color: AppColors.primary, size: 24),
+                icon: const Icon(Icons.chat, color: Colors.grey, size: 24),
                 label: 'chat'.tr()),
             //TODO : 알림
+            // NavigationDestination(
+            //     selectedIcon: const Icon(Icons.notifications,
+            //         color: AppColors.primary, size: 24),
+            //     icon: const Icon(Icons.notifications, color: Colors.grey, size: 24),
+            //     label: 'notification'.tr()),
             // BottomNavigationBarItem(
             //     icon: Icon(Icons.notifications), label: '알림'),
             NavigationDestination(
-                selectedIcon:
-                    const Icon(Icons.person, color: AppColors.primary, size: 24),
-                icon: const Icon(
-                  Icons.person,
-                  color: Colors.grey, size: 24
-                ),
+                selectedIcon: const Icon(Icons.person,
+                    color: AppColors.primary, size: 24),
+                icon: const Icon(Icons.person, color: Colors.grey, size: 24),
                 label: 'profile'.tr()),
           ],
           selectedIndex: widget.navigationShell.currentIndex,

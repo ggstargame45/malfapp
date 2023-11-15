@@ -12,6 +12,8 @@ import 'package:malf/features/profile/profile_edit_screen.dart';
 import 'package:malf/features/profile/profile_other_screen.dart';
 import 'package:malf/features/profile/profile_page.dart';
 import 'package:malf/features/report/report_screen.dart';
+import 'package:malf/features/review/review_list_screen.dart';
+import 'package:malf/features/review/review_screen.dart';
 import 'package:malf/features/schoolauth/school_auth_screen.dart';
 import 'package:malf/features/settings/block_list_screen.dart';
 import 'package:malf/features/settings/settings_screen.dart';
@@ -21,7 +23,6 @@ import 'package:malf/features/category/category_screen.dart';
 import 'package:malf/features/chat/chat_list/chat_page.dart';
 import 'package:malf/features/chat/chat_room/chat_room_screen.dart';
 
-import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/widgets/meeting_list_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey =
@@ -61,16 +62,7 @@ GoRouter appRouter = GoRouter(
                 path: '/chat',
                 builder: (BuildContext context, GoRouterState state) =>
                     ChatPage(),
-                routes: <RouteBase>[
-                  // The details screen to display stacked on navigator of the
-                  // first tab. This will cover screen A but not the application
-                  // shell (bottom navigation bar).
-                  // GoRoute(
-                  //   path: 'details',
-                  //   builder: (BuildContext context, GoRouterState state) =>
-                  //       const DetailsScreen(label: 'A'),
-                  // ),
-                ],
+                routes: <RouteBase>[],
               ),
             ],
           ),
@@ -83,16 +75,7 @@ GoRouter appRouter = GoRouter(
           //       path: '/notification',
           //       builder: (BuildContext context, GoRouterState state) =>
           //           NotificationPage(),
-          //       routes: <RouteBase>[
-          //         // The details screen to display stacked on navigator of the
-          //         // first tab. This will cover screen A but not the application
-          //         // shell (bottom navigation bar).
-          //         // GoRoute(
-          //         //   path: 'details',
-          //         //   builder: (BuildContext context, GoRouterState state) =>
-          //         //       const DetailsScreen(label: 'A'),
-          //         // ),
-          //       ],
+          //       routes: <RouteBase>[],
           //     ),
           //   ],
           // ),
@@ -105,16 +88,7 @@ GoRouter appRouter = GoRouter(
                 path: '/profile',
                 builder: (BuildContext context, GoRouterState state) =>
                     ProfilePage(),
-                routes: <RouteBase>[
-                  // The details screen to display stacked on navigator of the
-                  // first tab. This will cover screen A but not the application
-                  // shell (bottom navigation bar).
-                  // GoRoute(
-                  //   path: 'details',
-                  //   builder: (BuildContext context, GoRouterState state) =>
-                  //       const DetailsScreen(label: 'A'),
-                  // ),
-                ],
+                routes: <RouteBase>[],
               ),
             ],
           ),
@@ -184,7 +158,25 @@ GoRouter appRouter = GoRouter(
               userUniqId: state.pathParameters['id']!,
             )),
 
+    //TODO: 후기 리스트
+    GoRoute(
+        path: '/reviewList/:postId',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          return ReviewListScreen(
+            postId: state.pathParameters['postId']??"0",
+          );
+        }),
+
     //TODO: 후기
+    GoRoute(
+        path: '/reviewDetail/:userId',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          return ReviewDetailScreen(
+            userUniqId: state.pathParameters['userId']!,
+          );
+        }),
 
     // 채팅방
     GoRoute(
@@ -233,9 +225,11 @@ GoRouter appRouter = GoRouter(
           //        GoRoute(path: '/privacy', parentNavigatorKey: rootNavigatorKey),
         ]),
     //차단목록
-    GoRoute(path: '/blockList', parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => BlockListScreen(),
-        ),
+    GoRoute(
+      path: '/blockList',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => BlockListScreen(),
+    ),
 
     //TODO: 문의하기
 
@@ -245,11 +239,13 @@ GoRouter appRouter = GoRouter(
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => EmailLoginScreen()),
     //TODO: 모임 글 목록
-    GoRoute(path: '/meetingList/:kind/:id', parentNavigatorKey: rootNavigatorKey,
+    GoRoute(
+        path: '/meetingList/:kind/:id',
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return MeetingListScreen(
             kind: state.pathParameters['kind']!,
-            kindId: int.parse(state.pathParameters['id']??"1"),
+            kindId: int.parse(state.pathParameters['id'] ?? "1"),
           );
         }),
   ],

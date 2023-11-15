@@ -146,8 +146,12 @@
 "email_optional": "电子邮箱（选填）",
 "let_edit_profile": "完成您的个人资料吧。",
 "block_meeting" : "要拉黑此聚会吗？",
-"block_additional" : "要拉黑该用户的所有消息吗？"
-    
+"block_additional" : "要拉黑该用户的所有消息吗？",
+"notification" : "提醒",
+
+"apply_rejected" :"您的参与申请已被拒绝。",
+"apply_accepted" : "您的参与申请已获得批准。",
+"review_notification" : "您能为参与者留下评论吗?"
 
 
 }

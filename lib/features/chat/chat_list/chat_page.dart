@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:malf/features/chat/chat_list/chatting_list_data_model.dart';
@@ -81,11 +82,11 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Colors.white,
         leadingWidth: 0,
         centerTitle: false,
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Text(
-            "메세지",
-            style: TextStyle(
+            "chat".tr(),
+            style: const TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
@@ -163,13 +164,13 @@ class _ChatPageState extends State<ChatPage> {
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       maxLines: 1,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 17,
                                                       )),
                                                 ),
-                                                Icon(Icons.person),
+                                                const Icon(Icons.person),
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.only(

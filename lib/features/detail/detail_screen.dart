@@ -1,10 +1,16 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:country_code/country_code.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_editor/image_editor.dart';
 import 'package:malf/features/detail/detail_model.dart';
 import 'package:malf/features/home/home_page_controller.dart';
+import 'package:malf/shared/check.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
@@ -14,6 +20,7 @@ import 'package:malf/shared/network/base_url.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -23,6 +30,82 @@ class DetailScreen extends StatefulWidget {
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
+}
+
+enum ImageType { gif, jpg }
+
+class EditImageInfo {
+  EditImageInfo(
+    this.data,
+    this.imageType,
+  );
+  final Uint8List? data;
+  final ImageType imageType;
+}
+
+Future<EditImageInfo> cropImageDataWithNativeLibrary(
+    {required ExtendedImageEditorState state}) async {
+  logger.d('native library start cropping');
+  Rect cropRect = state.getCropRect()!;
+  if (state.widget.extendedImageState.imageProvider is ExtendedResizeImage) {
+    final ImmutableBuffer buffer =
+        await ImmutableBuffer.fromUint8List(state.rawImageData);
+    final ImageDescriptor descriptor = await ImageDescriptor.encoded(buffer);
+
+    final double widthRatio = descriptor.width / state.image!.width;
+    final double heightRatio = descriptor.height / state.image!.height;
+    cropRect = Rect.fromLTRB(
+      cropRect.left * widthRatio,
+      cropRect.top * heightRatio,
+      cropRect.right * widthRatio,
+      cropRect.bottom * heightRatio,
+    );
+  }
+
+  final EditActionDetails action = state.editAction!;
+
+  final int rotateAngle = action.rotateAngle.toInt();
+  final bool flipHorizontal = action.flipY;
+  final bool flipVertical = action.flipX;
+  final Uint8List img = state.rawImageData;
+
+  final ImageEditorOption option = ImageEditorOption();
+
+  if (action.needCrop) {
+    option.addOption(ClipOption.fromRect(cropRect));
+  }
+
+  if (action.needFlip) {
+    option.addOption(
+        FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
+  }
+
+  if (action.hasRotateAngle) {
+    option.addOption(RotateOption(rotateAngle));
+  }
+
+  final DateTime start = DateTime.now();
+  final Uint8List? result = await ImageEditor.editImage(
+    image: img,
+    imageEditorOption: option,
+  );
+
+  logger.d('${DateTime.now().difference(start)} ：total time');
+  return EditImageInfo(result, ImageType.jpg);
+}
+
+class ImageSaver {
+  const ImageSaver._();
+
+  static Future<String?> save(String name, Uint8List fileData) async {
+    final String title = '${DateTime.now().millisecondsSinceEpoch}_$name';
+    final AssetEntity? imageEntity = await PhotoManager.editor.saveImage(
+      fileData,
+      title: title,
+    );
+    final File? file = await imageEntity?.file;
+    return file?.path;
+  }
 }
 
 class _DetailScreenState extends State<DetailScreen> {
@@ -110,6 +193,7 @@ class _DetailScreenState extends State<DetailScreen> {
         headers: {'Authorization': Token().refreshToken},
         responseType: ResponseType.json));
     final response = await dio.get("/bulletin-board/posts/${widget.postId}");
+    logger.d("response : ${response.data['data']}");
     detailData = DetailData.fromJson(response.data['data'][0]);
     likeCheck = detailData!.likeCheck == 1 ? true : false;
     likeCount = detailData!.likeCount;
@@ -206,77 +290,97 @@ class _DetailScreenState extends State<DetailScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
+                          final GlobalKey<ExtendedImageGestureState>
+                              gestureKey =
+                              GlobalKey<ExtendedImageGestureState>();
+                          final GlobalKey<ExtendedImageEditorState> editorKey =
+                              GlobalKey<ExtendedImageEditorState>();
                           showDialog(
                               useSafeArea: true,
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
+                                  actions: [
+                                    IconButton(
+                                        onPressed: () async {
+                                          // Navigator.pop(context);
+                                          final EditImageInfo fileData =
+                                              await cropImageDataWithNativeLibrary(
+                                                  state:
+                                                      editorKey.currentState!);
+                                          final String? fileFath =
+                                              await ImageSaver.save(
+                                                  'extended_image_cropped_image.jpg',
+                                                  fileData.data!);
+                                          logger.d('save image : $fileFath');
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.black,
+                                        ))
+                                  ],
                                   content: Container(
                                     width:
                                         MediaQuery.of(context).size.width * 0.8,
                                     height: MediaQuery.of(context).size.height *
                                         0.6,
                                     alignment: Alignment.center,
-                                    child: ExtendedImage.network(
-                                      "$baseUrl/${detailData!.meetingPic[index]}",
-                                      cache: true,
-                                      //     initGestureConfigHandler: (state) {
-                                      //   return GestureConfig(
-                                      //     minScale: 0.9,
-                                      //     animationMinScale: 0.7,
-                                      //     maxScale: 3.0,
-                                      //     animationMaxScale: 3.5,
-                                      //     speed: 1.0,
-                                      //     inertialSpeed: 100.0,
-                                      //     initialScale: 1.0,
-                                      //     inPageView: false,
-                                      //     initialAlignment:
-                                      //         InitialAlignment.center,
-                                      //   );
-                                      // },
-                                      fit: BoxFit.contain,
-                                      // onDoubleTap:
-                                      //     (ExtendedImageGestureState state) {
-                                      //   ///you can use define pointerDownPosition as you can,
-                                      //   ///default value is double tap pointer down postion.
-                                      //   var pointerDownPosition =
-                                      //       state.pointerDownPosition;
-                                      //   double? begin =
-                                      //       state.gestureDetails?.totalScale;
-                                      //   double end;
-
-                                      //   //remove old
-                                      //   _animation
-                                      //       ?.removeListener(animationListener);
-
-                                      //   //stop pre
-                                      //   _animationController.stop();
-
-                                      //   //reset to use
-                                      //   _animationController.reset();
-
-                                      //   if (begin == doubleTapScales[0]) {
-                                      //     end = doubleTapScales[1];
-                                      //   } else {
-                                      //     end = doubleTapScales[0];
-                                      //   }
-
-                                      //   animationListener = () {
-                                      //     //print(_animation.value);
-                                      //     state.handleDoubleTap(
-                                      //         scale: _animation.value,
-                                      //         doubleTapPosition:
-                                      //             pointerDownPosition);
-                                      //   };
-                                      //   _animation = _animationController.drive(
-                                      //       Tween<double>(
-                                      //           begin: begin, end: end));
-
-                                      //   _animation
-                                      //       .addListener(animationListener);
-
-                                      //   _animationController.forward();
-                                      // },
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: ExtendedImage.network(
+                                            "$baseUrl/${detailData!.meetingPic[index]}",
+                                            cache: true,
+                                            fit: BoxFit.contain,
+                                            mode: ExtendedImageMode.editor,
+                                            enableLoadState: true,
+                                            extendedImageEditorKey: editorKey,
+                                            cacheRawData: true,
+                                            //maxBytes: 1024 * 50,
+                                            initEditorConfigHandler:
+                                                (ExtendedImageState? state) {
+                                              return EditorConfig(
+                                                  maxScale: 4.0,
+                                                  cropRectPadding:
+                                                      const EdgeInsets.all(
+                                                          20.0),
+                                                  hitTestSize: 20.0,
+                                                  initCropRectType:
+                                                      InitCropRectType
+                                                          .imageRect,
+                                                  cropAspectRatio:
+                                                      CropAspectRatios.ratio4_3,
+                                                  editActionDetailsIsChanged:
+                                                      (EditActionDetails?
+                                                          details) {
+                                                    //print(details?.totalScale);
+                                                  });
+                                            },
+                                            // mode: ExtendedImageMode.gesture,
+                                            // extendedImageGestureKey: gestureKey,
+                                            // initGestureConfigHandler:
+                                            //     (ExtendedImageState state) {
+                                            //   return GestureConfig(
+                                            //     minScale: 0.9,
+                                            //     animationMinScale: 0.7,
+                                            //     maxScale: 4.0,
+                                            //     animationMaxScale: 4.5,
+                                            //     speed: 1.0,
+                                            //     inertialSpeed: 100.0,
+                                            //     initialScale: 1.0,
+                                            //     inPageView: false,
+                                            //     initialAlignment:
+                                            //         InitialAlignment.center,
+                                            //     reverseMousePointerScrollDirection:
+                                            //         true,
+                                            //     gestureDetailsIsChanged:
+                                            //         (GestureDetails?
+                                            //             details) {},
+                                            //   );
+                                            // },
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -547,9 +651,6 @@ class _DetailScreenState extends State<DetailScreen> {
                   ],
                 ),
               ),
-            Container(
-              height: 60,
-            )
           ]),
         ),
         bottomSheet: Container(
@@ -626,20 +727,24 @@ class _DetailScreenState extends State<DetailScreen> {
                                     child: Text("attend_cancel".tr()))
                                 : ElevatedButton(
                                     onPressed: () async {
-                                      final dodo = Dio(BaseOptions(
-                                          baseUrl: baseUrl,
-                                          headers: {
-                                            'Authorization':
-                                                Token().refreshToken
-                                          },
-                                          responseType: ResponseType.json));
-                                      try {
-                                        await dodo.post(
-                                            "/chatroom/${detailData!.postId}/subscribe");
-                                      } on Exception catch (e) {
-                                        // TODO
+                                      if (true) {
+                                        final dodo = Dio(BaseOptions(
+                                            baseUrl: baseUrl,
+                                            headers: {
+                                              'Authorization':
+                                                  Token().refreshToken
+                                            },
+                                            responseType: ResponseType.json));
+                                        try {
+                                          await dodo.post(
+                                              "/chatroom/${detailData!.postId}/subscribe");
+                                        } on Exception catch (e) {
+                                          // TODO
+                                        }
+                                        await checkSubscribe();
+                                        return;
+                                        await doAuth(context);
                                       }
-                                      await checkSubscribe();
                                     },
                                     child: Text("attend".tr())))),
                   ),

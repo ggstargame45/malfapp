@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/gestures.dart';
@@ -22,6 +21,7 @@ import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/permission.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/usecases/image_compress.dart';
+import 'package:malf/shared/usecases/loading.dart';
 
 const String subUri = '/bulletin-board/posts/';
 
@@ -155,7 +155,7 @@ class _WriteScreenState extends State<WriteScreen> {
             icon: const Icon(Icons.arrow_back_ios)),
         actions: [
           IconButton(
-              onPressed: () {
+              onPressed: () async {
                 if (mounted) {
                   context.pop();
                 }
@@ -268,7 +268,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                       16), // ClipRRect의 모서리 설정
                                   child: Stack(
                                     children: [
-                                      Image.file(
+                                      ExtendedImage.file(
                                         File(imageList[index].path),
                                         height:
                                             MediaQuery.of(context).size.height *
@@ -404,7 +404,8 @@ class _WriteScreenState extends State<WriteScreen> {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                         decoration: InputDecoration(
-                          hintText: "${"write_content_hint".tr()}${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}",
+                          hintText:
+                              "${"write_content_hint".tr()}${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}",
                           hintStyle: const TextStyle(
                             color: Color(0xFFBEBEBE),
                             fontSize: 16,
@@ -789,6 +790,7 @@ class _WriteScreenState extends State<WriteScreen> {
                           ),
                         ),
                         onPressed: () async {
+                          bool made = false;
                           if (title == "" || content == "") {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text(
@@ -804,25 +806,17 @@ class _WriteScreenState extends State<WriteScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text("picture_unchose_warning".tr())));
                           } else {
-                            showDialog(
+                            await showDialog(
                                 barrierDismissible: false,
                                 context: context,
-                                builder: (BuildContext contextn) {
+                                builder: (BuildContext context) {
                                   return AlertDialog(
-                                    content: Text("${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}"),
+                                    content: Text(
+                                        "${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}"),
                                     actions: [
                                       TextButton(
                                         onPressed: () async {
-                                          showDialog(
-                                              barrierDismissible: false,
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return LoadingAnimationWidget
-                                                    .inkDrop(
-                                                  color: AppColors.primary,
-                                                  size: 100,
-                                                );
-                                              });
+                                          loading(context);
 
                                           if (await postPosting(
                                               PostingBody(
@@ -840,20 +834,22 @@ class _WriteScreenState extends State<WriteScreen> {
                                               imageList)) {
                                             logger.i("글쓰기 성공");
                                             context.pop();
+                                            context.pop();
+                                            made = true;
                                           } else {
+                                            context.pop();
+                                            context.pop();
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                                     content:
                                                         Text('fail'.tr())));
                                           }
-                                          context.pop();
-                                          context.pop();
                                         },
                                         child: const Text('confirm').tr(),
                                       ),
                                       TextButton(
                                           onPressed: () {
-                                            contextn.pop();
+                                            context.pop();
                                           },
                                           child: const Text('cancel',
                                               style: TextStyle(
@@ -862,6 +858,9 @@ class _WriteScreenState extends State<WriteScreen> {
                                     ],
                                   );
                                 });
+                          }
+                          if(made){
+                            context.pop();
                           }
                         },
                       )),

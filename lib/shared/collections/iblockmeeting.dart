@@ -1,5 +1,4 @@
 import 'package:isar/isar.dart';
-import 'package:malf/shared/collections/fast_hash.dart';
 
 
 part 'iblockmeeting.g.dart';

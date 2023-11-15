@@ -146,5 +146,10 @@
     "no" : "No",
     "block_list" : "Block List",
     "my_meeting" : "My Meetings",
-    "school_auth_progress":"School accreditation is in progress and will be completed within 24 hours. Would you like to change your photo?"
+    "school_auth_progress":"School accreditation is in progress and will be completed within 24 hours. Would you like to change your photo?",
+    "notification" : "Notification",
+    "apply_rejected" : "You have been rejected.",
+    "apply_accepted" : "You have been accepted.",
+    "review_notification" : "Will you leave a review for the participants?"
+
 }

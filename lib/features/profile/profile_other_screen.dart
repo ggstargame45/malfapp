@@ -87,6 +87,17 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
   Widget build(BuildContext context) {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
+    String userTemperature = "36.5";
+    if (profileData != null) {
+      userTemperature =
+          "${profileData!.userTemperature.toString().substring(0, profileData!.userTemperature.toString().length - 1)}.${profileData!.userTemperature.toString()[profileData!.userTemperature.toString().length - 1]} ";
+      if (profileData!.userTemperature < 10 &&
+          profileData!.userTemperature > -10) {
+        userTemperature = " 0$userTemperature";
+      } else {
+        userTemperature = " $userTemperature";
+      }
+    }
 
     logger.i('ProfilePage build');
     return Scaffold(
@@ -293,7 +304,32 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
                                   innerRadius: 20.0,
                                   outerRadius: 20.0,
                                 ),
-                              )
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: const Color.fromARGB(
+                                            255, 234, 234, 234),
+                                        width: 2),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10.0)),
+                                    color: const Color.fromARGB(
+                                        255, 247, 247, 247),
+                                  ),
+                                  child: Text(
+                                    userTemperature,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                   ),

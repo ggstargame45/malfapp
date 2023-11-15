@@ -21,8 +21,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:malf/features/home/home_page_controller.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-
-
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
@@ -33,7 +31,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String token;
+  // late String token;
   final _pageSize = 10;
 
   // List<String> adList = [];
@@ -83,11 +81,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    token = Token().refreshToken;
+    // token = Token().refreshToken;
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
 
-    logger.e(token);
+    logger.d(Token().refreshToken);
+    logger.d(Token().userUniqId);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -174,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                   color: const Color.fromARGB(
-                                                      255, 71, 145, 255),
+                                                      155, 71, 145, 255),
                                                   width: 2),
                                               borderRadius:
                                                   BorderRadius.circular(30),
@@ -189,20 +188,25 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                               color: Colors.white,
                                             ),
-                                            child: const Column(
+                                            child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Text(
-                                                  "漢",
-                                                  style: TextStyle(
-                                                      fontSize: 30,
-                                                      color: Colors.black87,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
+                                                Image.asset("assets/icons/chinese_icon.png",
+                                                    width: 50,
+                                                    height: 50,
+                                                    fit: BoxFit.cover),
+
+                                                // Text(
+                                                //   "漢",
+                                                //   style: TextStyle(
+                                                //       fontSize: 30,
+                                                //       color: AppColors.primary,
+                                                //       fontWeight:
+                                                //           FontWeight.bold),
+                                                // ),
                                               ],
                                             ),
                                           ),
@@ -210,7 +214,7 @@ class _HomePageState extends State<HomePage> {
                                               style: AppTextStyles.body
                                                   .copyWith(
                                                       fontWeight:
-                                                          FontWeight.bold)),
+                                                          FontWeight.w500)),
                                         ],
                                       ),
                                     ),
@@ -228,7 +232,7 @@ class _HomePageState extends State<HomePage> {
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                   color: const Color.fromARGB(
-                                                      255, 71, 145, 255),
+                                                      155, 71, 145, 255),
                                                   width: 2),
                                               borderRadius:
                                                   BorderRadius.circular(30),
@@ -243,20 +247,25 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                               color: Colors.white,
                                             ),
-                                            child: const Column(
+                                            child:  Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Text(
-                                                  "Aa",
-                                                  style: TextStyle(
-                                                      fontSize: 30,
-                                                      color: Colors.black87,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
+                                                Image.asset("assets/icons/english_icon5.png",
+                                                    width: 50,
+                                                    height: 50,
+                                                    fit: BoxFit.cover),
+
+                                                // Text(
+                                                //   "Aa",
+                                                //   style: TextStyle(
+                                                //       fontSize: 30,
+                                                //       color: Colors.black87,
+                                                //       fontWeight:
+                                                //           FontWeight.w500),
+                                                // ),
                                               ],
                                             ),
                                           ),
@@ -264,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                                               style: AppTextStyles.body
                                                   .copyWith(
                                                       fontWeight:
-                                                          FontWeight.bold)),
+                                                          FontWeight.w500)),
                                         ],
                                       ),
                                     ),
@@ -282,7 +291,7 @@ class _HomePageState extends State<HomePage> {
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                   color: const Color.fromARGB(
-                                                      255, 71, 145, 255),
+                                                      155, 71, 145, 255),
                                                   width: 2),
                                               borderRadius:
                                                   BorderRadius.circular(30),
@@ -297,20 +306,24 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                               color: Colors.white,
                                             ),
-                                            child: const Column(
+                                            child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Text(
-                                                  "あ",
-                                                  style: TextStyle(
-                                                      fontSize: 30,
-                                                      color: Colors.black87,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
+                                                Image.asset("assets/icons/japanese_icon.png",
+                                                    width: 55,
+                                                    height: 55,
+                                                    fit: BoxFit.cover),
+                                                // Text(
+                                                //   "あ",
+                                                //   style: TextStyle(
+                                                //       fontSize: 30,
+                                                //       color: Colors.black87,
+                                                //       fontWeight:
+                                                //           FontWeight.bold),
+                                                // ),
                                               ],
                                             ),
                                           ),
@@ -318,7 +331,7 @@ class _HomePageState extends State<HomePage> {
                                               style: AppTextStyles.body
                                                   .copyWith(
                                                       fontWeight:
-                                                          FontWeight.bold)),
+                                                          FontWeight.w500)),
                                         ],
                                       ),
                                     ),
@@ -368,7 +381,8 @@ class _HomePageState extends State<HomePage> {
                                                 ? 'https://malftravel.com/default.jpeg'
                                                 : '${baseUrl}/${item.meetingPic[0]}',
                                             headers: {
-                                              'Authorization': token,
+                                              'Authorization':
+                                                  Token().refreshToken,
                                             },
                                             cache: true,
                                             loadStateChanged:
@@ -473,24 +487,24 @@ class _HomePageState extends State<HomePage> {
                                                     child: Container(
                                                       decoration: BoxDecoration(
                                                         border: Border.all(
-                                                            color:
-                                                                const Color.fromARGB(
-                                                                    255,
-                                                                    234,
-                                                                    234,
-                                                                    234),
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                234, 234, 234),
                                                             width: 2),
                                                         borderRadius:
-                                                            const BorderRadius.all(
+                                                            const BorderRadius
+                                                                .all(
                                                                 Radius.circular(
                                                                     10.0)),
-                                                        color: const Color.fromARGB(
+                                                        color: const Color
+                                                            .fromARGB(
                                                             255, 247, 247, 247),
                                                       ),
                                                       child: Text(
                                                         " ${item.meetingLocation} ",
                                                         maxLines: 2,
-                                                        overflow: TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         style: const TextStyle(
                                                           fontFamily:
                                                               'Pretendard',
@@ -503,18 +517,21 @@ class _HomePageState extends State<HomePage> {
                                                   Container(
                                                     decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: const Color.fromARGB(
-                                                              255,
-                                                              234,
-                                                              234,
-                                                              234),
+                                                          color: const Color
+                                                              .fromARGB(255,
+                                                              234, 234, 234),
                                                           width: 2),
                                                       borderRadius:
-                                                          const BorderRadius.all(
+                                                          const BorderRadius
+                                                              .all(
                                                               Radius.circular(
                                                                   10.0)),
-                                                      color: const Color.fromARGB(
-                                                          255, 247, 247, 247),
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255,
+                                                              247,
+                                                              247,
+                                                              247),
                                                     ),
                                                     child: Text(
                                                       " ${item.meetingStartTime.year}.${item.meetingStartTime.month}.${item.meetingStartTime.day} | ${item.meetingStartTime.hour < 10 ? "0${item.meetingStartTime.hour}" : item.meetingStartTime.hour.toString()} : ${item.meetingStartTime.minute < 10 ? "0${item.meetingStartTime.minute}" : item.meetingStartTime.minute} ",
@@ -646,88 +663,15 @@ class _HomePageState extends State<HomePage> {
         height: 60,
         width: 60,
         child: FloatingActionButton(
-          // color: AppColors.white,
+          heroTag: "write",
           child: const Icon(CupertinoIcons.add),
           onPressed: () async {
-            // if ((await Dio(BaseOptions(baseUrl: baseUrl, headers: {
-            //       'Authorization': Token().refreshToken
-            //     })).get("/user/status"))
-            //         .data['data'][0]["user_status"] ==
-            //     1) {
-            //   await context.push('/write');
-            //   state.started();
-            // }
-            // if (true) {
-            //   showDialog(
-            //       context: context,
-            //       builder: (BuildContext contexts) {
-            //         return AlertDialog(
-            //           title: Text("알림"),
-            //           content: Text("학생증 인증이 필요합니다."),
-            //           actions: [
-            //             TextButton(
-            //                 onPressed: () async {
-            //                   await contexts.push("/schoolAuth");
-            //                   contexts.pop();
-            //                 },
-            //                 child: Text("학생증 인증하기")),
-            //             TextButton(
-            //                 onPressed: () {
-            //                   contexts.pop();
-            //                 },
-            //                 child: Text("취소")),
-            //           ],
-            //         );
-            //       });
-            //   return;
-            // }
-            int status = await checkStatus();
-            if (true) {
-              await context.push('/write');
+            context.push('/write');
+            return;
+            if (await doAuth(context)) {
+              context.push('/write');
               // _pagingController.refresh();
-            } 
-            // else if (true
-            //     // status == -1
-            //     ) {
-            //   showDialog(
-            //       context: context,
-            //       builder: (BuildContext context) {
-            //         return AlertDialog(
-            //           title: const Text("알림"),
-            //           content: const Text("학생증 인증이 필요합니다."),
-            //           actions: [
-            //             TextButton(
-            //                 onPressed: () async {
-            //                   await context.push("/schoolAuth");
-            //                   context.pop();
-            //                 },
-            //                 child: Text("next".tr())),
-            //             TextButton(
-            //                 onPressed: () {
-            //                   context.pop();
-            //                 },
-            //                 child: Text("cancel".tr())),
-            //           ],
-            //         );
-            //       });
-            // }
-            // if (status == 0) {
-            //   showDialog(
-            //       context: context,
-            //       builder: (BuildContext contexts) {
-            //         return AlertDialog(
-            //           title: Text("school_auth_process_message".tr()),
-            //           content: Text("school_auth_process_message".tr()),
-            //           actions: [
-            //             TextButton(
-            //                 onPressed: () {
-            //                   contexts.pop();
-            //                 },
-            //                 child: Text("cancel".tr()))
-            //           ],
-            //         );
-            //       });
-            // }
+            }
           },
         ),
       ),

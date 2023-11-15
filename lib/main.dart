@@ -10,6 +10,7 @@ import 'package:malf/shared/collections/iblockmeeting.dart';
 import 'package:malf/shared/collections/iblockuser.dart';
 import 'package:malf/shared/collections/itoken.dart';
 import 'package:malf/shared/network/token.dart';
+import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:path_provider/path_provider.dart';
 
 const version = "R1.0.0";
@@ -27,6 +28,7 @@ Future<void> main() async {
 
     final isar = await Isar.open([ITokenSchema,IBlockMeetingSchema,IBlockUserSchema], directory: dir.path);
     Token().tokenInit();
+    BlockSet().setInit();
 
   FlutterNativeSplash.remove();
 

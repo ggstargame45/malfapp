@@ -20,6 +20,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
   http.MultipartRequest request;
   http.StreamedResponse? response;
   int isUploaded = 0;
+  bool uploaded = false;
 
   for (int i = 0; i < imageList.length; i++) {
     imageFileList.add(await compressImage(File(imageList[i].path), 93));
@@ -49,9 +50,9 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
       //     // 'capacity_travel': data.capacity_travel,
       // };
 
-      String token = Token().refreshToken;
+      
 
-      request.headers['Authorization'] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3VuaXFfaWQiOiJnXzExMzA2NDE3NTg0OTEwNDQyOTIzOSIsImlhdCI6MTY5OTgzMDI3OSwiZXhwIjoxNzMxMzY2Mjc5fQ.JnanTnzb1TELuWLigFcRFDzR0llIuId2QZ3PU_hYomE";
+      request.headers['Authorization'] = Token().refreshToken;
       request.headers['Content-Type'] = 'multipart/form-data;';
 
       // request.files;
@@ -66,6 +67,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
           logger.d(response!.reasonPhrase);
           if (response!.statusCode == 200) {
             logger.d('요청이 성공적으로 처리되었습니다.');
+            uploaded =true;
             return true;
           } else {
             logger.e('요청이 실패하였습니다. 상태 코드: ${response!.statusCode}');
@@ -80,7 +82,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
     logger.e(e);
     return false;
   }
-  return false;
+  return uploaded;
 }
 
 class SchoolAuthScreen extends StatefulWidget {
@@ -488,7 +490,13 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                       ))),
                       child: Text("submit".tr()),
                       onPressed: () async {
-                        await postPosting(PostingBody(), imageList);
+                        if(await postPosting(PostingBody(), imageList)){
+                          context.pop();
+                        }
+                        else{
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("post_fail".tr())));
+                        }
                       },
                     )),
               )),

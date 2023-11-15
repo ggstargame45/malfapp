@@ -8,6 +8,7 @@ import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/theme/test_styles.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
+import 'package:malf/shared/usecases/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS features.
@@ -225,26 +226,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> patch() async {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return LoadingAnimationWidget.inkDrop(
-            color: AppColors.primary,
-            size: 100,
-          );
-        });
+    loading(context);
     await shorebirdCodePush.downloadUpdateIfAvailable();
     context.pop();
   }
 
   Future<void> initer() async {
+    loading(context);
     await patchAvailable();
 
     await checkVersion();
     await checkServer();
 
     logger.d("refreshToken : ${Token().refreshToken}");
+    context.pop();
     if (Token().refreshToken != "") {
       context.go('/home');
     }

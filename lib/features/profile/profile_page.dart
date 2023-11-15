@@ -13,6 +13,7 @@ import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/usecases/nation_image.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -106,10 +107,21 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
+    String userTemperature = "36.5";
+    if (profileData != null) {
+      userTemperature =
+          "${profileData!.userTemperature.toString().substring(0, profileData!.userTemperature.toString().length - 1)}.${profileData!.userTemperature.toString()[profileData!.userTemperature.toString().length - 1]} ";
+      if (profileData!.userTemperature < 10 &&
+          profileData!.userTemperature > -10) {
+        userTemperature = " 0$userTemperature";
+      } else {
+        userTemperature = " $userTemperature";
+      }
+    }
 
     logger.i('ProfilePage build');
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         appBar: AppBar(
             title: Text(
               'my_page'.tr(),
@@ -135,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage>
                 clipBehavior: Clip.none,
                 children: [
                   SizedBox(
-                    height: 230,
+                    height: 250,
                     width: maxWidth,
                   ),
                   Container(
@@ -191,8 +203,8 @@ class _ProfilePageState extends State<ProfilePage>
                                     });
                               },
                               child: SizedBox(
-                                height: 85,
-                                width: 85,
+                                height: 95,
+                                width: 95,
                                 child: ExtendedImage.network(
                                   baseUrl + "/" + profileData!.profilePic[0],
                                   cache: true,
@@ -204,7 +216,40 @@ class _ProfilePageState extends State<ProfilePage>
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                            ))
+                            )),
+                  Positioned(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(color: Colors.grey.shade300),
+                            ),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await context.push('/profileEdit',
+                              extra: profileData);
+
+                          getProfile();
+                        },
+                        child: Text(
+                          'edit_profile'.tr(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    right: 12,
+                    bottom: 0,
+                  )
                 ],
               ),
 
@@ -222,73 +267,127 @@ class _ProfilePageState extends State<ProfilePage>
                               fontWeight: FontWeight.bold,
                             ),
                           )
-                        : Row(
-                            children: [
-                              Container(
-                                constraints: BoxConstraints(
-                                  maxWidth: maxWidth * 0.5,
+                        : SizedBox(
+                            width: maxWidth * 0.85,
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    profileData!.nickname,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
-                                child: Text(
-                                  profileData!.nickname +
-                                      CountryCode.parse(
-                                              profileData!.nation.toString())
-                                          .symbol,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
+                                Text(
+                                  CountryCode.parse(
+                                          profileData!.nation.toString())
+                                      .symbol,
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(8, 0, 8.0, 0),
-                                child: RoundedBackgroundText(
-                                  "${profileData!.userType == 0 ? "foreigner" : "local"}"
-                                      .tr(),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: profileData!.userType == 0
-                                          ? AppColors.primary
-                                          : AppColors.white),
-                                  backgroundColor: profileData!.userType == 0
-                                      ? AppColors.extraLightGrey
-                                      : AppColors.primary,
-                                  innerRadius: 20.0,
-                                  outerRadius: 20.0,
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8.0, 0),
+                                  child: RoundedBackgroundText(
+                                    "${profileData!.userType == 0 ? "foreigner" : "local"}"
+                                        .tr(),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: profileData!.userType == 0
+                                            ? AppColors.primary
+                                            : AppColors.white),
+                                    backgroundColor: profileData!.userType == 0
+                                        ? AppColors.extraLightGrey
+                                        : AppColors.primary,
+                                    innerRadius: 20.0,
+                                    outerRadius: 20.0,
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20, top: 20),
-                    child: TextButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(color: Colors.grey.shade300),
-                          ),
-                        ),
-                      ),
-                      onPressed: () async {
-                        await context.push('/profileEdit', extra: profileData);
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: const Color.fromARGB(
+                                              255, 234, 234, 234),
+                                          width: 2),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10.0)),
+                                      color: const Color.fromARGB(
+                                          255, 247, 247, 247),
+                                    ),
+                                    child: Text(
+                                      userTemperature,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontFamily: 'Pretendard',
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: profileData!.userTemperature < 100
+                                      ? SvgPicture.asset("assets/icons/ic_angry.svg",
+                                          colorFilter: ColorFilter.mode(
+                                              const Color.fromARGB(
+                                                  255, 26, 26, 26),
+                                              BlendMode.srcIn))
+                                      : profileData!.userTemperature < 200
+                                          ? SvgPicture.asset("assets/icons/ic_sad.svg",
+                                              colorFilter: ColorFilter.mode(
+                                                  const Color.fromARGB(
+                                                      255, 128, 128, 128),
+                                                  BlendMode.srcIn))
+                                          : profileData!.userTemperature < 300
+                                              ? Icon(
+                                                  Icons
+                                                      .sentiment_neutral_outlined,
+                                                  color: Color.fromARGB(
+                                                      255, 97, 195, 255),
+                                                )
+                                              : profileData!.userTemperature <
+                                                      400
+                                                  ? Icon(Icons.mood,
+                                                      color: Color.fromARGB(
+                                                          255, 99, 102, 241))
+                                                  : profileData!.userTemperature <
+                                                          500
+                                                      ? SvgPicture.asset(
+                                                          "assets/icons/ic_rofl.svg",
+                                                          colorFilter:
+                                                              ColorFilter.mode(
+                                                                  const Color
+                                                                      .fromARGB(
+                                                                      255,
+                                                                      247,
+                                                                      119,
+                                                                      33),
+                                                                  BlendMode
+                                                                      .srcIn),
+                                                        )
+                                                      : SvgPicture.asset(
+                                                          "assets/icons/ic_family_star.svg",
+                                                          height: 20,
+                                                          colorFilter: ColorFilter.mode(
+                                                              const Color.fromARGB(255, 255, 96, 96),
+                                                              BlendMode.srcIn)),
 
-                        getProfile();
-                      },
-                      child: Text(
-                        'edit_profile'.tr(),
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
+                                  //
+                                  //
+                                )
+                              ],
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -398,61 +497,60 @@ class _ProfilePageState extends State<ProfilePage>
               ),
               Divider(),
               Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-              child: Text(
-                "my_meeting".tr(),
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 128, 128, 128),
-                  fontWeight: FontWeight.w500,
+                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                child: Text(
+                  "my_meeting".tr(),
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 128, 128, 128),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            ),
-            ListTile(
-              leading: Icon(CupertinoIcons.heart_circle_fill, color: Colors.red),
-              title: Text(
-                "like_meeting".tr(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              ListTile(
+                leading:
+                    Icon(CupertinoIcons.heart_circle_fill, color: Colors.red),
+                title: Text(
+                  "like_meeting".tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
+                onTap: () {
+                  context.push('/meetingList/like/0');
+                },
               ),
-              onTap: () {
-                context.push('/meetingList/like/0');
-              },
-            ),
-            ListTile(
-              leading: Icon(CupertinoIcons.check_mark_circled_solid, color: AppColors.primary),
-              title: Text(
-                "attend_meeting".tr(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              ListTile(
+                leading: Icon(CupertinoIcons.check_mark_circled_solid,
+                    color: AppColors.primary),
+                title: Text(
+                  "attend_meeting".tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
+                onTap: () {
+                  context.push('/meetingList/apply/0');
+                },
               ),
-              onTap: () {
-                context.push('/meetingList/apply/0');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.edit_square, color: Colors.blue),
-              title: Text(
-                "made_meeting".tr(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              ListTile(
+                leading: Icon(Icons.edit_square, color: Colors.blue),
+                title: Text(
+                  "made_meeting".tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
+                onTap: () {
+                  context.push('/meetingList/write/0');
+                },
               ),
-              onTap: () {
-                context.push('/meetingList/write/0');
-              },
-            ),
-            
-
-              
 
               //TODO:본인이 참가신청한 모임 리스트뷰와 본인이 좋아요 누른 모임 리스트뷰를 tabbar로 구현
-              
+
               //         Column(
               //   mainAxisAlignment: MainAxisAlignment.spaceAround,
               //   children: <Widget>[

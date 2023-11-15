@@ -146,5 +146,9 @@
   "female": "女性",
   "profile_edit_type_title": "外国人/現地人を選択してください。",
   "profile_edit_nation_title": "国籍を選択してください。",
-  "profile_edit_gender_title": "性別を選択してください。"
+  "profile_edit_gender_title": "性別を選択してください。",
+  "notification" :"通知",
+  "apply_rejected" : "参加申請が拒否されました。",
+  "apply_accepted" : "参加申請が承認されました。",
+  "review_notification" : "参加者のレビューを残すつもりですか？"
 }
