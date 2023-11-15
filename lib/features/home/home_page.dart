@@ -8,6 +8,7 @@ import 'package:malf/shared/check.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/theme/test_styles.dart';
+import 'package:malf/shared/usecases/block_handle.dart';
 import './home_list_model.dart';
 
 import 'package:malf/shared/logger.dart';
@@ -68,10 +69,26 @@ class _HomePageState extends State<HomePage> {
 
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
-        pagingController.appendLastPage(newItems);
+        pagingController.appendLastPage(newItems
+            .where((element) =>
+                (DateTime.now().isBefore(element.meetingStartTime)) &&
+                (!BlockSet().blockUserUniqIdSet.contains(element.userUniqId)) &&
+                (!BlockSet().blockMeetingPostIdSet.contains(element.postId)))
+            .toList());
       } else {
         final nextPageKey = pageKey + 1;
-        pagingController.appendPage(newItems, nextPageKey);
+        pagingController.appendPage(
+            newItems
+                .where((element) =>
+                    (DateTime.now().isBefore(element.meetingStartTime)) &&
+                    (!BlockSet()
+                        .blockUserUniqIdSet
+                        .contains(element.userUniqId)) &&
+                    (!BlockSet()
+                        .blockMeetingPostIdSet
+                        .contains(element.postId)))
+                .toList(),
+            nextPageKey);
       }
     } catch (error) {
       // _pagingController.error = error;
@@ -194,7 +211,8 @@ class _HomePageState extends State<HomePage> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Image.asset("assets/icons/chinese_icon.png",
+                                                Image.asset(
+                                                    "assets/icons/chinese_icon.png",
                                                     width: 50,
                                                     height: 50,
                                                     fit: BoxFit.cover),
@@ -247,13 +265,14 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                               color: Colors.white,
                                             ),
-                                            child:  Column(
+                                            child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Image.asset("assets/icons/english_icon5.png",
+                                                Image.asset(
+                                                    "assets/icons/english_icon5.png",
                                                     width: 50,
                                                     height: 50,
                                                     fit: BoxFit.cover),
@@ -312,7 +331,8 @@ class _HomePageState extends State<HomePage> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Image.asset("assets/icons/japanese_icon.png",
+                                                Image.asset(
+                                                    "assets/icons/japanese_icon.png",
                                                     width: 55,
                                                     height: 55,
                                                     fit: BoxFit.cover),
