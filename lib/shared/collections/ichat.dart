@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 
+part 'ichat.g.dart';
 
 @Collection()
 class IChat{

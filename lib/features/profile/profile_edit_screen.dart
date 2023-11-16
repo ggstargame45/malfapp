@@ -111,7 +111,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       final Directory tempDir = await getTemporaryDirectory();
       final String tempPath = tempDir.path;
       imageFileList.add(await File("${tempPath}1.jpg").writeAsBytes((await http
-              .get(Uri.parse(baseUri + oldImage),
+              .get(Uri.parse( oldImage),
                   headers: {'Authorization': Token().refreshToken}))
           .bodyBytes));
     }
@@ -210,6 +210,17 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           'edit_profile'.tr(),
           style: TextStyle(color: Colors.black),
         ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                if (mounted) {
+                  context.pop();
+                }
+
+              },
+              color: Colors.black,
+              icon: const Icon(Icons.close_outlined)),
+        ],
       ),
       body: SingleChildScrollView(
         controller: ScrollController(
@@ -312,7 +323,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               height: 85,
                               width: 85,
                               child: ExtendedImage.network(
-                                baseUrl + "/" + oldImage,
+                                oldImage,
                                 cache: true,
                                 shape: BoxShape.circle,
                                 border: Border.all(

@@ -142,7 +142,7 @@ class _AttendListScreenState extends State<AttendListScreen> {
                                     width: 50,
                                     height: 50,
                                     child: ExtendedImage.network(
-                                      "$baseUrl/${attendList[index].profilePic[0]}",
+                                      attendList[index].profilePic[0],
                                       cache: true,
                                       shape: BoxShape.circle,
                                       fit: BoxFit.cover,
@@ -299,7 +299,7 @@ class _AttendListScreenState extends State<AttendListScreen> {
                                     width: 50,
                                     height: 50,
                                     child: ExtendedImage.network(
-                                      "$baseUrl/${insideList[index].profilePic[0]}",
+                                      insideList[index].profilePic[0],
                                       cache: true,
                                       shape: BoxShape.circle,
                                       fit: BoxFit.cover,

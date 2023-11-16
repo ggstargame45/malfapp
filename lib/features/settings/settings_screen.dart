@@ -233,6 +233,20 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("language_setting".tr()),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => context.pop(),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                if (mounted) {
+                  context.pop();
+                }
+              },
+              color: Colors.black,
+              icon: const Icon(Icons.close_outlined)),
+        ],
       ),
       body: ListView(
         children: [

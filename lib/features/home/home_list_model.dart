@@ -42,7 +42,11 @@ class PicListConverter implements JsonConverter<List<String>, String> {
 
   @override
   List<String> fromJson(String jsonData) {
-    return List<String>.from(jsonDecode(jsonData));
+    if (jsonData.isNotEmpty) {
+      final List<dynamic> data = jsonDecode(jsonData);
+      return data.map((e) {return e==null?"":e.toString();}).toList();
+    }
+    return [];
   }
 
   @override

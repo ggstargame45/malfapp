@@ -8,6 +8,8 @@ import 'package:isar/isar.dart';
 import 'package:malf/main/malf.dart';
 import 'package:malf/shared/collections/iblockmeeting.dart';
 import 'package:malf/shared/collections/iblockuser.dart';
+import 'package:malf/shared/collections/ichat.dart';
+import 'package:malf/shared/collections/imeetinglist.dart';
 import 'package:malf/shared/collections/itoken.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
@@ -26,7 +28,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
 
-    final isar = await Isar.open([ITokenSchema,IBlockMeetingSchema,IBlockUserSchema], directory: dir.path);
+    final isar = await Isar.open([ITokenSchema,IBlockMeetingSchema,IBlockUserSchema,IMeetingListSchema,IChatSchema], directory: dir.path);
     Token().tokenInit();
     BlockSet().setInit();
 
