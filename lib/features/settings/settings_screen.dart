@@ -76,7 +76,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             title: Text("app_version".tr()),
-            subtitle: const Text("1.2.5"),
+            subtitle: const Text("1.2.6"),
             onTap: () async {
               // try {
               //   final image =
