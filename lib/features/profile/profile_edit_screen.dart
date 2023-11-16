@@ -105,13 +105,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
     if (isChanged) {
       for (int i = 0; i < imageList.length; i++) {
-        imageFileList.add(await compressImage(File(imageList[i].path),93));
+        imageFileList.add(await compressImage(File(imageList[i].path), 90,2));
       }
     } else {
       final Directory tempDir = await getTemporaryDirectory();
       final String tempPath = tempDir.path;
       imageFileList.add(await File("${tempPath}1.jpg").writeAsBytes((await http
-              .get(Uri.parse( oldImage),
+              .get(Uri.parse(oldImage),
                   headers: {'Authorization': Token().refreshToken}))
           .bodyBytes));
     }
@@ -122,9 +122,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             http.MultipartRequest('POST', Uri.parse(baseUri + subUri));
 
         for (int i = 0; i < imageFileList.length; i++) {
-          request.files.add(await http.MultipartFile.fromPath(
-              'image', imageFileList[i].path));
-        }
+            request.files.add(await http.MultipartFile.fromPath(
+                'image', imageFileList[i].path));
+          }
 
         request.headers['Authorization'] = Token().refreshToken;
         request.headers['Content-Type'] = 'multipart/form-data;';
@@ -213,10 +213,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         actions: [
           IconButton(
               onPressed: () async {
+                // logger.d(Uri.parse(oldImage));
                 if (mounted) {
                   context.pop();
                 }
-
               },
               color: Colors.black,
               icon: const Icon(Icons.close_outlined)),
@@ -253,7 +253,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     left: 20,
                     child: GestureDetector(
                       onTap: () async {
-                        if(!(await photoPermission())) return;
+                        if (!(await photoPermission())) return;
                         final image = await ImagePicker()
                             .pickImage(source: ImageSource.gallery);
                         if (image == null) return;
@@ -550,7 +550,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     nation =
                         CountryCode.tryParse(code.code)?.numeric.toString() ??
                             "410";
-                    if(nation!="410") userType = "0";
+                    if (nation != "410") userType = "0";
                   });
                 },
                 child: Container(
@@ -604,7 +604,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           builder: (context, setState) {
                             return AlertDialog(
                               title: Text("profile_edit_language_title".tr()),
-                              content: Container(
+                              content: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 height:
                                     MediaQuery.of(context).size.height * 0.3,
@@ -619,7 +619,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                       },
                                       activeColor: AppColors.primary,
                                       checkColor: Colors.white,
-                                      title: Text("중국어"),
+                                      title: Text("chinese".tr()),
                                     ),
                                     CheckboxListTile(
                                       value: englishAble,
@@ -630,7 +630,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                       },
                                       activeColor: AppColors.primary,
                                       checkColor: Colors.white,
-                                      title: Text("영어"),
+                                      title: Text("english".tr()),
                                     ),
                                     CheckboxListTile(
                                       value: japaneseAble,
@@ -641,11 +641,20 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                       },
                                       activeColor: AppColors.primary,
                                       checkColor: Colors.white,
-                                      title: Text("일본어"),
+                                      title: Text("japanese".tr()),
                                     ),
                                   ],
                                 ),
                               ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    context.pop();
+                                  },
+                                  child: Text("confirm".tr()),
+                                ),
+
+                              ],
                             );
                           },
                         );

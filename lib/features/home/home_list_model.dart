@@ -26,6 +26,7 @@ class ListItemData with _$ListItemData {
     @JsonKey(name: 'meeting_start_time')
     @DateTimeConverter()
     required DateTime meetingStartTime,
+    @JsonKey(name:"category") required int category,
     
     @JsonKey(name: 'post_status') required int postStatus,
     @JsonKey(name: 'like_count') required int likeCount,

@@ -17,8 +17,10 @@ class HomeListProvider {
       headers: {'Authorization': Token().refreshToken},
     ));
     try {
+      // final response =
+      //     await dio.get("/bulletin-board/posts/?page=$pageNo&limit=$limit");
       final response =
-          await dio.get("/bulletin-board/posts/?page=$pageNo&limit=$limit");
+          await dio.get("/bulletin-board/posts");
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['data'];
         logger.i("data: $data");

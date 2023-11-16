@@ -60,7 +60,8 @@ class _ProfilePageState extends State<ProfilePage>
         "nation": 410,
         "gender": 0,
         "birthday": "2021-09-01",
-        "profile_pic": "[\"default.jpeg\"]",
+        "profile_pic":
+            "[\"https://malf-live.s3.ap-northeast-2.amazonaws.com/default.png\"]",
         "description": "description",
         "interests": "interests",
         "able_language": "[1, 2, 3]",
@@ -83,7 +84,12 @@ class _ProfilePageState extends State<ProfilePage>
     if (response.data['data'][0]['user_temperature'] == null) {
       copyData['user_temperature'] = 365;
     }
+    if (response.data['data'][0]['profile_pic'] == null) {
+      copyData['profile_pic'] =
+          "[\"https://malf-live.s3.ap-northeast-2.amazonaws.com/default.png\"]";
+    }
     //copyData['profile_pic'] = "[\"https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png\"]";
+
     if (response.data['data'] != []) {
       profileData = ProfileData.fromJson(copyData);
     }
@@ -103,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage>
     if (ableLanguage.endsWith(", ")) {
       ableLanguage = ableLanguage.substring(0, ableLanguage.length - 2);
     }
-    logger.d("${profileData}");
+    logger.d("${profileData!.profilePic[0]}");
     setState(() {});
   }
 
@@ -199,6 +205,20 @@ class _ProfilePageState extends State<ProfilePage>
                                 child: ExtendedImage.network(
                                   profileData!.profilePic[0],
                                   cache: true,
+                                  cacheRawData: true,
+                                  loadStateChanged: (state) {
+                                    if (state.extendedImageLoadState ==
+                                        LoadState.loading) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                    // if(state.extendedImageLoadState == LoadState.failed){
+                                    //   return Image.network(
+                                    //     profileData!.profilePic[0],
+                                    //     fit: BoxFit.cover);
+                                    // }
+                                  },
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: Colors.white,
@@ -224,6 +244,7 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                         ),
                         onPressed: () async {
+                          logger.d(profileData!.profilePic);
                           await context.push('/profileEdit',
                               extra: profileData);
 
@@ -502,7 +523,9 @@ class _ProfilePageState extends State<ProfilePage>
                 leading:
                     Icon(CupertinoIcons.heart_circle_fill, color: Colors.red),
                 title: Text(
-                  "like_meeting".tr(),
+                  context.locale.languageCode != "en"
+                      ? "like_meeting".tr()
+                      : "Liked Meet-ups",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -516,7 +539,9 @@ class _ProfilePageState extends State<ProfilePage>
                 leading: Icon(CupertinoIcons.check_mark_circled_solid,
                     color: AppColors.primary),
                 title: Text(
-                  "attend_meeting".tr(),
+                  context.locale.languageCode != "en"
+                      ? "attend_meeting".tr()
+                      : "Meet-ups I Applied",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -529,7 +554,9 @@ class _ProfilePageState extends State<ProfilePage>
               ListTile(
                 leading: Icon(Icons.edit_square, color: Colors.blue),
                 title: Text(
-                  "made_meeting".tr(),
+                  context.locale.languageCode != "en"
+                      ? "made_meeting".tr()
+                      : "Meet-ups I made",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,

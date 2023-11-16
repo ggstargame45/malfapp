@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
@@ -23,13 +24,12 @@ class _AddImageStateState extends State<AddImageState> {
   final Dio _dio = Dio();
 
   void _pickImageGallery() async {
-    if(!(await photoPermission())) return;
+    if (!(await photoPermission())) return;
     final imagePicker = ImagePicker();
-    final pickedImageFile = await imagePicker.pickImage(
-        source: ImageSource.gallery);
+    final pickedImageFile = await imagePicker.pickMultiImage();
     setState(() {
-      if (pickedImageFile != null) {
-        pickedImages.insert(0, pickedImageFile);
+      if (pickedImageFile.isNotEmpty) {
+        pickedImages.addAll(pickedImageFile);
       }
     });
     // for (XFile? pickedImage in pickedImages) {
@@ -39,13 +39,13 @@ class _AddImageStateState extends State<AddImageState> {
   }
 
   void _pickImageCamera() async {
-    if(!(await cameraPermission())) return;
+    if (!(await cameraPermission())) return;
     final imagePicker = ImagePicker();
-    final pickedImageFile = await imagePicker.pickImage(
-        source: ImageSource.camera);
+    final pickedImageFile =
+        await imagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       if (pickedImageFile != null) {
-        pickedImages.insert(0, pickedImageFile);
+        pickedImages.add(pickedImageFile);
       }
     });
     // for (XFile? pickedImage in pickedImages) {
@@ -54,24 +54,24 @@ class _AddImageStateState extends State<AddImageState> {
   }
 
   Future<bool> sendImages(List<XFile> imageList, String postId) async {
-    final imageFileList = <File>[];
-  // var request;
-  // StreamedResponse? response;
-  // bool isUploaded = false;
+    // final imageFileList = <File>[];
+    // var request;
+    // StreamedResponse? response;
+    // bool isUploaded = false;
     // MultiPartRequest로 request 정의
     var request = http.MultipartRequest(
         'POST', Uri.parse("http://malftravel.com/chat/$postId/image"));
 
     // request에 사진 업로드
     for (int i = 0; i < imageList.length; i++) {
-      request.files
-          .add(await http.MultipartFile.fromPath('image', (await compressImage(File(imageList[i].path),50)).path));
+      request.files.add(await http.MultipartFile.fromPath(
+          'image',
+          (await compressImage(File(imageList[i].path), 90, imageList.length))
+              .path));
     }
-            
 
     // request 헤더 설정
-    request.headers['Authorization'] =
-        Token().refreshToken; 
+    request.headers['Authorization'] = Token().refreshToken;
     request.headers['Content-Type'] = 'multipart/form-data;';
 
     // request.send()를 통해 post
@@ -104,16 +104,36 @@ class _AddImageStateState extends State<AddImageState> {
                       itemCount: pickedImages.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.file(
-                            File(pickedImages[index]!.path),
-                            fit: BoxFit.cover,
-                          ),
+                        return Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                File(pickedImages[index].path),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Positioned(
+                                left:
+                                    MediaQuery.of(context).size.height * 0.015,
+                                child: SizedBox(
+                                    width: MediaQuery.of(context).size.height *
+                                        0.03,
+                                    child: FloatingActionButton(
+                                      backgroundColor: const Color(0xFFD3D3D3),
+                                      onPressed: () {
+                                        setState(() {
+                                          pickedImages.removeAt(index);
+                                        });
+                                      }, // 해당 이미지 삭제
+                                      child: const Icon(Icons.close,
+                                          size: 15, color: Colors.white),
+                                    )))
+                          ],
                         );
                       },
                     )
-                  :  Center(child: Text("pick_photo".tr())),
+                  : Center(child: Text("pick_photo".tr())),
             ),
             const SizedBox(
               height: 10,
@@ -140,22 +160,23 @@ class _AddImageStateState extends State<AddImageState> {
               children: [
                 TextButton.icon(
                     onPressed: () {
-                      if(pickedImages.isNotEmpty)
-                      {try {
-                        sendImages(pickedImages, widget.postId);
-                      } catch (e) {
-                        Logger().e(e);
+                      if (pickedImages.isNotEmpty) {
+                        try {
+                          sendImages(pickedImages, widget.postId);
+                        } catch (e) {
+                          Logger().e(e);
+                        }
+                        context.pop();
                       }
-                      Navigator.pop(context);}
                     },
                     icon: const Icon(Icons.check),
                     label: Text('send'.tr())),
                 TextButton.icon(
                     onPressed: () {
-                      Navigator.pop(context);
+                      context.pop();
                     },
                     icon: const Icon(Icons.close),
-                    label:  Text('close'.tr())),
+                    label: Text('close'.tr())),
               ],
             )
           ]),

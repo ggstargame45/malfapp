@@ -67,6 +67,13 @@ class _HomePageState extends State<HomePage> {
     try {
       final newItems = await HomeListProvider.getHomeList(pageKey, _pageSize);
       logger.d("asdasd : $newItems");
+      pagingController.appendLastPage(newItems
+          .where((element) =>
+              (DateTime.now().isBefore(element.meetingStartTime)) &&
+              (!BlockSet().blockUserUniqIdSet.contains(element.userUniqId)) &&
+              (!BlockSet().blockMeetingPostIdSet.contains(element.postId)))
+          .toList());
+      return;
 
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
@@ -389,8 +396,7 @@ class _HomePageState extends State<HomePage> {
                               horizontal: 16, vertical: 8),
                           child: GestureDetector(
                             onTap: () async {
-                              await context.push('/detail/${item.postId}');
-                              pagingController.refresh();
+                              context.push('/detail/${item.postId}');
                             },
                             child: Card(
                               shape: RoundedRectangleBorder(
@@ -455,46 +461,59 @@ class _HomePageState extends State<HomePage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  "${CountryCode.tryParse("${item.authorNation}")?.symbol ?? "?"} ",
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                Flexible(
-                                                  child: Text(
-                                                    "${item.authorNickname} ",
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          8, 0, 8.0, 0),
-                                                  child: RoundedBackgroundText(
-                                                    "${item.userType == 0 ? "foreigner".tr() : "local".tr()} ",
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: item.userType ==
-                                                                0
-                                                            ? AppColors.primary
-                                                            : AppColors.white),
-                                                    backgroundColor:
-                                                        item.userType == 0
-                                                            ? AppColors
-                                                                .extraLightGrey
-                                                            : AppColors.primary,
-                                                    innerRadius: 20.0,
-                                                    outerRadius: 20.0,
+                                                Expanded(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        "${CountryCode.tryParse("${item.authorNation}")?.symbol ?? "?"} ",
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      Flexible(
+                                                        child: Text(
+                                                          "${item.authorNickname} ",
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                8, 0, 8.0, 0),
+                                                        child:
+                                                            RoundedBackgroundText(
+                                                          "${item.userType == 0 ? "foreigner".tr() : "local".tr()} ",
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: item.userType ==
+                                                                      0
+                                                                  ? AppColors
+                                                                      .primary
+                                                                  : AppColors
+                                                                      .white),
+                                                          backgroundColor: item
+                                                                      .userType ==
+                                                                  0
+                                                              ? AppColors
+                                                                  .extraLightGrey
+                                                              : AppColors
+                                                                  .primary,
+                                                          innerRadius: 20.0,
+                                                          outerRadius: 20.0,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],

@@ -129,8 +129,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       userType = chatRoomDetailData.data['data'][0]['user_type'];
       meetingStartTime = DateTime.parse(
           chatRoomDetailData.data['data'][0]['meeting_start_time']);
-      authorUserUniqId =
-          chatRoomDetailData.data['data'][0]['user_uniq_id'];
+      authorUserUniqId = chatRoomDetailData.data['data'][0]['user_uniq_id'];
 
       chatRoomImage =
           jsonDecode(chatRoomDetailData.data['data'][0]['meeting_pic'])[0];
@@ -246,7 +245,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         value: 1,
                         onTap: () {
                           context.push(
-                            '/attendList/${widget.roomId}/${authorUserUniqId == Token().userUniqId ? 1 : 0}');
+                              '/attendList/${widget.roomId}/${authorUserUniqId == Token().userUniqId ? 1 : 0}');
                         },
                         child: Text("attendance".tr()),
                       ),

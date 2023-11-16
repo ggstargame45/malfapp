@@ -46,6 +46,8 @@ mixin _$ListItemData {
   @JsonKey(name: 'meeting_start_time')
   @DateTimeConverter()
   DateTime get meetingStartTime => throw _privateConstructorUsedError;
+  @JsonKey(name: "category")
+  int get category => throw _privateConstructorUsedError;
   @JsonKey(name: 'post_status')
   int get postStatus => throw _privateConstructorUsedError;
   @JsonKey(name: 'like_count')
@@ -81,6 +83,7 @@ abstract class $ListItemDataCopyWith<$Res> {
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
       DateTime meetingStartTime,
+      @JsonKey(name: "category") int category,
       @JsonKey(name: 'post_status') int postStatus,
       @JsonKey(name: 'like_count') int likeCount,
       @JsonKey(name: 'local_participation') int localParticipation,
@@ -111,6 +114,7 @@ class _$ListItemDataCopyWithImpl<$Res, $Val extends ListItemData>
     Object? meetingPic = null,
     Object? meetingLocation = null,
     Object? meetingStartTime = null,
+    Object? category = null,
     Object? postStatus = null,
     Object? likeCount = null,
     Object? localParticipation = null,
@@ -161,6 +165,10 @@ class _$ListItemDataCopyWithImpl<$Res, $Val extends ListItemData>
           ? _value.meetingStartTime
           : meetingStartTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      category: null == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as int,
       postStatus: null == postStatus
           ? _value.postStatus
           : postStatus // ignore: cast_nullable_to_non_nullable
@@ -203,6 +211,7 @@ abstract class _$$ListItemDataImplCopyWith<$Res>
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
       DateTime meetingStartTime,
+      @JsonKey(name: "category") int category,
       @JsonKey(name: 'post_status') int postStatus,
       @JsonKey(name: 'like_count') int likeCount,
       @JsonKey(name: 'local_participation') int localParticipation,
@@ -231,6 +240,7 @@ class __$$ListItemDataImplCopyWithImpl<$Res>
     Object? meetingPic = null,
     Object? meetingLocation = null,
     Object? meetingStartTime = null,
+    Object? category = null,
     Object? postStatus = null,
     Object? likeCount = null,
     Object? localParticipation = null,
@@ -281,6 +291,10 @@ class __$$ListItemDataImplCopyWithImpl<$Res>
           ? _value.meetingStartTime
           : meetingStartTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      category: null == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as int,
       postStatus: null == postStatus
           ? _value.postStatus
           : postStatus // ignore: cast_nullable_to_non_nullable
@@ -320,6 +334,7 @@ class _$ListItemDataImpl implements _ListItemData {
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
       required this.meetingStartTime,
+      @JsonKey(name: "category") required this.category,
       @JsonKey(name: 'post_status') required this.postStatus,
       @JsonKey(name: 'like_count') required this.likeCount,
       @JsonKey(name: 'local_participation') required this.localParticipation,
@@ -373,6 +388,9 @@ class _$ListItemDataImpl implements _ListItemData {
   @DateTimeConverter()
   final DateTime meetingStartTime;
   @override
+  @JsonKey(name: "category")
+  final int category;
+  @override
   @JsonKey(name: 'post_status')
   final int postStatus;
   @override
@@ -387,7 +405,7 @@ class _$ListItemDataImpl implements _ListItemData {
 
   @override
   String toString() {
-    return 'ListItemData(postId: $postId, title: $title, authorNickname: $authorNickname, authorNation: $authorNation, userType: $userType, capacityLocal: $capacityLocal, capacityTravel: $capacityTravel, userUniqId: $userUniqId, meetingPic: $meetingPic, meetingLocation: $meetingLocation, meetingStartTime: $meetingStartTime, postStatus: $postStatus, likeCount: $likeCount, localParticipation: $localParticipation, travelParticipation: $travelParticipation)';
+    return 'ListItemData(postId: $postId, title: $title, authorNickname: $authorNickname, authorNation: $authorNation, userType: $userType, capacityLocal: $capacityLocal, capacityTravel: $capacityTravel, userUniqId: $userUniqId, meetingPic: $meetingPic, meetingLocation: $meetingLocation, meetingStartTime: $meetingStartTime, category: $category, postStatus: $postStatus, likeCount: $likeCount, localParticipation: $localParticipation, travelParticipation: $travelParticipation)';
   }
 
   @override
@@ -415,6 +433,8 @@ class _$ListItemDataImpl implements _ListItemData {
                 other.meetingLocation == meetingLocation) &&
             (identical(other.meetingStartTime, meetingStartTime) ||
                 other.meetingStartTime == meetingStartTime) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             (identical(other.postStatus, postStatus) ||
                 other.postStatus == postStatus) &&
             (identical(other.likeCount, likeCount) ||
@@ -440,6 +460,7 @@ class _$ListItemDataImpl implements _ListItemData {
       const DeepCollectionEquality().hash(_meetingPic),
       meetingLocation,
       meetingStartTime,
+      category,
       postStatus,
       likeCount,
       localParticipation,
@@ -476,6 +497,7 @@ abstract class _ListItemData implements ListItemData {
       @JsonKey(name: 'meeting_start_time')
       @DateTimeConverter()
       required final DateTime meetingStartTime,
+      @JsonKey(name: "category") required final int category,
       @JsonKey(name: 'post_status') required final int postStatus,
       @JsonKey(name: 'like_count') required final int likeCount,
       @JsonKey(name: 'local_participation')
@@ -521,6 +543,9 @@ abstract class _ListItemData implements ListItemData {
   @JsonKey(name: 'meeting_start_time')
   @DateTimeConverter()
   DateTime get meetingStartTime;
+  @override
+  @JsonKey(name: "category")
+  int get category;
   @override
   @JsonKey(name: 'post_status')
   int get postStatus;
