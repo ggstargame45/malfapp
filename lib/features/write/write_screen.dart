@@ -13,6 +13,8 @@ import 'package:image_picker/image_picker.dart';
 // import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:malf/features/chat/chat_list/chat_page_controller.dart';
+import 'package:malf/features/home/home_page_controller.dart';
 
 import 'package:malf/shared/logger.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
@@ -861,6 +863,8 @@ class _WriteScreenState extends State<WriteScreen> {
                                 });
                           }
                           if(made){
+                            pagingChatController.refresh();
+                            pagingController.refresh();
                             context.pop();
                           }
                         },

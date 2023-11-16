@@ -701,8 +701,6 @@ class _HomePageState extends State<HomePage> {
           heroTag: "write",
           child: const Icon(CupertinoIcons.add),
           onPressed: () async {
-            context.push('/write');
-            return;
             if (await doAuth(context)) {
               context.push('/write');
               // _pagingController.refresh();

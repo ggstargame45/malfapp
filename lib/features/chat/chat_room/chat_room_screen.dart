@@ -47,6 +47,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   int? authorNation;
   int? userType;
   DateTime? meetingStartTime;
+  String? authorUserUniqId;
 
   Future<void> addMessage(Message data) async {
     logger.d(data.sender);
@@ -93,13 +94,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       _socket.onDisconnect((data) => logger.d('Socket.IO server disconnected'));
       _socket.emit(
           "join", {"room": "${widget.roomId}", "sender": Token().userUniqId});
-      _socket.on(
-          'join',
-          (data) {
-            logger.d("join : $data");
-                addMessage(Message.fromJson(data));
-
-              });
+      _socket.on('join', (data) {
+        logger.d("join : $data");
+        addMessage(Message.fromJson(data));
+      });
       _socket.on('image', (data) {
         logger.d("imagedata : $data");
         addMessage(Message.fromJson(data));
@@ -131,6 +129,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       userType = chatRoomDetailData.data['data'][0]['user_type'];
       meetingStartTime = DateTime.parse(
           chatRoomDetailData.data['data'][0]['meeting_start_time']);
+      authorUserUniqId =
+          chatRoomDetailData.data['data'][0]['user_uniq_id'];
 
       chatRoomImage =
           jsonDecode(chatRoomDetailData.data['data'][0]['meeting_pic'])[0];
@@ -152,8 +152,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       await start();
       context.pop();
     });
-    
-    
   }
 
   Future<void> start() async {
@@ -247,6 +245,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       PopupMenuItem(
                         value: 1,
                         onTap: () {
+                          context.push(
+                            '/attendList/${widget.roomId}/${authorUserUniqId == Token().userUniqId ? 1 : 0}');
+                        },
+                        child: Text("attendance".tr()),
+                      ),
+                      PopupMenuItem(
+                        value: 2,
+                        onTap: () {
                           context.push("/report", extra: {
                             "reportType": "chat",
                             "id": widget.roomId.toString(),
@@ -255,31 +261,33 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         },
                         child: Text("report".tr()),
                       ),
-                      PopupMenuItem(
-                        value: 2,
-                        onTap: () async {
-                          // _socket.emit("leave", {"room": widget.roomId, "sender": Token().userUniqId});
-                          try {
-                            final response = await Dio(BaseOptions(
-                                    baseUrl: baseUrl,
-                                    headers: {
-                                      'Authorization': Token().refreshToken
-                                    },
-                                    responseType: ResponseType.json))
-                                .delete("/chatroom/${widget.roomId}/chatroom");
-                            if (response.statusCode == 200) {
-                              GoRouter.of(context).pop();
-                              return;
+                      if (authorUserUniqId != Token().userUniqId)
+                        PopupMenuItem(
+                          value: 3,
+                          onTap: () async {
+                            // _socket.emit("leave", {"room": widget.roomId, "sender": Token().userUniqId});
+                            try {
+                              final response = await Dio(BaseOptions(
+                                      baseUrl: baseUrl,
+                                      headers: {
+                                        'Authorization': Token().refreshToken
+                                      },
+                                      responseType: ResponseType.json))
+                                  .delete(
+                                      "/chatroom/${widget.roomId}/chatroom");
+                              if (response.statusCode == 200) {
+                                GoRouter.of(context).pop();
+                                return;
+                              }
+                            } on Exception catch (e) {
+                              // TODO
+                              logger.e(e);
                             }
-                          } on Exception catch (e) {
-                            // TODO
-                            logger.e(e);
-                          }
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("fail".tr()))); //"채팅방 나가기 실패"
-                        },
-                        child: Text("leave".tr()),
-                      ),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("fail".tr()))); //"채팅방 나가기 실패"
+                          },
+                          child: Text("leave".tr()),
+                        ),
                     ],
                   );
                   // ).then((value) {
@@ -416,7 +424,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   BorderRadius.all(Radius.circular(10))),
                         ),
                         ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width-96),
+                          constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width - 96),
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,8 +451,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(8, 0, 8.0, 0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          8, 0, 8.0, 0),
                                       child: RoundedBackgroundText(
                                         "${userType == 0 ? "foreigner".tr() : "local".tr()} ",
                                         style: TextStyle(
@@ -461,76 +470,62 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   ],
                                 ),
                                 Text(title?.toString() ?? "",
-                                maxLines: 2,
+                                    maxLines: 2,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 8.0, 0, 0),
-                                              child: Row(
-                                                children: [
-                                                  Flexible(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    255,
-                                                                    234,
-                                                                    234,
-                                                                    234),
-                                                            width: 2),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10.0)),
-                                                        color: Color.fromARGB(
-                                                            255, 247, 247, 247),
-                                                      ),
-                                                      child: Text(
-                                                        " ${location} ",
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: const TextStyle(
-                                                          fontFamily:
-                                                              'Pretendard',
-                                                          fontSize: 12,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Color.fromARGB(
-                                                              255,
-                                                              234,
-                                                              234,
-                                                              234),
-                                                          width: 2),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0)),
-                                                      color: Color.fromARGB(
-                                                          255, 247, 247, 247),
-                                                    ),
-                                                    child: Text(
-                                                      " ${meetingStartTime?.year}.${meetingStartTime?.month}.${meetingStartTime?.day} | ${(meetingStartTime?.hour??0) < 10 ? "0${meetingStartTime?.hour}" : meetingStartTime?.hour} : ${(meetingStartTime?.minute??0) < 10 ? "0${meetingStartTime?.minute}" : meetingStartTime?.minute} ",
-                                                      style: const TextStyle(
-                                                        fontFamily:
-                                                            'Pretendard',
-                                                        fontSize: 12,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Color.fromARGB(
+                                                    255, 234, 234, 234),
+                                                width: 2),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                            color: Color.fromARGB(
+                                                255, 247, 247, 247),
+                                          ),
+                                          child: Text(
+                                            " ${location} ",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontFamily: 'Pretendard',
+                                              fontSize: 12,
+                                              color: Colors.black,
                                             ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Color.fromARGB(
+                                                  255, 234, 234, 234),
+                                              width: 2),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0)),
+                                          color: Color.fromARGB(
+                                              255, 247, 247, 247),
+                                        ),
+                                        child: Text(
+                                          " ${meetingStartTime?.year}.${meetingStartTime?.month}.${meetingStartTime?.day} | ${(meetingStartTime?.hour ?? 0) < 10 ? "0${meetingStartTime?.hour}" : meetingStartTime?.hour} : ${(meetingStartTime?.minute ?? 0) < 10 ? "0${meetingStartTime?.minute}" : meetingStartTime?.minute} ",
+                                          style: const TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontSize: 12,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ]),
                         )
                       ]),

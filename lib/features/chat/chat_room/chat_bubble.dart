@@ -87,7 +87,7 @@ Widget _buildMessageBubble(BuildContext context, bool isSentByCurrentUser,
                           )),
                     ),
                   )
-                : Text(
+                : SelectableText(
                     message.message,
                     style: TextStyle(
                         color:
