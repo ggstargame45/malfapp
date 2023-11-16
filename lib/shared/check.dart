@@ -25,8 +25,8 @@ Future<bool> doAuth(BuildContext context) async {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("알림"),
-            content: const Text("학생증 인증이 필요합니다."),
+            title: Text("school_auth_title".tr()),
+            content: Text("school_auth_title".tr()),
             actions: [
               TextButton(
                   onPressed: () async {

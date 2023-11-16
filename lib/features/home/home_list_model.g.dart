@@ -21,6 +21,7 @@ _$ListItemDataImpl _$$ListItemDataImplFromJson(Map<String, dynamic> json) =>
       meetingLocation: json['meeting_location'] as String,
       meetingStartTime: const DateTimeConverter()
           .fromJson(json['meeting_start_time'] as String),
+      category: json['category'] as int,
       postStatus: json['post_status'] as int,
       likeCount: json['like_count'] as int,
       localParticipation: json['local_participation'] as int,
@@ -41,6 +42,7 @@ Map<String, dynamic> _$$ListItemDataImplToJson(_$ListItemDataImpl instance) =>
       'meeting_location': instance.meetingLocation,
       'meeting_start_time':
           const DateTimeConverter().toJson(instance.meetingStartTime),
+      'category': instance.category,
       'post_status': instance.postStatus,
       'like_count': instance.likeCount,
       'local_participation': instance.localParticipation,

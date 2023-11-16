@@ -54,46 +54,51 @@ Widget _buildMessageBubble(BuildContext context, bool isSentByCurrentUser,
     crossAxisAlignment: CrossAxisAlignment.end,
     children: [
       if (isSentByCurrentUser) _buildTimeStamp(message.sendAt),
-      ChatBubble(
-        clipper: ChatBubbleClipper5(
-            type: isSentByCurrentUser
-                ? BubbleType.sendBubble
-                : BubbleType.receiverBubble),
-        alignment: isSentByCurrentUser ? Alignment.topRight : Alignment.topLeft,
-        margin: const EdgeInsets.only(right: 4, left: 4),
-        backGroundColor: isSentByCurrentUser ? Colors.blue : Colors.white,
-        child: Container(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.6,
-              maxHeight: 300,
-            ),
-            child: message.type == 1
-                ? ListView.builder(
-                    itemCount: imgList.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () {
-                        imageNetworkListViewer(
-                            imageUrls: imgList,
-                            context: context);
-
-                      },
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ExtendedImage.network(
-                            imgList[index],
-                            cache: true,
-                            fit: BoxFit.fill,
-                          )),
-                    ),
-                  )
-                : SelectableText(
+      message.type == 1
+          ? Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.6,
+                maxHeight: 300,
+              ),
+              child: ListView.builder(
+                itemCount: imgList.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () {
+                    imageNetworkListViewer(
+                        imageUrls: imgList, context: context);
+                  },
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ExtendedImage.network(
+                        imgList[index],
+                        cache: true,
+                        fit: BoxFit.fill,
+                      )),
+                ),
+              ),
+            )
+          : ChatBubble(
+              clipper: ChatBubbleClipper5(
+                  type: isSentByCurrentUser
+                      ? BubbleType.sendBubble
+                      : BubbleType.receiverBubble),
+              alignment:
+                  isSentByCurrentUser ? Alignment.topRight : Alignment.topLeft,
+              margin: const EdgeInsets.only(right: 4, left: 4),
+              backGroundColor: isSentByCurrentUser ? Colors.blue : Colors.white,
+              child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.6,
+                    maxHeight: 300,
+                  ),
+                  child: SelectableText(
                     message.message,
                     style: TextStyle(
                         color:
                             isSentByCurrentUser ? Colors.white : Colors.black),
                   )),
-      ),
+            ),
       if (!isSentByCurrentUser) _buildTimeStamp(message.sendAt),
     ],
   );

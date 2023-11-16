@@ -708,7 +708,17 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                         final response = await _dio.delete(
                           "/bulletin-board/posts/${detailData.postId}}",
                         );
-                        contexta.pop();
+                        if(response.statusCode==200)
+                        {
+                          pagingController.refresh();
+                          contexta.pop();
+                        }
+                        else{
+                          ScaffoldMessenger.of(contexta).showSnackBar(SnackBar(
+                            content: Text("fail".tr()),
+                          ));
+                        }
+                        
                         logger.d(response.data);
                         //return response.statusCode;
                       } catch (error) {

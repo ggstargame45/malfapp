@@ -64,7 +64,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList,
   bool isUploaded = false;
 
   for (int i = 0; i < imageList.length; i++) {
-    imageFileList.add(await compressImage(File(imageList[i].path), 70));
+    imageFileList.add(await compressImage(File(imageList[i].path), 90,imageList.length+oldImageList.length));
   }
   Directory tempDir = await getTemporaryDirectory();
   String tempPath = tempDir.path;

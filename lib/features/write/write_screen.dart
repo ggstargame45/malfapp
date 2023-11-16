@@ -66,7 +66,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
 
   
   for (int i = 0; i < imageList.length; i++) {
-    imageFileList.add(await compressImage(File(imageList[i].path), 70));
+    imageFileList.add(await compressImage(File(imageList[i].path), 90,imageList.length));
   }
 
   try {

@@ -28,7 +28,7 @@ class NotificationPage extends StatelessWidget {
               child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 10,
+                  itemCount: 0,
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
