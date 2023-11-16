@@ -12,6 +12,7 @@ import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/permission.dart';
 import 'package:http/http.dart' as http;
 import 'package:malf/shared/usecases/image_compress.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 const List<String> schoolExample = [
   "학생증 또는 입학증명서 사진",
@@ -236,12 +237,15 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                                                           if (!(await photoPermission())) {
                                                             return;
                                                           }
+
+
                                                           final image = await picker
                                                               .pickImage(
                                                                   source: ImageSource
                                                                       .gallery); // 갤러리에서 이미지 뽑아옴
-                                                          if (image == null)
+                                                          if (image == null) {
                                                             return;
+                                                          }
 
                                                           setState(() {
                                                             imageList.clear();
