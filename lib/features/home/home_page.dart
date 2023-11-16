@@ -9,6 +9,7 @@ import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/theme/test_styles.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
+import 'package:malf/shared/widgets/image_view_widget.dart';
 import './home_list_model.dart';
 
 import 'package:malf/shared/logger.dart';
@@ -147,21 +148,35 @@ class _HomePageState extends State<HomePage> {
                               control: const SwiperControl(),
                               scrollDirection: Axis.horizontal,
                               itemCount:
-                                  1, // Assume banners is a list of your banner data.
+                                  2, // Assume banners is a list of your banner data.
                               itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    width: maxWidth,
-                                    height: maxWidth / 2,
-                                    child: ExtendedImage.asset(
-                                      "assets/images/banner_example.png",
-                                      fit: BoxFit.cover,
+                                return GestureDetector(
+                                  onTap: () {
+                                    imageNetworkListViewer(imageUrls: [
+                                      "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png",
+                                      "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
+                                    ], context: context);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      width: maxWidth,
+                                      height: maxWidth / 2,
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: ExtendedImage.network(
+                                              index == 0
+                                                  ? "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png"
+                                                  : "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
+                                              fit: BoxFit.contain,
+                                              cache: true,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    // child: ExtendedImage.network(
-                                    //   "https://malftravel.com/ad/${1}.png",
-                                    //   fit: BoxFit.cover,
-                                    // ),
                                   ),
                                 );
                               },
@@ -399,31 +414,31 @@ class _HomePageState extends State<HomePage> {
                                           child: ExtendedImage.network(
                                             item.meetingPic.isEmpty
                                                 ? 'https://malftravel.com/default.jpeg'
-                                                : '${baseUrl}/${item.meetingPic[0]}',
-                                            headers: {
-                                              'Authorization':
-                                                  Token().refreshToken,
-                                            },
-                                            cache: true,
-                                            loadStateChanged:
-                                                (ExtendedImageState state) {
-                                              switch (state
-                                                  .extendedImageLoadState) {
-                                                case LoadState.loading:
-                                                  return const Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      color: Colors.amber,
-                                                    ),
-                                                  );
-                                                case LoadState.completed:
-                                                  return null;
-                                                case LoadState.failed:
-                                                  return const Center(
-                                                    child: Text('😢'),
-                                                  );
-                                              }
-                                            },
+                                                : item.meetingPic[0],
+                                            // headers: {
+                                            //   'Authorization':
+                                            //       Token().refreshToken,
+                                            // },
+                                            // cache: true,
+                                            // loadStateChanged:
+                                            //     (ExtendedImageState state) {
+                                            //   switch (state
+                                            //       .extendedImageLoadState) {
+                                            //     case LoadState.loading:
+                                            //       return const Center(
+                                            //         child:
+                                            //             CircularProgressIndicator(
+                                            //           color: Colors.amber,
+                                            //         ),
+                                            //       );
+                                            //     case LoadState.completed:
+                                            //       return null;
+                                            //     case LoadState.failed:
+                                            //       return const Center(
+                                            //         child: Text('😢'),
+                                            //       );
+                                            //   }
+                                            // },
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -581,7 +596,7 @@ class _HomePageState extends State<HomePage> {
                                                             255, 113, 162, 254),
                                                       )),
                                                   Text(
-                                                      item.travelParticipation
+                                                      item.localParticipation
                                                           .toString(),
                                                       style: const TextStyle(
                                                         fontFamily:
@@ -610,7 +625,7 @@ class _HomePageState extends State<HomePage> {
                                                             255, 97, 195, 255),
                                                       )),
                                                   Text(
-                                                      item.localParticipation
+                                                      item.travelParticipation
                                                           .toString(),
                                                       style: const TextStyle(
                                                         fontFamily:

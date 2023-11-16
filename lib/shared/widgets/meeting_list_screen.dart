@@ -140,30 +140,28 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: ExtendedImage.network(
-                                    meetingListData[index].meetingPic.isEmpty
-                                        ? 'https://malftravel.com/default.jpeg'
-                                        : '${baseUrl}/${meetingListData[index].meetingPic[0]}',
-                                    headers: {
-                                      'Authorization': Token().refreshToken,
-                                    },
-                                    cache: true,
-                                    loadStateChanged:
-                                        (ExtendedImageState state) {
-                                      switch (state.extendedImageLoadState) {
-                                        case LoadState.loading:
-                                          return const Center(
-                                            child: CircularProgressIndicator(
-                                              color: Colors.amber,
-                                            ),
-                                          );
-                                        case LoadState.completed:
-                                          return null;
-                                        case LoadState.failed:
-                                          return const Center(
-                                            child: Text('😢'),
-                                          );
-                                      }
-                                    },
+                                    "https://malf-live.s3.ap-northeast-2.amazonaws.com/images/1700073082394-797357363.octet-stream",
+                                    // headers: { 
+                                    //   'Authorization': Token().refreshToken,
+                                    // },
+                                    // cache: true,
+                                    // loadStateChanged:
+                                    //     (ExtendedImageState state) {
+                                    //   switch (state.extendedImageLoadState) {
+                                    //     case LoadState.loading:
+                                    //       return const Center(
+                                    //         child: CircularProgressIndicator(
+                                    //           color: Colors.amber,
+                                    //         ),
+                                    //       );
+                                    //     case LoadState.completed:
+                                    //       return null;
+                                    //     case LoadState.failed:
+                                    //       return const Center(
+                                    //         child: Text('😢'),
+                                    //       );
+                                    //   }
+                                    // },
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -386,4 +384,11 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
       ),
     );
   }
+}
+
+
+
+String checkString(String chr){
+  logger.d("chr:$chr");
+  return chr;
 }

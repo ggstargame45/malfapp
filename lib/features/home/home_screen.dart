@@ -41,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.chat, color: Colors.grey, size: 24),
                 label: 'chat'.tr()),
             //TODO : 알림
-            // NavigationDestination(
-            //     selectedIcon: const Icon(Icons.notifications,
-            //         color: AppColors.primary, size: 24),
-            //     icon: const Icon(Icons.notifications, color: Colors.grey, size: 24),
-            //     label: 'notification'.tr()),
+            NavigationDestination(
+                selectedIcon: const Icon(Icons.notifications,
+                    color: AppColors.primary, size: 24),
+                icon: const Icon(Icons.notifications, color: Colors.grey, size: 24),
+                label: 'notification'.tr()),
             // BottomNavigationBarItem(
             //     icon: Icon(Icons.notifications), label: '알림'),
             NavigationDestination(

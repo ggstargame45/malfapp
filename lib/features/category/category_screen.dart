@@ -108,7 +108,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                           child: ExtendedImage.network(
                                             categoryListData[index].meetingPic.isEmpty
                                                 ? 'https://malftravel.com/default.jpeg'
-                                                : '${baseUrl}/${categoryListData[index].meetingPic[0]}',
+                                                : '${categoryListData[index].meetingPic[0]}',
                                             headers: {
                                               'Authorization': Token().refreshToken,
                                             },

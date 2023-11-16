@@ -20,6 +20,7 @@ import 'package:malf/shared/network/base_url.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
+import 'package:malf/shared/widgets/image_view_widget.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 
@@ -290,107 +291,15 @@ class _DetailScreenState extends State<DetailScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
-                          final GlobalKey<ExtendedImageGestureState>
-                              gestureKey =
-                          GlobalKey<ExtendedImageGestureState>();
-                          final GlobalKey<ExtendedImageEditorState> editorKey =
-                              GlobalKey<ExtendedImageEditorState>();
-                          showDialog(
-                              useSafeArea: true,
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  // actions: [
-                                  //   IconButton(
-                                  //       onPressed: () async {
-                                  //         // Navigator.pop(context);
-                                  //         final EditImageInfo fileData =
-                                  //             await cropImageDataWithNativeLibrary(
-                                  //                 state:
-                                  //                     editorKey.currentState!);
-                                  //         final String? fileFath =
-                                  //             await ImageSaver.save(
-                                  //                 'extended_image_cropped_image.jpg',
-                                  //                 fileData.data!);
-                                  //         logger.d('save image : $fileFath');
-                                  //       },
-                                  //       icon: const Icon(
-                                  //         Icons.close,
-                                  //         color: Colors.black,
-                                  //       ))
-                                  // ],
-                                  content: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.6,
-                                    alignment: Alignment.center,
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: ExtendedImage.network(
-                                            "$baseUrl/${detailData!.meetingPic[index]}",
-                                            cache: true,
-                                            fit: BoxFit.contain,
-                                            // mode: ExtendedImageMode.editor,
-                                            // enableLoadState: true,
-                                            // extendedImageEditorKey: editorKey,
-                                            // cacheRawData: true,
-                                            // //maxBytes: 1024 * 50,
-                                            // initEditorConfigHandler:
-                                            //     (ExtendedImageState? state) {
-                                            //   return EditorConfig(
-                                            //       maxScale: 4.0,
-                                            //       cropRectPadding:
-                                            //           const EdgeInsets.all(
-                                            //               20.0),
-                                            //       hitTestSize: 20.0,
-                                            //       initCropRectType:
-                                            //           InitCropRectType
-                                            //               .imageRect,
-                                            //       cropAspectRatio:
-                                            //           CropAspectRatios.ratio4_3,
-                                            //       editActionDetailsIsChanged:
-                                            //           (EditActionDetails?
-                                            //               details) {
-                                            //         //print(details?.totalScale);
-                                            //       });
-                                            // },
-                                            mode: ExtendedImageMode.gesture,
-                                            extendedImageGestureKey: gestureKey,
-                                            initGestureConfigHandler:
-                                                (ExtendedImageState state) {
-                                              return GestureConfig(
-                                                minScale: 0.9,
-                                                animationMinScale: 0.7,
-                                                maxScale: 4.0,
-                                                animationMaxScale: 4.5,
-                                                speed: 1.0,
-                                                inertialSpeed: 100.0,
-                                                initialScale: 1.0,
-                                                inPageView: false,
-                                                initialAlignment:
-                                                    InitialAlignment.center,
-                                                reverseMousePointerScrollDirection:
-                                                    true,
-                                                gestureDetailsIsChanged:
-                                                    (GestureDetails?
-                                                        details) {},
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              });
+                          if(detailData!=null){
+                            imageNetworkListViewer(imageUrls: detailData!.meetingPic, context: context);
+                          }
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.width / 2,
                           child: ExtendedImage.network(
-                            "$baseUrl/${detailData!.meetingPic[index]}",
+                            detailData!.meetingPic[index],
                             fit: BoxFit.cover,
                             cache: true,
                           ),
@@ -594,7 +503,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       child: CircleAvatar(
                         radius: 30,
                         backgroundImage: ExtendedImage.network(
-                          "$baseUrl/${detailData!.authorPic[0]}",
+                          detailData!.authorPic[0],
                           fit: BoxFit.cover,
                           cache: true,
                         ).image,
@@ -727,7 +636,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                     child: Text("attend_cancel".tr()))
                                 : ElevatedButton(
                                     onPressed: () async {
-                                      if (true) {
+                                      if (await doAuth(context)) {
                                         final dodo = Dio(BaseOptions(
                                             baseUrl: baseUrl,
                                             headers: {
@@ -736,14 +645,17 @@ class _DetailScreenState extends State<DetailScreen> {
                                             },
                                             responseType: ResponseType.json));
                                         try {
-                                          await dodo.post(
+                                          final response = await dodo.post(
                                               "/chatroom/${detailData!.postId}/subscribe");
+                                          if(response.statusCode==200){
+                                            
+                                          }
+
                                         } on Exception catch (e) {
                                           // TODO
                                         }
                                         await checkSubscribe();
-                                        return;
-                                        await doAuth(context);
+                                        
                                       }
                                     },
                                     child: Text("attend".tr())))),

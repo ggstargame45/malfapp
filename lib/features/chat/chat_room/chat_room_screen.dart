@@ -15,6 +15,7 @@ import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:malf/shared/theme/app_colors.dart';
+import 'package:malf/shared/usecases/loading.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -94,8 +95,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           "join", {"room": "${widget.roomId}", "sender": Token().userUniqId});
       _socket.on(
           'join',
-          (data) => {
-                logger.d(data),
+          (data) {
+            logger.d("join : $data");
+                addMessage(Message.fromJson(data));
+
               });
       _socket.on('image', (data) {
         logger.d("imagedata : $data");
@@ -143,9 +146,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
-    _connectSocket();
-
-    start();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      loading(context);
+      _connectSocket();
+      await start();
+      context.pop();
+    });
+    
+    
   }
 
   Future<void> start() async {
@@ -190,7 +198,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       final val = await chatValue.get("$baseUrl/chat/chats/${widget.roomId}");
       _messages.clear();
       for (int i = 0; i < val.data['data'].length; i++) {
-        addMessage(Message.fromJson(val.data['data'][i]));
+        await addMessage(Message.fromJson(val.data['data'][i]));
       }
     } on Exception catch (e) {
       // TODO
@@ -400,7 +408,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: ExtendedNetworkImageProvider(
-                                    "$baseUrl/${chatRoomImage ?? "ad/1.png"}",
+                                    "${chatRoomImage ?? "ad/1.png"}",
                                   ),
                                   fit: BoxFit.cover),
                               color: Colors.black12,

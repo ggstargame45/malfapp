@@ -13,6 +13,7 @@ import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:malf/shared/usecases/nation_image.dart';
+import 'package:malf/shared/widgets/image_view_widget.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 
 class ProfileOtherScreen extends StatefulWidget {
@@ -110,13 +111,14 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             actions: [
-              if (profileData != null && profileData!.userUniqId!=Token().userUniqId)
-              IconButton(
-                onPressed: () async {
-                  showMenu(
-                    context: context,
-                    position: RelativeRect.fromLTRB(100, 100, 0, 0),
-                    items: [
+              if (profileData != null &&
+                  profileData!.userUniqId != Token().userUniqId)
+                IconButton(
+                  onPressed: () async {
+                    showMenu(
+                      context: context,
+                      position: RelativeRect.fromLTRB(100, 100, 0, 0),
+                      items: [
                         PopupMenuItem(
                           value: 1,
                           onTap: () {
@@ -128,50 +130,52 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
                           },
                           child: Text("report".tr()),
                         ),
-                        if(!BlockSet().blockUserUniqIdSet.contains(profileData!.userUniqId))
-                        PopupMenuItem(
-                          value: 2,
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text("block".tr()),
-                                    content: Text("block_additional".tr()),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () async {
-                                            BlockSet().addBlockUser(
-                                                uniqId: profileData!.userUniqId,
-                                                nickname:
-                                                    profileData!.nickname);
-                                            pagingController.refresh();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                        "unblock_message"
-                                                            .tr())));
-                                            context.pop();
-                                            context.pop();
-                                            
-                                          },
-                                          child: Text("block".tr())),
-                                      TextButton(
-                                          onPressed: () {
-                                            context.pop();
-                                          },
-                                          child: Text("cancel".tr()))
-                                    ],
-                                  );
-                                });
-                          },
-                          child: Text("block".tr()),
-                        ),
-                    ],
-                  );
-                },
-                icon: const Icon(Icons.menu, color: Colors.white),
-              ),
+                        if (!BlockSet()
+                            .blockUserUniqIdSet
+                            .contains(profileData!.userUniqId))
+                          PopupMenuItem(
+                            value: 2,
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text("block".tr()),
+                                      content: Text("block_additional".tr()),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () async {
+                                              BlockSet().addBlockUser(
+                                                  uniqId:
+                                                      profileData!.userUniqId,
+                                                  nickname:
+                                                      profileData!.nickname);
+                                              pagingController.refresh();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          "unblock_message"
+                                                              .tr())));
+                                              context.pop();
+                                              context.pop();
+                                            },
+                                            child: Text("block".tr())),
+                                        TextButton(
+                                            onPressed: () {
+                                              context.pop();
+                                            },
+                                            child: Text("cancel".tr()))
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: Text("block".tr()),
+                          ),
+                      ],
+                    );
+                  },
+                  icon: const Icon(Icons.menu, color: Colors.white),
+                ),
             ]),
         extendBodyBehindAppBar: true,
         body: SingleChildScrollView(
@@ -217,30 +221,17 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
                             )
                           : GestureDetector(
                               onTap: () {
-                                showDialog(
-                                    useSafeArea: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        content: Container(
-                                          width: maxWidth * 0.8,
-                                          height: maxHeight * 0.6,
-                                          alignment: Alignment.center,
-                                          child: ExtendedImage.network(
-                                              baseUrl +
-                                                  "/" +
-                                                  profileData!.profilePic[0],
-                                              cache: true,
-                                              fit: BoxFit.contain),
-                                        ),
-                                      );
-                                    });
+                                if (profileData != null) {
+                                  imageNetworkListViewer(
+                                      imageUrls: profileData!.profilePic,
+                                      context: context);
+                                }
                               },
                               child: SizedBox(
                                 height: 85,
                                 width: 85,
                                 child: ExtendedImage.network(
-                                  baseUrl + "/" + profileData!.profilePic[0],
+                                  profileData!.profilePic[0],
                                   cache: true,
                                   shape: BoxShape.circle,
                                   border: Border.all(

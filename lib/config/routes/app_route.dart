@@ -22,6 +22,7 @@ import 'package:malf/features/notification/notification_page.dart';
 import 'package:malf/features/category/category_screen.dart';
 import 'package:malf/features/chat/chat_list/chat_page.dart';
 import 'package:malf/features/chat/chat_room/chat_room_screen.dart';
+import 'package:malf/shared/widgets/image_view_widget.dart';
 
 import 'package:malf/shared/widgets/meeting_list_screen.dart';
 
@@ -66,19 +67,19 @@ GoRouter appRouter = GoRouter(
               ),
             ],
           ),
-          // StatefulShellBranch(
-          //   // navigatorKey: sectionANavigatorKey,
-          //   routes: <RouteBase>[
-          //     GoRoute(
-          //       // The screen to display as the root in the first tab of the
-          //       // bottom navigation bar.
-          //       path: '/notification',
-          //       builder: (BuildContext context, GoRouterState state) =>
-          //           NotificationPage(),
-          //       routes: <RouteBase>[],
-          //     ),
-          //   ],
-          // ),
+          StatefulShellBranch(
+            // navigatorKey: sectionANavigatorKey,
+            routes: <RouteBase>[
+              GoRoute(
+                // The screen to display as the root in the first tab of the
+                // bottom navigation bar.
+                path: '/notification',
+                builder: (BuildContext context, GoRouterState state) =>
+                    NotificationPage(),
+                routes: <RouteBase>[],
+              ),
+            ],
+          ),
           StatefulShellBranch(
             // navigatorKey: sectionANavigatorKey,
             routes: <RouteBase>[
@@ -229,6 +230,12 @@ GoRouter appRouter = GoRouter(
       path: '/blockList',
       parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) => BlockListScreen(),
+    ),
+
+    //이미지 뷰어
+    GoRoute(path: '/imageViewer', parentNavigatorKey: rootNavigatorKey,
+    builder: (context, state) =>
+      ImageViewerScreen(imageUrlList: state.extra as List<String>),
     ),
 
     //TODO: 문의하기

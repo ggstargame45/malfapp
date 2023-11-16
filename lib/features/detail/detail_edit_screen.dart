@@ -69,8 +69,8 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList,
   Directory tempDir = await getTemporaryDirectory();
   String tempPath = tempDir.path;
   for (int i = 0; i < oldImageList.length; i++) {
-    imageFileList.add(await File(tempPath + "$i.jpg").writeAsBytes((await http
-            .get(Uri.parse(baseUri + oldImageList[i]),
+    imageFileList.add(await File("$tempPath$i.jpg").writeAsBytes((await http
+            .get(Uri.parse(oldImageList[i]),
                 headers: {'Authorization': Token().refreshToken}))
         .bodyBytes));
   }
@@ -376,7 +376,6 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                                         )
                                       else
                                         ExtendedImage.network(
-                                          baseUri +
                                               oldImageListString[
                                                   index - imageList.length],
                                           height: MediaQuery.of(context)

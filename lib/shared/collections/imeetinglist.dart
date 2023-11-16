@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 
+part 'imeetinglist.g.dart';
 
 @Collection()
 class IMeetingList{

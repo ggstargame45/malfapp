@@ -12,6 +12,7 @@ import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/usecases/nation_image.dart';
+import 'package:malf/shared/widgets/image_view_widget.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -82,9 +83,11 @@ class _ProfilePageState extends State<ProfilePage>
     if (response.data['data'][0]['user_temperature'] == null) {
       copyData['user_temperature'] = 365;
     }
+    //copyData['profile_pic'] = "[\"https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png\"]";
     if (response.data['data'] != []) {
       profileData = ProfileData.fromJson(copyData);
     }
+
     ableLanguage = "";
     profileData?.ableLanguage.forEach((element) {
       if (element == 1) {
@@ -97,8 +100,9 @@ class _ProfilePageState extends State<ProfilePage>
         ableLanguage += "${"japanese".tr()}, ";
       }
     });
-    if (ableLanguage.endsWith(", "))
+    if (ableLanguage.endsWith(", ")) {
       ableLanguage = ableLanguage.substring(0, ableLanguage.length - 2);
+    }
     logger.d("${profileData}");
     setState(() {});
   }
@@ -183,30 +187,17 @@ class _ProfilePageState extends State<ProfilePage>
                             )
                           : GestureDetector(
                               onTap: () {
-                                showDialog(
-                                    useSafeArea: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        content: Container(
-                                          width: maxWidth * 0.8,
-                                          height: maxHeight * 0.6,
-                                          alignment: Alignment.center,
-                                          child: ExtendedImage.network(
-                                              baseUrl +
-                                                  "/" +
-                                                  profileData!.profilePic[0],
-                                              cache: true,
-                                              fit: BoxFit.contain),
-                                        ),
-                                      );
-                                    });
+                                if (profileData != null) {
+                                  imageNetworkListViewer(
+                                      imageUrls: profileData!.profilePic,
+                                      context: context);
+                                }
                               },
                               child: SizedBox(
                                 height: 95,
                                 width: 95,
                                 child: ExtendedImage.network(
-                                  baseUrl + "/" + profileData!.profilePic[0],
+                                  profileData!.profilePic[0],
                                   cache: true,
                                   shape: BoxShape.circle,
                                   border: Border.all(
