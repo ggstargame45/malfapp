@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
+import 'package:malf/features/chat/chat_list/chat_page_controller.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 
 final logger = Logger();
@@ -66,6 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // When navigating to a new branch, it's recommended to use the goBranch
     // method, as doing so makes sure the last navigation state of the
     // Navigator for the branch is restored.
+    if(index==1){
+      pagingChatController.refresh();
+    }
     widget.navigationShell.goBranch(index,
         // A common pattern when using bottom navigation bars is to support
         // navigating to the initial location when tapping the item that is
