@@ -178,7 +178,6 @@ class _HomePageState extends State<HomePage> {
                                                   ? "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png"
                                                   : "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
                                               fit: BoxFit.contain,
-                                              cache: true,
                                             ),
                                           ),
                                         ],
@@ -421,6 +420,7 @@ class _HomePageState extends State<HomePage> {
                                             item.meetingPic.isEmpty
                                                 ? 'https://malftravel.com/default.jpeg'
                                                 : item.meetingPic[0],
+                                                
                                             // headers: {
                                             //   'Authorization':
                                             //       Token().refreshToken,

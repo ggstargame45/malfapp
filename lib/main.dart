@@ -1,5 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -31,6 +32,7 @@ Future<void> main() async {
     final isar = await Isar.open([ITokenSchema,IBlockMeetingSchema,IBlockUserSchema,IMeetingListSchema,IChatSchema], directory: dir.path);
     Token().tokenInit();
     BlockSet().setInit();
+    await clearDiskCachedImages();
 
   FlutterNativeSplash.remove();
 

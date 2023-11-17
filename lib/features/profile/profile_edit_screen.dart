@@ -111,8 +111,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       final Directory tempDir = await getTemporaryDirectory();
       final String tempPath = tempDir.path;
       imageFileList.add(await File("${tempPath}1.jpg").writeAsBytes((await http
-              .get(Uri.parse(oldImage),
-                  headers: {'Authorization': Token().refreshToken}))
+              .get(Uri.parse(oldImage),))
           .bodyBytes));
     }
 

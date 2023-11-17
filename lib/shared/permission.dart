@@ -25,7 +25,8 @@ Future<bool> photoPermission() async {
   PermissionStatus status = await Permission.photos.status;
   logger.d("status : $status");
   logger.d("photoPermissionaaaa");
-  if (status == PermissionStatus.granted || status == PermissionStatus.limited) {
+  if (status == PermissionStatus.granted ||
+      status == PermissionStatus.limited) {
     return true;
   }
   logger.d("photoPermissionaaaa");
@@ -41,11 +42,16 @@ Future<bool> photoPermission() async {
   }
   if (Platform.isAndroid) {
     status = await Permission.storage.status;
+    if (status == PermissionStatus.granted ||
+        status == PermissionStatus.limited) {
+      return true;
+    }
     if (status == PermissionStatus.denied) {
       status = await Permission.storage.request();
       if (status == PermissionStatus.granted ||
-          status == PermissionStatus.limited) return true;
-      return false;
+          status == PermissionStatus.limited) {
+        return true;
+      }
     }
     if (status == PermissionStatus.permanentlyDenied) {
       openAppSettings();

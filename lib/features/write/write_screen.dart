@@ -64,9 +64,9 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
   StreamedResponse? response;
   int isUploaded = 0;
 
-  
   for (int i = 0; i < imageList.length; i++) {
-    imageFileList.add(await compressImage(File(imageList[i].path), 90,imageList.length));
+    imageFileList.add(
+        await compressImage(File(imageList[i].path), 90, imageList.length));
   }
 
   try {
@@ -825,7 +825,12 @@ class _WriteScreenState extends State<WriteScreen> {
                                               PostingBody(
                                                 title: title,
                                                 content: content,
-                                                meeting_start_time: meetingDate
+                                                meeting_start_time: DateTime(
+                                                        meetingDate.year,
+                                                        meetingDate.month,
+                                                        meetingDate.day,
+                                                        meetingTime.hour+9,
+                                                        meetingTime.minute)
                                                     .toIso8601String(),
                                                 category: category.toString(),
                                                 meeting_location: location,
@@ -862,7 +867,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                   );
                                 });
                           }
-                          if(made){
+                          if (made) {
                             pagingChatController.refresh();
                             pagingController.refresh();
                             context.pop();

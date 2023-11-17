@@ -545,7 +545,7 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             if (detailData != null)
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+                padding: const EdgeInsets.fromLTRB(16, 8, 0, 110),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,

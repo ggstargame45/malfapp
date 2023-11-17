@@ -69,10 +69,9 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList,
   Directory tempDir = await getTemporaryDirectory();
   String tempPath = tempDir.path;
   for (int i = 0; i < oldImageList.length; i++) {
-    imageFileList.add(await File("$tempPath$i.jpg").writeAsBytes((await http
-            .get(Uri.parse(oldImageList[i]),
-                headers: {'Authorization': Token().refreshToken}))
-        .bodyBytes));
+    imageFileList.add(await compressImage(await File("$tempPath$i.jpg").writeAsBytes((await http
+            .get(Uri.parse(oldImageList[i])))
+        .bodyBytes),93,imageList.length+oldImageList.length));
   }
 
   try {
@@ -1040,7 +1039,13 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                                   title: title,
                                   content: content,
                                   meeting_start_time:
-                                      meetingDate.toIso8601String(),
+                                  DateTime(
+                                      meetingDate.year,
+                                      meetingDate.month,
+                                      meetingDate.day,
+                                      meetingTime.hour+9,
+                                      meetingTime.minute)
+                                      .toIso8601String(),
                                   category: category.toString(),
                                   meeting_location: location,
                                   capacity_local: localCapacity.toString(),
