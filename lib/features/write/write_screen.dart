@@ -69,6 +69,7 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
         await compressImage(File(imageList[i].path), 90, imageList.length));
   }
 
+
   try {
     while (isUploaded < 10) {
       request = http.MultipartRequest('POST', Uri.parse(baseUrl + subUri));
@@ -92,12 +93,16 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
         'capacity_travel': data.capacity_travel,
       };
 
+      logger.d(mapdata);
+
       String token = Token().refreshToken;
 
       request.headers['Authorization'] = token;
       request.headers['Content-Type'] = 'multipart/form-data;';
 
       request.fields.addAll(mapdata);
+      logger.d(request.fields);
+
       StreamedResponse response = await request.send();
       logger.d(response.reasonPhrase);
       if (response.statusCode == 200) {
@@ -215,7 +220,11 @@ class _WriteScreenState extends State<WriteScreen> {
                                 await picker.pickMultiImage(); // 갤러리에서 이미지 뽑아옴
 
                             setState(() {
-                              imageList.addAll(image);
+                              for (var element in image) {
+                                if (!imageList.contains(element)) {
+                                  imageList.add(element);
+                                }
+                              }
 
                               if (imageList.length > 10) {
                                 imageList.removeRange(10, imageList.length);
@@ -468,6 +477,7 @@ class _WriteScreenState extends State<WriteScreen> {
                           categoryChosen = "japanese".tr();
                           break;
                         default:
+                          category = -1;
                           categoryChosenBool = false;
                           break;
                       }
@@ -809,6 +819,7 @@ class _WriteScreenState extends State<WriteScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text("picture_unchose_warning".tr())));
                           } else {
+                            // if(true){
                             await showDialog(
                                 barrierDismissible: false,
                                 context: context,
@@ -821,7 +832,8 @@ class _WriteScreenState extends State<WriteScreen> {
                                         onPressed: () async {
                                           loading(context);
 
-                                          if (await postPosting(
+                                          if (
+                                            await postPosting(
                                               PostingBody(
                                                 title: title,
                                                 content: content,
@@ -829,7 +841,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                                         meetingDate.year,
                                                         meetingDate.month,
                                                         meetingDate.day,
-                                                        meetingTime.hour+9,
+                                                        meetingTime.hour + 9,
                                                         meetingTime.minute)
                                                     .toIso8601String(),
                                                 category: category.toString(),
@@ -839,7 +851,8 @@ class _WriteScreenState extends State<WriteScreen> {
                                                 capacity_travel:
                                                     travelCapacity.toString(),
                                               ),
-                                              imageList)) {
+                                              imageList)
+                                              ) {
                                             logger.i("글쓰기 성공");
                                             context.pop();
                                             context.pop();

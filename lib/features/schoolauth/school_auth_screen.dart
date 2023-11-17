@@ -21,6 +21,13 @@ const List<String> schoolExample = [
   "入学証明書（例：大学の学生証、大学または大学が運営する学術機関の証明書"
 ];
 
+const List<String> imageDeleteMessage = [
+  "보내주신 사진은 승인 절차 이후에 폐기됩니다. 저희가 저장하지 않습니다.",
+  "The photo you have sent will be discarded after the approval process. We do not store it.",
+  "您发送的照片将在审核过程后被删除。我们不会保存它。",
+  "送信いただいた写真は、承認プロセスの後に廃棄されます。私たちはそれを保存しません。"
+];
+
 class PostingBody {}
 
 Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
@@ -600,6 +607,17 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                     "school_auth_context".tr(),
                     style: const TextStyle(
                       color: Color(0xFF292524),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    imageDeleteMessage[lang],
+                    style: const TextStyle(
+                      color: Colors.red,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),

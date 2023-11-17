@@ -697,6 +697,7 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                           categoryChosen = "japanese".tr();
                           break;
                         default:
+                          category=-1;
                           categoryChosenBool = false;
                           break;
                       }

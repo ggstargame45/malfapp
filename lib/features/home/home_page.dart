@@ -66,9 +66,9 @@ class _HomePageState extends State<HomePage> {
   Future<void> _fetchPage(int pageKey) async {
     try {
       final newItems = await HomeListProvider.getHomeList(pageKey, _pageSize);
-      logger.d("asdasd : $newItems");
       pagingController.appendLastPage(newItems
           .where((element) =>
+              (element.postStatus == 1) &&
               (DateTime.now().isBefore(element.meetingStartTime)) &&
               (!BlockSet().blockUserUniqIdSet.contains(element.userUniqId)) &&
               (!BlockSet().blockMeetingPostIdSet.contains(element.postId)))
@@ -155,13 +155,14 @@ class _HomePageState extends State<HomePage> {
                               control: const SwiperControl(),
                               scrollDirection: Axis.horizontal,
                               itemCount:
-                                  2, // Assume banners is a list of your banner data.
+                                  3, // Assume banners is a list of your banner data.
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
                                     imageNetworkListViewer(imageUrls: [
                                       "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png",
                                       "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
+                                      "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/verficationinfo.png"
                                     ], context: context);
                                   },
                                   child: Padding(
@@ -174,9 +175,11 @@ class _HomePageState extends State<HomePage> {
                                         children: [
                                           Expanded(
                                             child: ExtendedImage.network(
-                                              index == 0
-                                                  ? "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png"
-                                                  : "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
+                                              const [
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png",
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/verficationinfo.png"
+                                              ][index],
                                               fit: BoxFit.contain,
                                             ),
                                           ),
@@ -420,7 +423,7 @@ class _HomePageState extends State<HomePage> {
                                             item.meetingPic.isEmpty
                                                 ? 'https://malftravel.com/default.jpeg'
                                                 : item.meetingPic[0],
-                                                
+
                                             // headers: {
                                             //   'Authorization':
                                             //       Token().refreshToken,
