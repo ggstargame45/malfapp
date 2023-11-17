@@ -291,8 +291,10 @@ class _DetailScreenState extends State<DetailScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () {
-                          if(detailData!=null){
-                            imageNetworkListViewer(imageUrls: detailData!.meetingPic, context: context);
+                          if (detailData != null) {
+                            imageNetworkListViewer(
+                                imageUrls: detailData!.meetingPic,
+                                context: context);
                           }
                         },
                         child: SizedBox(
@@ -623,8 +625,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                           headers: {
                                             'Authorization':
                                                 Token().refreshToken
-                                          },
-                                          responseType: ResponseType.json));
+                                          }));
                                       try {
                                         await dodo.delete(
                                             "/chatroom/${detailData!.postId}/subscribe");
@@ -647,15 +648,11 @@ class _DetailScreenState extends State<DetailScreen> {
                                         try {
                                           final response = await dodo.post(
                                               "/chatroom/${detailData!.postId}/subscribe");
-                                          if(response.statusCode==200){
-                                            
-                                          }
-
+                                          if (response.statusCode == 200) {}
                                         } on Exception catch (e) {
                                           // TODO
                                         }
                                         await checkSubscribe();
-                                        
                                       }
                                     },
                                     child: Text("attend".tr())))),
@@ -701,24 +698,22 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                     onTap: () async {
                       contextb.pop();
                       try {
-                        final _dio = Dio(BaseOptions(
+                        final dio = Dio(BaseOptions(
                             baseUrl: baseUrl,
                             headers: {'Authorization': Token().refreshToken},
                             responseType: ResponseType.json));
-                        final response = await _dio.delete(
-                          "/bulletin-board/posts/${detailData.postId}}",
+                        final response = await dio.delete(
+                          "/bulletin-board/posts/${detailData.postId}",
                         );
-                        if(response.statusCode==200)
-                        {
+                        if (response.statusCode == 200) {
                           pagingController.refresh();
                           contexta.pop();
-                        }
-                        else{
+                        } else {
                           ScaffoldMessenger.of(contexta).showSnackBar(SnackBar(
                             content: Text("fail".tr()),
                           ));
                         }
-                        
+
                         logger.d(response.data);
                         //return response.statusCode;
                       } catch (error) {
