@@ -40,7 +40,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
             .data["data"];
     setState(() {
       for (var element in jsonData) {
-        categoryListData.add(ListItemData.fromJson(element));
+        if (element['post_status'] != -1) {
+          categoryListData.add(ListItemData.fromJson(element));
+        }
       }
     });
   }
@@ -211,8 +213,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                     color: const Color.fromARGB(
                                                         255, 234, 234, 234),
                                                     width: 2),
-                                                borderRadius: const BorderRadius.all(
-                                                    Radius.circular(10.0)),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10.0)),
                                                 color: const Color.fromARGB(
                                                     255, 247, 247, 247),
                                               ),
@@ -233,8 +236,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                   color: const Color.fromARGB(
                                                       255, 234, 234, 234),
                                                   width: 2),
-                                              borderRadius: const BorderRadius.all(
-                                                  Radius.circular(10.0)),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10.0)),
                                               color: const Color.fromARGB(
                                                   255, 247, 247, 247),
                                             ),
@@ -273,8 +277,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                     255, 113, 162, 254),
                                               )),
                                           Text(
-                                              "/${categoryListData[index]
-                                                      .capacityTravel} | ",
+                                              "/${categoryListData[index].capacityTravel} | ",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,
@@ -298,8 +301,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                     255, 97, 195, 255),
                                               )),
                                           Text(
-                                              "/${categoryListData[index]
-                                                      .capacityLocal}",
+                                              "/${categoryListData[index].capacityLocal}",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,

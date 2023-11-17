@@ -40,9 +40,9 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
     );
     List<dynamic> jsonData = [];
     try {
-      final response = await dio.get("/user/${Token().userUniqId}/${widget.kind}list");
-      jsonData =response.data["data"];
-      
+      final response =
+          await dio.get("/user/${Token().userUniqId}/${widget.kind}list");
+      jsonData = response.data["data"];
     } on Exception catch (e) {
       // TODO
       logger.e(e);
@@ -57,7 +57,9 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
         if (element['travel_participation'] == null) {
           element['travel_participation'] = 0;
         }
-        meetingListData.add(ListItemData.fromJson(element));
+        if (element['post_status'] != -1) {
+          meetingListData.add(ListItemData.fromJson(element));
+        }
       }
     });
   }
@@ -141,7 +143,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                   child: ExtendedImage.network(
                                     meetingListData[index].meetingPic[0],
-                                    // headers: { 
+                                    // headers: {
                                     //   'Authorization': Token().refreshToken,
                                     // },
                                     // cache: true,
@@ -385,4 +387,3 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
     );
   }
 }
-
