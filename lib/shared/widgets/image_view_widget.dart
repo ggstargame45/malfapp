@@ -1,7 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:math' as math;
 
 import 'package:malf/shared/network/token.dart';
 
@@ -67,10 +66,9 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
               padding: const EdgeInsets.only(bottom: 100),
               child: Container(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height-150,
+                  maxHeight: MediaQuery.of(context).size.height - 150,
                   maxWidth: MediaQuery.of(context).size.width,
                 ),
-                
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -122,8 +120,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
                     _tabController.animateTo(_tabController.index + 1);
                   }
                 },
-                child: Transform.rotate(
-                    angle: math.pi, child: const Icon(Icons.arrow_back_ios))),
+                child: const Icon(Icons.arrow_forward_ios)),
           ],
         ),
       ),

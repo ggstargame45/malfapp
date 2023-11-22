@@ -13,8 +13,6 @@ import 'package:malf/shared/theme/app_colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:malf/shared/widgets/image_view_widget.dart';
 
-const enter = ["이(가) 들어왔습니다", "が部屋に入ってきた", "参加了聊天", "has entered the room"];
-const leave = ["이(가) 나갔습니다", "が退出しました", "退出了聊天", "has left the room"];
 
 Widget _buildTimeStamp(DateTime sendAt) {
   return Row(
@@ -131,21 +129,6 @@ class _ChatBubbleMessageState extends State<ChatBubbleMessage> {
   Widget build(BuildContext context) {
     //logger.d("beforeUser : ${widget.beforeUser}, beforeTime : ${widget.userName},userName : ${widget.message.sender}");
     bool isSentByCurrentUser = widget.userName == widget.message.sender;
-    // bool isImgMessage = widget.message.type == 1;
-    int lang;
-    switch (context.locale.languageCode) {
-      case 'ko':
-        lang = 0;
-        break;
-      case 'ja':
-        lang = 1;
-        break;
-      case 'zh':
-        lang = 2;
-        break;
-      default:
-        lang = 3;
-    }
     if (widget.message.type == 2) {
       return Padding(
         padding: const EdgeInsets.only(top: 4),
@@ -153,8 +136,8 @@ class _ChatBubbleMessageState extends State<ChatBubbleMessage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${UserMap().userMap[widget.message.sender]?.nickname ?? widget.message.sender} ${enter[lang]}",
-              style: TextStyle(color: Colors.grey),
+              "${UserMap().userMap[widget.message.sender]?.nickname ?? widget.message.sender} ${"chat_room_enter".tr()}",
+              style: const TextStyle(color: Colors.grey),
             ),
           ],
         ),
@@ -167,8 +150,8 @@ class _ChatBubbleMessageState extends State<ChatBubbleMessage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${UserMap().userMap[widget.message.sender]?.nickname ?? widget.message.sender} ${leave[lang]}",
-              style: TextStyle(color: Colors.grey),
+              "${UserMap().userMap[widget.message.sender]?.nickname ?? widget.message.sender} ${"chat_room_leave".tr()}",
+              style: const TextStyle(color: Colors.grey),
             ),
           ],
         ),
@@ -194,7 +177,7 @@ class _ChatBubbleMessageState extends State<ChatBubbleMessage> {
               child: CircleAvatar(
                   radius: 15,
                   backgroundImage: ExtendedNetworkImageProvider(
-                    "${UserMap().userMap[widget.message.sender]?.profilePic == [] ? "default.png" : UserMap().userMap[widget.message.sender]!.profilePic[0]}",
+                    UserMap().userMap[widget.message.sender]?.profilePic == [] ? "default.png" : UserMap().userMap[widget.message.sender]!.profilePic[0],
                     cache: true,
                   )),
             ),

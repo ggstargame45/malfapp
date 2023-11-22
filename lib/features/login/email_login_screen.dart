@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/token.dart';
+import 'package:malf/shared/usecases/loading.dart';
 
 class EmailLoginScreen extends StatefulWidget {
   @override
@@ -62,32 +63,34 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                 child: Text('login'.tr()),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
+                    loading(context);
                     try {
-                      Response response = await Dio().post("https://malftravel.com/auth/local/login",
-                      data: {
-                        "email": _emailController.text,
-                        "password": _passwordController.text
-                      });
+                      Response response = await Dio().post(
+                          "https://malftravel.com/auth/local/login",
+                          data: {
+                            "email": _emailController.text,
+                            "password": _passwordController.text
+                          });
                       logger.d(response.data);
-                      if(response.statusCode==200){
-                        Token().setToken(
-                          response.data['token']['refreshToken'],
-                          response.data['token']['accessToken']);
-                      context
-                        ..pop()
-                        ..go('/home');
+                      if (response.statusCode == 200) {
+                        Token().setToken(response.data['token']['refreshToken'],
+                            response.data['token']['accessToken']);
+                        context
+                          ..pop()
+                          ..go('/home');
                         return;
                       }
                     } on Exception catch (e) {
                       // TODO
                       logger.e(e);
+
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Login failed'),
-                      ),
-                    );
+                        SnackBar(
+                          content: Text('Login failed'),
+                        ),
+                      );
                     }
-                    
+                    context.pop();
                   }
                 },
               ),

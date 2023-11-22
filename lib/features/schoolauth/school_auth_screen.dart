@@ -12,21 +12,9 @@ import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/permission.dart';
 import 'package:http/http.dart' as http;
 import 'package:malf/shared/usecases/image_compress.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-const List<String> schoolExample = [
-  "학생증 또는 입학증명서 사진",
-  "Certificate of admission (ex. a university student ID or a certification paper from a university-managed language school.)",
-  "大学学生证, 录取通知书, 可以证明语学堂的资料",
-  "入学証明書（例：大学の学生証、大学または大学が運営する学術機関の証明書"
-];
 
-const List<String> imageDeleteMessage = [
-  "보내주신 사진은 승인 절차 이후에 폐기됩니다. 저희가 저장하지 않습니다.",
-  "The photo you have sent will be discarded after the approval process. We do not store it.",
-  "您发送的照片将在审核过程后被删除。我们不会保存它。",
-  "送信いただいた写真は、承認プロセスの後に廃棄されます。私たちはそれを保存しません。"
-];
+
 
 class PostingBody {}
 
@@ -109,7 +97,6 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
   final picker = ImagePicker(); // 이미지피커
   List<XFile> imageList = []; // 이미지 리스트
   bool isPicked = false; // 이미지가 선택되었는지 확인
-  late int lang;
   @override
   void initState() {
     // TODO: implement initState
@@ -121,19 +108,6 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
   @override
   Widget build(BuildContext context) {
     logger.d("SchoolAuthScreessn");
-    switch (context.locale.languageCode) {
-      case 'ko':
-        lang = 0;
-        break;
-      case 'zh':
-        lang = 2;
-        break;
-      case 'ja':
-        lang = 3;
-        break;
-      default:
-        lang = 1;
-    }
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -593,7 +567,7 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    schoolExample[lang],
+                    "school_auth_hint".tr(),
                     style: const TextStyle(
                       color: Color(0xFF292524),
                       fontSize: 18,
@@ -615,7 +589,7 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    imageDeleteMessage[lang],
+                    "school_auth_delete_message".tr(),
                     style: const TextStyle(
                       color: Colors.red,
                       fontSize: 18,

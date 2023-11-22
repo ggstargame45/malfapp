@@ -82,7 +82,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
             onPressed: () {
               context.pop();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.black,
             )),
@@ -183,7 +183,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                       children: [
                                         Text(
                                           "${CountryCode.tryParse("${meetingListData[index].authorNation}")?.symbol ?? "?"} ",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                           ),
                                         ),
@@ -192,7 +192,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                             "${meetingListData[index].authorNickname} ",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 14,
                                               color: Colors.grey,
                                             ),
@@ -241,12 +241,12 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
-                                                    color: Color.fromARGB(
+                                                    color: const Color.fromARGB(
                                                         255, 234, 234, 234),
                                                     width: 2),
-                                                borderRadius: BorderRadius.all(
+                                                borderRadius: const BorderRadius.all(
                                                     Radius.circular(10.0)),
-                                                color: Color.fromARGB(
+                                                color: const Color.fromARGB(
                                                     255, 247, 247, 247),
                                               ),
                                               child: Text(
@@ -263,12 +263,12 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                           Container(
                                             decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: Color.fromARGB(
+                                                  color: const Color.fromARGB(
                                                       255, 234, 234, 234),
                                                   width: 2),
-                                              borderRadius: BorderRadius.all(
+                                              borderRadius: const BorderRadius.all(
                                                   Radius.circular(10.0)),
-                                              color: Color.fromARGB(
+                                              color: const Color.fromARGB(
                                                   255, 247, 247, 247),
                                             ),
                                             child: Text(
@@ -288,7 +288,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                           const EdgeInsets.fromLTRB(0, 8, 0, 0),
                                       child: Row(
                                         children: [
-                                          Text("foreigner".tr() + " ",
+                                          Text("${"foreigner".tr()} ",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,
@@ -306,17 +306,14 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                                     255, 113, 162, 254),
                                               )),
                                           Text(
-                                              "/" +
-                                                  meetingListData[index]
-                                                      .capacityTravel
-                                                      .toString() +
-                                                  " | ",
+                                              "/${meetingListData[index]
+                                                      .capacityTravel} | ",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,
                                                 color: Colors.grey,
                                               )),
-                                          Text("local".tr() + " ",
+                                          Text("${"local".tr()} ",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,
@@ -334,24 +331,22 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                                     255, 97, 195, 255),
                                               )),
                                           Text(
-                                              "/" +
-                                                  meetingListData[index]
-                                                      .capacityLocal
-                                                      .toString(),
+                                              "/${meetingListData[index]
+                                                      .capacityLocal}",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,
                                                 color: Colors.grey,
                                               )),
                                           //TODO: need space between
-                                          Spacer(),
+                                          const Spacer(),
 
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(
                                                 8, 0, 8.0, 0),
                                             child: Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   CupertinoIcons.heart_fill,
                                                   color: Colors.red,
                                                   size: 16,

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
@@ -24,7 +24,6 @@ import 'package:malf/shared/logger.dart';
 import 'package:random_name_generator/random_name_generator.dart';
 import 'package:restart_app/restart_app.dart';
 
-import './temp_logo.dart';
 
 const Color mainColor = Color.fromARGB(255, 97, 195, 255);
 double maxHeight(BuildContext context) => MediaQuery.of(context).size.height;
@@ -410,11 +409,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                     height: MediaQuery.of(context).size.height * 0.55,
                     alignment: Alignment.center,
-                    child: SvgPicture.string(
-                      tempLogo,
-                      colorFilter:
-                          const ColorFilter.mode(Colors.transparent, BlendMode.plus),
-                    )),
+                    child: ExtendedImage.asset("assets/logos/new_login_logo.png",
+                        fit: BoxFit.contain)
+                        ),
                 Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,

@@ -2,16 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:isar/isar.dart';
-import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:http/http.dart' as http;
 
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,9 +72,10 @@ class SettingsScreen extends StatelessWidget {
                           ]));
             },
           ),
+          //app version
           ListTile(
             title: Text("app_version".tr()),
-            subtitle: const Text("1.2.6"),
+            subtitle: const Text("1.2.7"),
             onTap: () async {
               // try {
               //   final image =
@@ -137,14 +136,14 @@ class SettingsScreen extends StatelessWidget {
                                       await dio.delete('/user/profile');
                                   if (response.statusCode == 200) {
                                     Token().deleteToken();
-                                    Navigator.of(contexnt).pop();
+                                    contexnt.pop();
                                     context.go('/login');
                                   } else {
-                                    Navigator.of(contexnt).pop();
+                                    contexnt.pop();
                                   }
                                 } on Exception catch (e) {
                                   // TODO
-                                  Navigator.of(contexnt).pop();
+                                  contexnt.pop();
                                 }
                               },
                               child: Text('confirm'.tr()),

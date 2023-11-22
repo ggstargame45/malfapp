@@ -49,7 +49,7 @@ Future<void> main() async {
         Locale('ja'),
       ],
       path: 'assets/translations',
-      fallbackLocale: const Locale('ko', 'KR'),
+      fallbackLocale: const Locale('en'),
       child: const MalfApp(),
     ),
   );

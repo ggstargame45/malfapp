@@ -5,8 +5,9 @@ import 'package:permission_handler/permission_handler.dart';
 
 Future<bool> cameraPermission() async {
   PermissionStatus status = await Permission.camera.status;
-  if (status == PermissionStatus.granted || status == PermissionStatus.limited)
+  if (status == PermissionStatus.granted || status == PermissionStatus.limited) {
     return true;
+  }
   if (status == PermissionStatus.denied) {
     status = await Permission.camera.request();
     if (status == PermissionStatus.granted ||

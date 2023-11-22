@@ -117,7 +117,7 @@
     "start" : "시작하기",
     "report_context_title" : "신고 내용",
     "school_auth_title" : "학교를 인증해 주세요.",
-    "school_auth_hint" : "예) 연세대 학생증",
+    "school_auth_hint" : "학생증 또는 입학증명서 사진",
     "school_auth_context" : "학교 인증에 사용된 정보는 확인 외의 용도로 사용되지 않습니다.",
     "school_auth_process_message" : "학교 인증이 진행중입니다.",
     "login" : "로그인",
@@ -151,6 +151,8 @@
     "notification" : "알림",
     "apply_rejected" : "참여신청이 거절되었습니다.",
     "apply_accepted" : "참여신청이 승인되었습니다.",
-    "review_notification" : "모임 후기를 남기러 갈까요?"
-
+    "review_notification" : "모임 후기를 남기러 갈까요?",
+    "school_auth_delete_message" : "보내주신 사진은 승인 절차 이후에 폐기됩니다. 저희가 저장하지 않습니다.",
+    "chat_room_enter" : "이(가) 들어왔습니다",
+    "chat_room_leave" : "이(가) 나갔습니다"
 }

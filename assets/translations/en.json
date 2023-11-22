@@ -116,7 +116,7 @@
 "start": "Start",
 "report_context_title": "Report Content",
 "school_auth_title": "Please verify your school.",
-"school_auth_hint": "Example: Yonsei University Student ID",
+"school_auth_hint": "Certificate of admission (ex. a university student ID or a certification paper from a university-managed language school.)",
 "school_auth_context": "Information used for school verification is not used for any purpose other than confirmation.",
 "school_auth_process_message": "School verification is in progress.",
 "login": "Login",
@@ -150,6 +150,8 @@
     "notification" : "Notification",
     "apply_rejected" : "You have been rejected.",
     "apply_accepted" : "You have been accepted.",
-    "review_notification" : "Will you leave a review for the participants?"
-
+    "review_notification" : "Will you leave a review for the participants?",
+    "school_auth_delete_message" : "The photo you have sent will be discarded after the approval process. We do not store it.",
+    "chat_room_enter" : "has entered the room",
+    "chat_room_leave" :  "has left the room"
 }
