@@ -10,15 +10,18 @@ import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
+import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 // import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class MeetingListScreen extends StatefulWidget {
-  const MeetingListScreen({super.key, required this.kind, this.kindId = 1});
-  //like, write, apply,
+  const MeetingListScreen(
+      {super.key, required this.kind, this.kindId = 1, this.extraData});
+  //like, write, apply, date
   //TODO : category
   final String kind;
   final int kindId;
+  final Object? extraData;
 
   @override
   State<MeetingListScreen> createState() => _MeetingListScreenState();
@@ -39,6 +42,57 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
       ),
     );
     List<dynamic> jsonData = [];
+    if (widget.kind == "date") {
+      final DateTimeRange dateTimeRange;
+      if (widget.extraData != null) {
+        dateTimeRange = widget.extraData as DateTimeRange;
+      } else {
+        dateTimeRange = DateTimeRange(
+            start: DateTime.now(),
+            end: DateTime.now().add(const Duration(days: 7)));
+      }
+      final start = DateTime(dateTimeRange.start.year,
+              dateTimeRange.start.month, dateTimeRange.start.day)
+          .subtract(const Duration(seconds: 1));
+      final end = DateTime(dateTimeRange.end.year, dateTimeRange.end.month,
+              dateTimeRange.end.day)
+          .add(const Duration(seconds: 1));
+      try {
+        final response = await dio.get("/bulletin-board/posts");
+        jsonData = response.data["data"];
+        if (response.statusCode == 200) {
+          jsonData = response.data['data'];
+          setState(() {
+            meetingListData = jsonData
+                .map((e) => ListItemData.fromJson(e))
+                .where((element) =>
+                    (element.postStatus == 1) &&
+                    (DateTime.now().isBefore(element.meetingStartTime)) &&
+                    (DateTime(
+                            element.meetingStartTime.year,
+                            element.meetingStartTime.month,
+                            element.meetingStartTime.day)
+                        .isAfter(start)) &&
+                    (DateTime(
+                            element.meetingStartTime.year,
+                            element.meetingStartTime.month,
+                            element.meetingStartTime.day)
+                        .isBefore(end)) &&
+                    (!BlockSet()
+                        .blockUserUniqIdSet
+                        .contains(element.userUniqId)) &&
+                    (!BlockSet()
+                        .blockMeetingPostIdSet
+                        .contains(element.postId)))
+                .toList();
+          });
+        }
+      } on Exception catch (e) {
+        // TODO
+        logger.e(e);
+      }
+      return;
+    }
     try {
       final response =
           await dio.get("/user/${Token().userUniqId}/${widget.kind}list");
@@ -75,6 +129,17 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
   Widget build(BuildContext context) {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
+    DateTime? start;
+    DateTime? end;
+    if (widget.kind == "date") {
+      if (widget.extraData != null) {
+        start = (widget.extraData as DateTimeRange).start;
+        end = (widget.extraData as DateTimeRange).end;
+      } else {
+        start = DateTime.now();
+        end = DateTime.now().add(const Duration(days: 7));
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -88,15 +153,17 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
             )),
         centerTitle: false,
         title: Text(
-          widget.kind == "like"
-              ? "like_meeting".tr()
-              : (widget.kind == "write"
-                  ? "made_meeting".tr()
-                  : (widget.kind == "apply"
-                      ? "attend_meeting".tr()
-                      : (widget.kind == "category"
-                          ? "category".tr()
-                          : "error".tr()))),
+          widget.kind == "date"
+              ? "${start!.year}.${start.month}.${start.day}~${end!.year}.${end.month}.${end.day}"
+              : widget.kind == "like"
+                  ? "like_meeting".tr()
+                  : (widget.kind == "write"
+                      ? "made_meeting".tr()
+                      : (widget.kind == "apply"
+                          ? "attend_meeting".tr()
+                          : (widget.kind == "category"
+                              ? "category".tr()
+                              : "error".tr()))),
           // style: TextStyle(
           //   color: Colors.black,
           //   fontSize: 20,
@@ -244,8 +311,9 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                                     color: const Color.fromARGB(
                                                         255, 234, 234, 234),
                                                     width: 2),
-                                                borderRadius: const BorderRadius.all(
-                                                    Radius.circular(10.0)),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10.0)),
                                                 color: const Color.fromARGB(
                                                     255, 247, 247, 247),
                                               ),
@@ -266,8 +334,9 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                                   color: const Color.fromARGB(
                                                       255, 234, 234, 234),
                                                   width: 2),
-                                              borderRadius: const BorderRadius.all(
-                                                  Radius.circular(10.0)),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10.0)),
                                               color: const Color.fromARGB(
                                                   255, 247, 247, 247),
                                             ),
@@ -297,7 +366,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                               )),
                                           Text(
                                               meetingListData[index]
-                                                  .travelParticipation
+                                                  .localParticipation
                                                   .toString(),
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
@@ -306,8 +375,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                                     255, 113, 162, 254),
                                               )),
                                           Text(
-                                              "/${meetingListData[index]
-                                                      .capacityTravel} | ",
+                                              "/${meetingListData[index].capacityTravel} | ",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,
@@ -322,7 +390,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                               )),
                                           Text(
                                               meetingListData[index]
-                                                  .localParticipation
+                                                  .travelParticipation
                                                   .toString(),
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
@@ -331,8 +399,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
                                                     255, 97, 195, 255),
                                               )),
                                           Text(
-                                              "/${meetingListData[index]
-                                                      .capacityLocal}",
+                                              "/${meetingListData[index].capacityLocal}",
                                               style: const TextStyle(
                                                 fontFamily: 'Pretendard',
                                                 fontSize: 14,

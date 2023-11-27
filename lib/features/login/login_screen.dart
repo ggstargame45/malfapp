@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:random_name_generator/random_name_generator.dart';
 import 'package:restart_app/restart_app.dart';
-
+import 'package:update_available/update_available.dart';
 
 const Color mainColor = Color.fromARGB(255, 97, 195, 255);
 double maxHeight(BuildContext context) => MediaQuery.of(context).size.height;
@@ -235,6 +236,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> initer() async {
     loading(context);
+
+    await _showUpdateDialog();
+
     await patchAvailable();
 
     await checkVersion();
@@ -246,6 +250,51 @@ class _LoginScreenState extends State<LoginScreen> {
       context.go('/home');
     }
   }
+
+  _showUpdateDialog() async {
+    while ((await getUpdateAvailability()) == const UpdateAvailable()) {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("update_title".tr()),
+              content: Text("update_message".tr()),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    if(Platform.isAndroid){
+                      await launchUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.malf.malf"));
+                    }
+                    if(Platform.isIOS){
+                      await launchUrl(Uri.parse("https://apps.apple.com/kr/app/malf/id6469673658"));
+                    }
+                    context.pop();
+                  },
+                  child: const Text('confirm').tr(),
+                ),
+                TextButton(
+                    onPressed: () {
+                      context.pop();
+                    },
+                    child: const Text('cancel',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        )).tr())
+              ],
+            );
+          });
+    }
+  }
+
+  // Future<void> getUpdateAvailability() async {
+  //   final updateInfo = await InAppUpdate.checkForUpdate();
+  //   // await InAppUpdate.completeFlexibleUpdate();
+  //   // await InAppUpdate.startFlexibleUpdate();
+  //   await InAppUpdate.performImmediateUpdate();
+  //   setState(() {
+  //     _updateInfo = updateInfo;
+  //   });
+  // }
 
   Future<void> makeTermSheet(String kind) async {
     bool allAgree = false;
@@ -409,9 +458,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                     height: MediaQuery.of(context).size.height * 0.55,
                     alignment: Alignment.center,
-                    child: ExtendedImage.asset("assets/logos/new_login_logo.png",
-                        fit: BoxFit.contain)
-                        ),
+                    child: ExtendedImage.asset(
+                        "assets/logos/new_login_logo.png",
+                        fit: BoxFit.contain)),
                 Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,

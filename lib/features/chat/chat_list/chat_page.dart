@@ -13,6 +13,13 @@ import 'package:malf/shared/theme/app_theme.dart';
 import 'package:malf/shared/theme/text_theme.dart';
 import 'package:go_router/go_router.dart';
 
+final List<String> emptyListMessage = [
+  "채팅방은 모임 승인 이후에 자동으로 생깁니다.",
+  "The chat room will be created after the participation in the gathering is approved.",
+  "聚会允许后，聊天室将自动创建。",
+  "グループが確認された後、チャットルームは自動的に作成されます。"
+];
+
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
   static const String routeName = '/chat';
@@ -29,6 +36,7 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChattingListModel> chattingListData = [];
   // List<ListItemData> homeListData= [];
+  late int lang;
 
   Future<dynamic> request() async {
     try {
@@ -49,11 +57,11 @@ class _ChatPageState extends State<ChatPage> {
       List<dynamic> jsonData = await request();
       logger.d(jsonData);
       for (var element in jsonData) {
-          chattingListData.add(ChattingListModel.fromJson(element));
-        }
+        chattingListData.add(ChattingListModel.fromJson(element));
+      }
       pagingChatController.appendLastPage(chattingListData);
       // setState(() {
-        
+
       //   // jsonData.forEach((element) {
       //   //   homeListData.add(ListItemData.fromJson(element));
       //   // }
@@ -71,13 +79,13 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
     pagingChatController.addPageRequestListener((pageKey) {
       logger.d("pageKey : $pageKey");
       _loadChattingListData();
       // _getAd();
     });
-    
   }
 
   @override
@@ -85,6 +93,13 @@ class _ChatPageState extends State<ChatPage> {
     logger.e("chatPage");
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
+    lang = context.locale.languageCode == "ko"
+        ? 0
+        : context.locale.languageCode == "zh"
+            ? 2
+            : context.locale.languageCode == "ja"
+                ? 3
+                : 1;
 
     return Scaffold(
       appBar: AppBar(
@@ -243,6 +258,24 @@ class _ChatPageState extends State<ChatPage> {
                               ),
                             ),
                           ),
+                          noItemsFoundIndicatorBuilder: (context) {
+                            return SizedBox(
+                              height: maxHeight * 0.8,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      emptyListMessage[lang],
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),

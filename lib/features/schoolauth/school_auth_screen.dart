@@ -13,8 +13,12 @@ import 'package:malf/shared/permission.dart';
 import 'package:http/http.dart' as http;
 import 'package:malf/shared/usecases/image_compress.dart';
 
-
-
+const List<String> postSucessMessage = [
+  "제출 성공",
+  "Submit Success",
+  "提交成功",
+  "提出成功"
+];
 
 class PostingBody {}
 
@@ -26,7 +30,8 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
   bool uploaded = false;
 
   for (int i = 0; i < imageList.length; i++) {
-    imageFileList.add(await compressImage(File(imageList[i].path), 90,imageList.length));
+    imageFileList.add(
+        await compressImage(File(imageList[i].path), 90, imageList.length));
   }
 
   try {
@@ -97,10 +102,27 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
   final picker = ImagePicker(); // 이미지피커
   List<XFile> imageList = []; // 이미지 리스트
   bool isPicked = false; // 이미지가 선택되었는지 확인
+  late int lan;
   @override
   void initState() {
     // TODO: implement initState
     logger.d("SchoolAuthScreen");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      switch (context.locale.languageCode) {
+        case "ko":
+          lan = 0;
+          break;
+        case "zh":
+          lan = 2;
+          break;
+        case "ja":
+          lan = 3;
+          break;
+        default:
+          lan = 1;
+          break;
+      }
+    });
 
     super.initState();
   }
@@ -219,7 +241,6 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                                                             return;
                                                           }
 
-
                                                           final image = await picker
                                                               .pickImage(
                                                                   source: ImageSource
@@ -317,14 +338,16 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                                                       const EdgeInsets.fromLTRB(
                                                           16, 0, 0, 0),
                                                   child: SizedBox(
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        0.1,
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        0.1,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.1,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.1,
                                                     child: ElevatedButton(
                                                       onPressed: () async {
                                                         try {
@@ -335,44 +358,50 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                                                               .pickImage(
                                                                   source: ImageSource
                                                                       .camera); // 갤러리에서 이미지 뽑아옴
-                                                          if (image == null) return;
+                                                          if (image == null)
+                                                            return;
 
                                                           setState(() {
                                                             imageList.clear();
-                                                            imageList.add(image);
+                                                            imageList
+                                                                .add(image);
                                                             context.pop();
 
-                                                            if (imageList.length >
+                                                            if (imageList
+                                                                    .length >
                                                                 10) {
-                                                              imageList.removeRange(
-                                                                  10,
-                                                                  imageList.length);
-                                                              ScaffoldMessenger.of(
-                                                                      context)
-                                                                  .showSnackBar(SnackBar(
-                                                                      content: Text(
-                                                                          "photo_upload_warning"
-                                                                              .tr())));
+                                                              imageList
+                                                                  .removeRange(
+                                                                      10,
+                                                                      imageList
+                                                                          .length);
+                                                              ScaffoldMessenger
+                                                                      .of(
+                                                                          context)
+                                                                  .showSnackBar(
+                                                                      SnackBar(
+                                                                          content:
+                                                                              Text("photo_upload_warning".tr())));
                                                             }
                                                           });
                                                         } catch (e) {
                                                           logger.e(e);
                                                         }
                                                       },
-                                                      style:
-                                                          ElevatedButton.styleFrom(
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            16)),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16)),
                                                         backgroundColor:
-                                                            const Color(0xFFF7F7F7),
+                                                            const Color(
+                                                                0xFFF7F7F7),
                                                         side: const BorderSide(
                                                             width: 1,
-                                                            color:
-                                                                Color(0xFFD3D3D3)),
+                                                            color: Color(
+                                                                0xFFD3D3D3)),
                                                         elevation: 0,
                                                       ),
                                                       child: const Column(
@@ -384,8 +413,8 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                                                             Icons
                                                                 .photo_camera_rounded,
                                                             size: 38,
-                                                            color:
-                                                                Color(0xFFBEBEBE),
+                                                            color: Color(
+                                                                0xFFBEBEBE),
                                                           ),
                                                         ],
                                                       ),
@@ -618,11 +647,18 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                     ))),
                     child: Text("submit".tr()),
                     onPressed: () async {
-                      if (await postPosting(PostingBody(), imageList)) {
-                        context.pop();
+                      if (imageList.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("picture_unchose_warning".tr())));
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("post_fail".tr())));
+                        if (await postPosting(PostingBody(), imageList)) {
+                          context.pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(postSucessMessage[lan])));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("post_fail".tr())));
+                        }
                       }
                     },
                   )),

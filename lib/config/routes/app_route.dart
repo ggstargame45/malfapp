@@ -253,6 +253,7 @@ GoRouter appRouter = GoRouter(
           return MeetingListScreen(
             kind: state.pathParameters['kind']!,
             kindId: int.parse(state.pathParameters['id'] ?? "1"),
+            extraData: state.extra,
           );
         }),
   ],
