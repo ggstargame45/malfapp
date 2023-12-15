@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -125,7 +124,6 @@ class _HomePageState extends State<HomePage> {
     // token = Token().refreshToken;
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
-    
 
     logger.d(Token().refreshToken);
     logger.d(Token().userUniqId);
@@ -202,9 +200,9 @@ class _HomePageState extends State<HomePage> {
                                           Expanded(
                                             child: ExtendedImage.network(
                                               const [
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png",
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/verficationinfo.png"
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-1.png",
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-2.png",
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-3.png"
                                               ][index],
                                               fit: BoxFit.contain,
                                             ),
@@ -435,7 +433,8 @@ class _HomePageState extends State<HomePage> {
                                     context.push('/detail/${item.postId}');
                                   },
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
@@ -451,7 +450,7 @@ class _HomePageState extends State<HomePage> {
                                               item.meetingPic.isEmpty
                                                   ? 'https://malftravel.com/default.jpeg'
                                                   : item.meetingPic[0],
-                              
+
                                               // headers: {
                                               //   'Authorization':
                                               //       Token().refreshToken,
@@ -496,11 +495,13 @@ class _HomePageState extends State<HomePage> {
                                                   Expanded(
                                                     child: Row(
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment.start,
+                                                          MainAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                           "${CountryCode.tryParse("${item.authorNation}")?.symbol ?? "?"} ",
-                                                          style: const TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
                                                           ),
                                                         ),
@@ -508,12 +509,14 @@ class _HomePageState extends State<HomePage> {
                                                           child: Text(
                                                             "${item.authorNickname} ",
                                                             maxLines: 1,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             style:
                                                                 const TextStyle(
                                                               fontSize: 14,
-                                                              color: Colors.grey,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
                                                           ),
                                                         ),
@@ -533,13 +536,13 @@ class _HomePageState extends State<HomePage> {
                                                                         .primary
                                                                     : AppColors
                                                                         .white),
-                                                            backgroundColor: item
-                                                                        .userType ==
-                                                                    0
-                                                                ? AppColors
-                                                                    .extraLightGrey
-                                                                : AppColors
-                                                                    .primary,
+                                                            backgroundColor:
+                                                                item.userType ==
+                                                                        0
+                                                                    ? AppColors
+                                                                        .extraLightGrey
+                                                                    : AppColors
+                                                                        .primary,
                                                             innerRadius: 20.0,
                                                             outerRadius: 20.0,
                                                           ),
@@ -570,27 +573,32 @@ class _HomePageState extends State<HomePage> {
                                                   children: [
                                                     Flexible(
                                                       child: Container(
-                                                        decoration: BoxDecoration(
+                                                        decoration:
+                                                            BoxDecoration(
                                                           border: Border.all(
                                                               color: const Color
-                                                                  .fromARGB(255,
-                                                                  234, 234, 234),
+                                                                  .fromARGB(
+                                                                  255,
+                                                                  234,
+                                                                  234,
+                                                                  234),
                                                               width: 2),
                                                           borderRadius:
                                                               const BorderRadius
-                                                                  .all(
-                                                                  Radius.circular(
-                                                                      10.0)),
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10.0)),
                                                           color: const Color
-                                                              .fromARGB(
-                                                              255, 247, 247, 247),
+                                                              .fromARGB(255,
+                                                              247, 247, 247),
                                                         ),
                                                         child: Text(
                                                           " ${item.meetingLocation} ",
                                                           maxLines: 2,
                                                           overflow: TextOverflow
                                                               .ellipsis,
-                                                          style: const TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontFamily:
                                                                 'Pretendard',
                                                             fontSize: 12,
@@ -611,12 +619,9 @@ class _HomePageState extends State<HomePage> {
                                                                 .all(
                                                                 Radius.circular(
                                                                     10.0)),
-                                                        color:
-                                                            const Color.fromARGB(
-                                                                255,
-                                                                247,
-                                                                247,
-                                                                247),
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 247, 247, 247),
                                                       ),
                                                       child: Text(
                                                         " ${item.meetingStartTime.year}.${item.meetingStartTime.month}.${item.meetingStartTime.day} | ${item.meetingStartTime.hour < 10 ? "0${item.meetingStartTime.hour}" : item.meetingStartTime.hour.toString()} : ${item.meetingStartTime.minute < 10 ? "0${item.meetingStartTime.minute}" : item.meetingStartTime.minute} ",
@@ -643,7 +648,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 113, 162, 254),
+                                                              255,
+                                                              113,
+                                                              162,
+                                                              254),
                                                         )),
                                                     Text(
                                                         item.localParticipation
@@ -653,7 +661,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 113, 162, 254),
+                                                              255,
+                                                              113,
+                                                              162,
+                                                              254),
                                                         )),
                                                     Text(
                                                         "/" +
@@ -672,7 +683,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 97, 195, 255),
+                                                              255,
+                                                              97,
+                                                              195,
+                                                              255),
                                                         )),
                                                     Text(
                                                         item.travelParticipation
@@ -682,7 +696,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 97, 195, 255),
+                                                              255,
+                                                              97,
+                                                              195,
+                                                              255),
                                                         )),
                                                     Text(
                                                         "/" +
@@ -696,10 +713,11 @@ class _HomePageState extends State<HomePage> {
                                                         )),
                                                     //TODO: need space between
                                                     const Spacer(),
-                              
+
                                                     Padding(
                                                       padding: const EdgeInsets
-                                                          .fromLTRB(8, 0, 8.0, 0),
+                                                          .fromLTRB(
+                                                          8, 0, 8.0, 0),
                                                       child: Row(
                                                         children: [
                                                           const Icon(
@@ -765,21 +783,21 @@ class _HomePageState extends State<HomePage> {
 
 void customDateRangePicker(BuildContext context,
     {required double maxHeight, required double maxWidth}) {
-    int lang = 1;
-      switch (context.locale.languageCode) {
-      case "ko":
-        lang = 0;
-        break;
-      case "zh":
-        lang = 2;
-        break;
-      case "ja":
-        lang = 3;
-        break;
-      default:
-        lang = 1;
-        break;
-    }
+  int lang = 1;
+  switch (context.locale.languageCode) {
+    case "ko":
+      lang = 0;
+      break;
+    case "zh":
+      lang = 2;
+      break;
+    case "ja":
+      lang = 3;
+      break;
+    default:
+      lang = 1;
+      break;
+  }
   showDialog(
       context: context,
       builder: (context) {

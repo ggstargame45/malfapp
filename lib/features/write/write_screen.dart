@@ -533,7 +533,7 @@ class _WriteScreenState extends State<WriteScreen> {
                       context: context,
                       initialDate: meetingDate,
                       firstDate: DateTime.now(),
-                      lastDate: DateTime(DateTime.now().year + 1));
+                      lastDate: DateTime.now().add(const Duration(days: 365)));
                   if (date == null) return;
                   setState(() {
                     meetingDate = DateTime(date.year, date.month, date.day,

@@ -237,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> initer() async {
     loading(context);
 
-    await _showUpdateDialog();
+    //await _showUpdateDialog();
 
     await patchAvailable();
 
