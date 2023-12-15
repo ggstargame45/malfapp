@@ -32,7 +32,8 @@ class AppTheme {
             }
             return AppTextStyles.bodyLg.copyWith(color: AppColors.lightGrey);
           }),
-        ));
+        )
+        );
   }
 
   /// Light theme data of the app

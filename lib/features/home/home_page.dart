@@ -1,10 +1,10 @@
 import 'dart:async';
 
-
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:malf/config/routes/app_route.dart';
 import 'package:malf/features/home/home_list_provider.dart';
@@ -34,6 +34,9 @@ const List<String> dateRangePickString = [
   "查看聚会",
   "会議を見る",
 ];
+
+const String calendarString =
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 -960 960 960\" width=\"24\"><path d=\"M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z\"/></svg>";
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -125,7 +128,6 @@ class _HomePageState extends State<HomePage> {
     // token = Token().refreshToken;
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
-    
 
     logger.d(Token().refreshToken);
     logger.d(Token().userUniqId);
@@ -150,14 +152,21 @@ class _HomePageState extends State<HomePage> {
                 customDateRangePicker(context,
                     maxHeight: maxHeight, maxWidth: maxWidth);
               },
-              icon: const Icon(CupertinoIcons.calendar)),
+              icon: SvgPicture.string(
+                calendarString,
+                height: 24,
+                width: 24,
+                colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.8), BlendMode.srcIn),
+              )),
+          //icon: const Icon(CupertinoIcons.calendar)),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () => Future.sync(
           () => pagingController.refresh(),
         ),
-        // notificationPredicate: (notification) {
+        // notificationPredicate: (`notification`) {
         //   return notification.depth == 0;
         // },
         child: Column(
@@ -202,9 +211,9 @@ class _HomePageState extends State<HomePage> {
                                           Expanded(
                                             child: ExtendedImage.network(
                                               const [
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner.png",
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/defaultbanner2.png",
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/verficationinfo.png"
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-1.png",
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-2.png",
+                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-3.png"
                                               ][index],
                                               fit: BoxFit.contain,
                                             ),
@@ -435,7 +444,8 @@ class _HomePageState extends State<HomePage> {
                                     context.push('/detail/${item.postId}');
                                   },
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
@@ -451,7 +461,7 @@ class _HomePageState extends State<HomePage> {
                                               item.meetingPic.isEmpty
                                                   ? 'https://malftravel.com/default.jpeg'
                                                   : item.meetingPic[0],
-                              
+
                                               // headers: {
                                               //   'Authorization':
                                               //       Token().refreshToken,
@@ -496,11 +506,13 @@ class _HomePageState extends State<HomePage> {
                                                   Expanded(
                                                     child: Row(
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment.start,
+                                                          MainAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                           "${CountryCode.tryParse("${item.authorNation}")?.symbol ?? "?"} ",
-                                                          style: const TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 16,
                                                           ),
                                                         ),
@@ -508,12 +520,14 @@ class _HomePageState extends State<HomePage> {
                                                           child: Text(
                                                             "${item.authorNickname} ",
                                                             maxLines: 1,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             style:
                                                                 const TextStyle(
                                                               fontSize: 14,
-                                                              color: Colors.grey,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
                                                           ),
                                                         ),
@@ -533,13 +547,13 @@ class _HomePageState extends State<HomePage> {
                                                                         .primary
                                                                     : AppColors
                                                                         .white),
-                                                            backgroundColor: item
-                                                                        .userType ==
-                                                                    0
-                                                                ? AppColors
-                                                                    .extraLightGrey
-                                                                : AppColors
-                                                                    .primary,
+                                                            backgroundColor:
+                                                                item.userType ==
+                                                                        0
+                                                                    ? AppColors
+                                                                        .extraLightGrey
+                                                                    : AppColors
+                                                                        .primary,
                                                             innerRadius: 20.0,
                                                             outerRadius: 20.0,
                                                           ),
@@ -570,27 +584,32 @@ class _HomePageState extends State<HomePage> {
                                                   children: [
                                                     Flexible(
                                                       child: Container(
-                                                        decoration: BoxDecoration(
+                                                        decoration:
+                                                            BoxDecoration(
                                                           border: Border.all(
                                                               color: const Color
-                                                                  .fromARGB(255,
-                                                                  234, 234, 234),
+                                                                  .fromARGB(
+                                                                  255,
+                                                                  234,
+                                                                  234,
+                                                                  234),
                                                               width: 2),
                                                           borderRadius:
                                                               const BorderRadius
-                                                                  .all(
-                                                                  Radius.circular(
-                                                                      10.0)),
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10.0)),
                                                           color: const Color
-                                                              .fromARGB(
-                                                              255, 247, 247, 247),
+                                                              .fromARGB(255,
+                                                              247, 247, 247),
                                                         ),
                                                         child: Text(
                                                           " ${item.meetingLocation} ",
                                                           maxLines: 2,
                                                           overflow: TextOverflow
                                                               .ellipsis,
-                                                          style: const TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontFamily:
                                                                 'Pretendard',
                                                             fontSize: 12,
@@ -611,12 +630,9 @@ class _HomePageState extends State<HomePage> {
                                                                 .all(
                                                                 Radius.circular(
                                                                     10.0)),
-                                                        color:
-                                                            const Color.fromARGB(
-                                                                255,
-                                                                247,
-                                                                247,
-                                                                247),
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 247, 247, 247),
                                                       ),
                                                       child: Text(
                                                         " ${item.meetingStartTime.year}.${item.meetingStartTime.month}.${item.meetingStartTime.day} | ${item.meetingStartTime.hour < 10 ? "0${item.meetingStartTime.hour}" : item.meetingStartTime.hour.toString()} : ${item.meetingStartTime.minute < 10 ? "0${item.meetingStartTime.minute}" : item.meetingStartTime.minute} ",
@@ -643,7 +659,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 113, 162, 254),
+                                                              255,
+                                                              113,
+                                                              162,
+                                                              254),
                                                         )),
                                                     Text(
                                                         item.localParticipation
@@ -653,7 +672,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 113, 162, 254),
+                                                              255,
+                                                              113,
+                                                              162,
+                                                              254),
                                                         )),
                                                     Text(
                                                         "/" +
@@ -672,7 +694,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 97, 195, 255),
+                                                              255,
+                                                              97,
+                                                              195,
+                                                              255),
                                                         )),
                                                     Text(
                                                         item.travelParticipation
@@ -682,7 +707,10 @@ class _HomePageState extends State<HomePage> {
                                                               'Pretendard',
                                                           fontSize: 14,
                                                           color: Color.fromARGB(
-                                                              255, 97, 195, 255),
+                                                              255,
+                                                              97,
+                                                              195,
+                                                              255),
                                                         )),
                                                     Text(
                                                         "/" +
@@ -696,10 +724,11 @@ class _HomePageState extends State<HomePage> {
                                                         )),
                                                     //TODO: need space between
                                                     const Spacer(),
-                              
+
                                                     Padding(
                                                       padding: const EdgeInsets
-                                                          .fromLTRB(8, 0, 8.0, 0),
+                                                          .fromLTRB(
+                                                          8, 0, 8.0, 0),
                                                       child: Row(
                                                         children: [
                                                           const Icon(
@@ -765,21 +794,21 @@ class _HomePageState extends State<HomePage> {
 
 void customDateRangePicker(BuildContext context,
     {required double maxHeight, required double maxWidth}) {
-    int lang = 1;
-      switch (context.locale.languageCode) {
-      case "ko":
-        lang = 0;
-        break;
-      case "zh":
-        lang = 2;
-        break;
-      case "ja":
-        lang = 3;
-        break;
-      default:
-        lang = 1;
-        break;
-    }
+  int lang = 1;
+  switch (context.locale.languageCode) {
+    case "ko":
+      lang = 0;
+      break;
+    case "zh":
+      lang = 2;
+      break;
+    case "ja":
+      lang = 3;
+      break;
+    default:
+      lang = 1;
+      break;
+  }
   showDialog(
       context: context,
       builder: (context) {
@@ -791,12 +820,28 @@ void customDateRangePicker(BuildContext context,
                   maxHeight: maxHeight * 0.7, maxWidth: maxWidth * 0.9),
               child: Theme(
                 data: ThemeData.light().copyWith(
-                  colorScheme: const ColorScheme.light(
-                    primary: AppColors.primary,
-                    onPrimary: Colors.white,
-                    onSurface: Colors.black,
+                  textButtonTheme: TextButtonThemeData(
+                    style: ButtonStyle(
+                          // backgroundColor: MaterialStateProperty.all<Color>(
+                          //     AppColors.primary),
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                              AppColors.primary), 
+                          surfaceTintColor: MaterialStateProperty.all<Color>(
+                              AppColors.primary),
+                          side: MaterialStateProperty.all<BorderSide>(
+                              const BorderSide(color: Colors.grey)),
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(16.0)),
+                          // shape:
+                          //     MaterialStateProperty.all<RoundedRectangleBorder>(
+                          //   RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(10),
+                          //     side: BorderSide(color: Colors.grey.shade300),
+                          //   ),
+                          // ),
+                        ),
                   ),
-                  dialogBackgroundColor: Colors.white,
+                  
                 ),
                 child: DateRangePickerDialog(
                   firstDate: DateTime.now(),

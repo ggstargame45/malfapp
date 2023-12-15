@@ -76,7 +76,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
                       child: ExtendedImage.network(
                         widget.imageUrlList[index],
                         fit: BoxFit.contain,
-                        headers: {"Authorization": Token().refreshToken},
+                        // headers: {"Authorization": Token().refreshToken},
                         mode: ExtendedImageMode.gesture,
                         extendedImageGestureKey: gestureKey,
                         initGestureConfigHandler: (state) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:malf/features/community/community_page.dart';
 import 'package:malf/features/detail/attend_list_screen.dart';
 import 'package:malf/features/detail/detail_edit_screen.dart';
 import 'package:malf/features/detail/detail_model.dart';
@@ -49,11 +50,21 @@ GoRouter appRouter = GoRouter(
                 // bottom navigation bar.
                 path: '/home',
                 builder: (BuildContext context, GoRouterState state) =>
-                    const HomePage(),
+                    const CommunityPage(),
                 routes: <RouteBase>[],
               ),
             ],
           ),
+          StatefulShellBranch(routes: <RouteBase>[
+            GoRoute(
+              // The screen to display as the root in the first tab of the
+              // bottom navigation bar.
+              path: '/community',
+              builder: (BuildContext context, GoRouterState state) =>
+                  const HomePage(),
+              routes: <RouteBase>[],
+            ),
+          ]),
           StatefulShellBranch(
             //navigatorKey: sectionANavigatorKey,
             routes: <RouteBase>[

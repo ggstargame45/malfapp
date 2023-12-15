@@ -23,18 +23,26 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    Icons.public;
     return Scaffold(
         body: widget.navigationShell,
         bottomNavigationBar: NavigationBar(
           backgroundColor: Colors.white,
           // selectedItemColor: AppColors.primary,
           // unselectedItemColor: Colors.grey
+          
           destinations: [
             NavigationDestination(
               selectedIcon:
                   const Icon(Icons.home, color: AppColors.primary, size: 24),
               icon: const Icon(Icons.home, color: Colors.grey, size: 24),
               label: 'home'.tr(),
+            ),
+            NavigationDestination(
+              selectedIcon:
+                  const Icon(Icons.public_rounded, color: AppColors.primary, size: 24),
+              icon: const Icon(Icons.public_rounded, color: Colors.grey, size: 24),
+              label: 'meeting'.tr(),
             ),
             NavigationDestination(
                 selectedIcon:
