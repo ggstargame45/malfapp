@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:malf/features/community/community_detail_screen.dart';
 import 'package:malf/features/community/community_page.dart';
+import 'package:malf/features/community/community_write_screen.dart';
 import 'package:malf/features/detail/attend_list_screen.dart';
 import 'package:malf/features/detail/detail_edit_screen.dart';
 import 'package:malf/features/detail/detail_model.dart';
@@ -23,6 +25,7 @@ import 'package:malf/features/notification/notification_page.dart';
 import 'package:malf/features/category/category_screen.dart';
 import 'package:malf/features/chat/chat_list/chat_page.dart';
 import 'package:malf/features/chat/chat_room/chat_room_screen.dart';
+import 'package:malf/shared/widgets/community_list_screen.dart';
 import 'package:malf/shared/widgets/image_view_widget.dart';
 
 import 'package:malf/shared/widgets/meeting_list_screen.dart';
@@ -262,6 +265,35 @@ GoRouter appRouter = GoRouter(
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return MeetingListScreen(
+            kind: state.pathParameters['kind']!,
+            kindId: int.parse(state.pathParameters['id'] ?? "1"),
+            extraData: state.extra,
+          );
+        }),
+    //TODO: 커뮤 글 디테일
+    GoRoute(
+      parentNavigatorKey: rootNavigatorKey,
+      path: '/communityDetail/:id',
+      builder: (context, state) => CommunityDetailScreen(
+        postId: int.parse(state.pathParameters['id']!),
+        //id: state.params['id']!
+      ),
+    ),
+    //TODO: 커뮤 글 쓰기/수정
+    GoRoute(
+      parentNavigatorKey: rootNavigatorKey,
+      path: '/CommunityWrite/:kind',
+      builder: (context, state) => CommunityWriteScreen(
+        kind: state.pathParameters['kind']!,
+        extraData: state.extra,
+      ),
+    ),
+    //TODO: 커뮤 글 목록
+    GoRoute(
+        path: '/communityList/:kind/:id',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          return CommunityListScreen(
             kind: state.pathParameters['kind']!,
             kindId: int.parse(state.pathParameters['id'] ?? "1"),
             extraData: state.extra,
