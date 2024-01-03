@@ -120,6 +120,7 @@ class _AddImageStateState extends State<AddImageState> {
                                     width: MediaQuery.of(context).size.height *
                                         0.03,
                                     child: FloatingActionButton(
+                                      heroTag: "delete_image",
                                       backgroundColor: const Color(0xFFD3D3D3),
                                       onPressed: () {
                                         setState(() {

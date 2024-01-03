@@ -404,23 +404,21 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen> {
                 ],
               ),
 
-              //프로필 설명 텍스트
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 8, 0),
                 child: Row(
                   children: [
-                    Container(
-                        constraints: BoxConstraints(
-                          maxWidth: maxWidth * 0.8,
+                    Flexible(
+                      child: Text(
+                        profileData?.description ?? "",
+                        maxLines: 50,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                         ),
-                        child: Text(
-                          profileData?.description ?? "",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ))
+                      ),
+                    )
                   ],
                 ),
               ),

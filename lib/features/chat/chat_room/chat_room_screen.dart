@@ -393,93 +393,123 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             KeyboardVisibilityBuilder(builder: (context, iskeyboardVisible) {
               return Visibility(
                 visible: !iskeyboardVisible,
-                child: Container(
-                  height: 108,
-                  decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(0, 5),
-                          blurRadius: 5)
-                    ],
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(10)),
-                  ),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: ExtendedNetworkImageProvider(
-                                    "${chatRoomImage ?? "ad/1.png"}",
-                                  ),
-                                  fit: BoxFit.cover),
-                              color: Colors.black12,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width - 96),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${CountryCode.tryParse("$authorNation")?.symbol ?? "?"} ",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
+                child: GestureDetector(
+                  onTap: () {
+                    if (chatRoomImage != null) {
+                      context.push("/detail/${widget.roomId}");
+                    }
+                  },
+                  child: Container(
+                    height: 108,
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(0, 5),
+                            blurRadius: 5)
+                      ],
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(10)),
+                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: ExtendedNetworkImageProvider(
+                                      "${chatRoomImage ?? "ad/1.png"}",
                                     ),
-                                    Flexible(
-                                      child: Text(
-                                        "${authorNickname?.toString() ?? ""} ",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                    fit: BoxFit.cover),
+                                color: Colors.black12,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                          ),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width - 96),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${CountryCode.tryParse("$authorNation")?.symbol ?? "?"} ",
                                         style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
+                                          fontSize: 16,
                                         ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          8, 0, 8.0, 0),
-                                      child: RoundedBackgroundText(
-                                        "${userType == 0 ? "foreigner".tr() : "local".tr()} ",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: userType == 0
-                                                ? AppColors.primary
-                                                : AppColors.white),
-                                        backgroundColor: userType == 0
-                                            ? AppColors.extraLightGrey
-                                            : AppColors.primary,
-                                        innerRadius: 20.0,
-                                        outerRadius: 20.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(title?.toString() ?? "",
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
-                                  child: Row(
-                                    children: [
                                       Flexible(
-                                        child: Container(
+                                        child: Text(
+                                          "${authorNickname?.toString() ?? ""} ",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            8, 0, 8.0, 0),
+                                        child: RoundedBackgroundText(
+                                          "${userType == 0 ? "foreigner".tr() : "local".tr()} ",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: userType == 0
+                                                  ? AppColors.primary
+                                                  : AppColors.white),
+                                          backgroundColor: userType == 0
+                                              ? AppColors.extraLightGrey
+                                              : AppColors.primary,
+                                          innerRadius: 20.0,
+                                          outerRadius: 20.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(title?.toString() ?? "",
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 8.0, 0, 0),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Color.fromARGB(
+                                                      255, 234, 234, 234),
+                                                  width: 2),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                              color: Color.fromARGB(
+                                                  255, 247, 247, 247),
+                                            ),
+                                            child: Text(
+                                              " ${location} ",
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontFamily: 'Pretendard',
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
                                           decoration: BoxDecoration(
                                             border: Border.all(
                                                 color: Color.fromARGB(
@@ -491,9 +521,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                                 255, 247, 247, 247),
                                           ),
                                           child: Text(
-                                            " ${location} ",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                            " ${meetingStartTime?.year}.${meetingStartTime?.month}.${meetingStartTime?.day} | ${(meetingStartTime?.hour ?? 0) < 10 ? "0${meetingStartTime?.hour}" : meetingStartTime?.hour} : ${(meetingStartTime?.minute ?? 0) < 10 ? "0${meetingStartTime?.minute}" : meetingStartTime?.minute} ",
                                             style: const TextStyle(
                                               fontFamily: 'Pretendard',
                                               fontSize: 12,
@@ -501,33 +529,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Color.fromARGB(
-                                                  255, 234, 234, 234),
-                                              width: 2),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0)),
-                                          color: Color.fromARGB(
-                                              255, 247, 247, 247),
-                                        ),
-                                        child: Text(
-                                          " ${meetingStartTime?.year}.${meetingStartTime?.month}.${meetingStartTime?.day} | ${(meetingStartTime?.hour ?? 0) < 10 ? "0${meetingStartTime?.hour}" : meetingStartTime?.hour} : ${(meetingStartTime?.minute ?? 0) < 10 ? "0${meetingStartTime?.minute}" : meetingStartTime?.minute} ",
-                                          style: const TextStyle(
-                                            fontFamily: 'Pretendard',
-                                            fontSize: 12,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ]),
-                        )
-                      ]),
+                                ]),
+                          )
+                        ]),
+                  ),
                 ),
               );
             }),

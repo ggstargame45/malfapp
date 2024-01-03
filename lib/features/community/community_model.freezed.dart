@@ -32,7 +32,7 @@ mixin _$CommunityData {
   @JsonKey(name: 'status')
   int get authorStatus => throw _privateConstructorUsedError;
   @JsonKey(name: 'post_status')
-  int get postStatus => throw _privateConstructorUsedError;
+  int? get postStatus => throw _privateConstructorUsedError;
   @JsonKey(name: 'author_nickname')
   String get authorNickname => throw _privateConstructorUsedError;
   @JsonKey(name: 'author_nation')
@@ -42,6 +42,8 @@ mixin _$CommunityData {
   List<String>? get authorPic => throw _privateConstructorUsedError;
   @JsonKey(name: 'user_type')
   int? get userType => throw _privateConstructorUsedError;
+  @JsonKey(name: 'reply_count')
+  int get replyCount => throw _privateConstructorUsedError;
   @JsonKey(name: 'create_at')
   @DateTimeConverter()
   DateTime get createAt => throw _privateConstructorUsedError;
@@ -71,13 +73,14 @@ abstract class $CommunityDataCopyWith<$Res> {
       @JsonKey(name: 'content') String content,
       @JsonKey(name: 'picture') @PicListConverter() List<String> picture,
       @JsonKey(name: 'status') int authorStatus,
-      @JsonKey(name: 'post_status') int postStatus,
+      @JsonKey(name: 'post_status') int? postStatus,
       @JsonKey(name: 'author_nickname') String authorNickname,
       @JsonKey(name: 'author_nation') int? authorNation,
       @JsonKey(name: 'author_picture')
       @PicListConverter()
       List<String>? authorPic,
       @JsonKey(name: 'user_type') int? userType,
+      @JsonKey(name: 'reply_count') int replyCount,
       @JsonKey(name: 'create_at') @DateTimeConverter() DateTime createAt,
       @JsonKey(name: 'update_at') @DateTimeConverter() DateTime? updateAt,
       @JsonKey(name: 'user_uniq_id') String userUniqId,
@@ -102,11 +105,12 @@ class _$CommunityDataCopyWithImpl<$Res, $Val extends CommunityData>
     Object? content = null,
     Object? picture = null,
     Object? authorStatus = null,
-    Object? postStatus = null,
+    Object? postStatus = freezed,
     Object? authorNickname = null,
     Object? authorNation = freezed,
     Object? authorPic = freezed,
     Object? userType = freezed,
+    Object? replyCount = null,
     Object? createAt = null,
     Object? updateAt = freezed,
     Object? userUniqId = null,
@@ -133,10 +137,10 @@ class _$CommunityDataCopyWithImpl<$Res, $Val extends CommunityData>
           ? _value.authorStatus
           : authorStatus // ignore: cast_nullable_to_non_nullable
               as int,
-      postStatus: null == postStatus
+      postStatus: freezed == postStatus
           ? _value.postStatus
           : postStatus // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       authorNickname: null == authorNickname
           ? _value.authorNickname
           : authorNickname // ignore: cast_nullable_to_non_nullable
@@ -153,6 +157,10 @@ class _$CommunityDataCopyWithImpl<$Res, $Val extends CommunityData>
           ? _value.userType
           : userType // ignore: cast_nullable_to_non_nullable
               as int?,
+      replyCount: null == replyCount
+          ? _value.replyCount
+          : replyCount // ignore: cast_nullable_to_non_nullable
+              as int,
       createAt: null == createAt
           ? _value.createAt
           : createAt // ignore: cast_nullable_to_non_nullable
@@ -187,13 +195,14 @@ abstract class _$$CommunityDataImplCopyWith<$Res>
       @JsonKey(name: 'content') String content,
       @JsonKey(name: 'picture') @PicListConverter() List<String> picture,
       @JsonKey(name: 'status') int authorStatus,
-      @JsonKey(name: 'post_status') int postStatus,
+      @JsonKey(name: 'post_status') int? postStatus,
       @JsonKey(name: 'author_nickname') String authorNickname,
       @JsonKey(name: 'author_nation') int? authorNation,
       @JsonKey(name: 'author_picture')
       @PicListConverter()
       List<String>? authorPic,
       @JsonKey(name: 'user_type') int? userType,
+      @JsonKey(name: 'reply_count') int replyCount,
       @JsonKey(name: 'create_at') @DateTimeConverter() DateTime createAt,
       @JsonKey(name: 'update_at') @DateTimeConverter() DateTime? updateAt,
       @JsonKey(name: 'user_uniq_id') String userUniqId,
@@ -216,11 +225,12 @@ class __$$CommunityDataImplCopyWithImpl<$Res>
     Object? content = null,
     Object? picture = null,
     Object? authorStatus = null,
-    Object? postStatus = null,
+    Object? postStatus = freezed,
     Object? authorNickname = null,
     Object? authorNation = freezed,
     Object? authorPic = freezed,
     Object? userType = freezed,
+    Object? replyCount = null,
     Object? createAt = null,
     Object? updateAt = freezed,
     Object? userUniqId = null,
@@ -247,10 +257,10 @@ class __$$CommunityDataImplCopyWithImpl<$Res>
           ? _value.authorStatus
           : authorStatus // ignore: cast_nullable_to_non_nullable
               as int,
-      postStatus: null == postStatus
+      postStatus: freezed == postStatus
           ? _value.postStatus
           : postStatus // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       authorNickname: null == authorNickname
           ? _value.authorNickname
           : authorNickname // ignore: cast_nullable_to_non_nullable
@@ -267,6 +277,10 @@ class __$$CommunityDataImplCopyWithImpl<$Res>
           ? _value.userType
           : userType // ignore: cast_nullable_to_non_nullable
               as int?,
+      replyCount: null == replyCount
+          ? _value.replyCount
+          : replyCount // ignore: cast_nullable_to_non_nullable
+              as int,
       createAt: null == createAt
           ? _value.createAt
           : createAt // ignore: cast_nullable_to_non_nullable
@@ -298,13 +312,14 @@ class _$CommunityDataImpl implements _CommunityData {
       @PicListConverter()
       required final List<String> picture,
       @JsonKey(name: 'status') required this.authorStatus,
-      @JsonKey(name: 'post_status') required this.postStatus,
+      @JsonKey(name: 'post_status') this.postStatus,
       @JsonKey(name: 'author_nickname') required this.authorNickname,
       @JsonKey(name: 'author_nation') this.authorNation,
       @JsonKey(name: 'author_picture')
       @PicListConverter()
       final List<String>? authorPic,
       @JsonKey(name: 'user_type') this.userType,
+      @JsonKey(name: 'reply_count') required this.replyCount,
       @JsonKey(name: 'create_at') @DateTimeConverter() required this.createAt,
       @JsonKey(name: 'update_at') @DateTimeConverter() this.updateAt,
       @JsonKey(name: 'user_uniq_id') required this.userUniqId,
@@ -339,7 +354,7 @@ class _$CommunityDataImpl implements _CommunityData {
   final int authorStatus;
   @override
   @JsonKey(name: 'post_status')
-  final int postStatus;
+  final int? postStatus;
   @override
   @JsonKey(name: 'author_nickname')
   final String authorNickname;
@@ -362,6 +377,9 @@ class _$CommunityDataImpl implements _CommunityData {
   @JsonKey(name: 'user_type')
   final int? userType;
   @override
+  @JsonKey(name: 'reply_count')
+  final int replyCount;
+  @override
   @JsonKey(name: 'create_at')
   @DateTimeConverter()
   final DateTime createAt;
@@ -378,7 +396,7 @@ class _$CommunityDataImpl implements _CommunityData {
 
   @override
   String toString() {
-    return 'CommunityData(postId: $postId, title: $title, content: $content, picture: $picture, authorStatus: $authorStatus, postStatus: $postStatus, authorNickname: $authorNickname, authorNation: $authorNation, authorPic: $authorPic, userType: $userType, createAt: $createAt, updateAt: $updateAt, userUniqId: $userUniqId, scrapCheck: $scrapCheck)';
+    return 'CommunityData(postId: $postId, title: $title, content: $content, picture: $picture, authorStatus: $authorStatus, postStatus: $postStatus, authorNickname: $authorNickname, authorNation: $authorNation, authorPic: $authorPic, userType: $userType, replyCount: $replyCount, createAt: $createAt, updateAt: $updateAt, userUniqId: $userUniqId, scrapCheck: $scrapCheck)';
   }
 
   @override
@@ -402,6 +420,8 @@ class _$CommunityDataImpl implements _CommunityData {
                 .equals(other._authorPic, _authorPic) &&
             (identical(other.userType, userType) ||
                 other.userType == userType) &&
+            (identical(other.replyCount, replyCount) ||
+                other.replyCount == replyCount) &&
             (identical(other.createAt, createAt) ||
                 other.createAt == createAt) &&
             (identical(other.updateAt, updateAt) ||
@@ -426,6 +446,7 @@ class _$CommunityDataImpl implements _CommunityData {
       authorNation,
       const DeepCollectionEquality().hash(_authorPic),
       userType,
+      replyCount,
       createAt,
       updateAt,
       userUniqId,
@@ -454,13 +475,14 @@ abstract class _CommunityData implements CommunityData {
       @PicListConverter()
       required final List<String> picture,
       @JsonKey(name: 'status') required final int authorStatus,
-      @JsonKey(name: 'post_status') required final int postStatus,
+      @JsonKey(name: 'post_status') final int? postStatus,
       @JsonKey(name: 'author_nickname') required final String authorNickname,
       @JsonKey(name: 'author_nation') final int? authorNation,
       @JsonKey(name: 'author_picture')
       @PicListConverter()
       final List<String>? authorPic,
       @JsonKey(name: 'user_type') final int? userType,
+      @JsonKey(name: 'reply_count') required final int replyCount,
       @JsonKey(name: 'create_at')
       @DateTimeConverter()
       required final DateTime createAt,
@@ -490,7 +512,7 @@ abstract class _CommunityData implements CommunityData {
   int get authorStatus;
   @override
   @JsonKey(name: 'post_status')
-  int get postStatus;
+  int? get postStatus;
   @override
   @JsonKey(name: 'author_nickname')
   String get authorNickname;
@@ -504,6 +526,9 @@ abstract class _CommunityData implements CommunityData {
   @override
   @JsonKey(name: 'user_type')
   int? get userType;
+  @override
+  @JsonKey(name: 'reply_count')
+  int get replyCount;
   @override
   @JsonKey(name: 'create_at')
   @DateTimeConverter()

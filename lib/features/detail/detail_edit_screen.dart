@@ -398,6 +398,7 @@ class _DetailEditScreenState extends State<DetailEditScreen> {
                                                       .height *
                                                   0.03,
                                               child: FloatingActionButton(
+                                                heroTag: "delete_edit_image$index",
                                                 backgroundColor:
                                                     const Color(0xFFD3D3D3),
                                                 onPressed: () {

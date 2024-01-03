@@ -152,7 +152,7 @@ class _WriteScreenState extends State<WriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        title: Text("write_title".tr()),
         leading: IconButton(
             onPressed: () {
               if (mounted) {
@@ -161,16 +161,6 @@ class _WriteScreenState extends State<WriteScreen> {
             },
             color: Colors.black,
             icon: const Icon(Icons.arrow_back_ios)),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                if (mounted) {
-                  context.pop();
-                }
-              },
-              color: Colors.black,
-              icon: const Icon(Icons.close_outlined)),
-        ],
       ),
       body: SingleChildScrollView(
         controller: ScrollController(
@@ -183,18 +173,7 @@ class _WriteScreenState extends State<WriteScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "write_title".tr(),
-                style: const TextStyle(
-                  color: Color(0xFF292524),
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Text(
                 "picture".tr(),
                 textAlign: TextAlign.start,
@@ -301,6 +280,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                                       .height *
                                                   0.03,
                                               child: FloatingActionButton(
+                                                heroTag: "delete_write_image",
                                                 backgroundColor:
                                                     const Color(0xFFD3D3D3),
                                                 onPressed: () {

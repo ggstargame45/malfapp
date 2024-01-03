@@ -13,7 +13,6 @@ import 'package:malf/shared/theme/app_colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:malf/shared/widgets/image_view_widget.dart';
 
-
 Widget _buildTimeStamp(DateTime sendAt) {
   return Row(
     children: [
@@ -132,9 +131,19 @@ class _ChatBubbleMessageState extends State<ChatBubbleMessage> {
     if (widget.message.type == 2) {
       return Padding(
         padding: const EdgeInsets.only(top: 4),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if (widget.beforeTime == null ||
+                widget.message.sendAt.difference(widget.beforeTime!).inDays > 0)
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  DateFormat.yMEd(context.locale.languageCode).format(widget.message.sendAt),
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+              ),
             Text(
               "${UserMap().userMap[widget.message.sender]?.nickname ?? widget.message.sender} ${"chat_room_enter".tr()}",
               style: const TextStyle(color: Colors.grey),
@@ -146,9 +155,18 @@ class _ChatBubbleMessageState extends State<ChatBubbleMessage> {
     if (widget.message.type == 3) {
       return Padding(
         padding: const EdgeInsets.only(top: 4),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if (widget.beforeTime == null ||widget.message.sendAt.difference(widget.beforeTime!).inDays > 0)
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  DateFormat.yMEd(context.locale.languageCode).format(widget.message.sendAt),
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+              ),
             Text(
               "${UserMap().userMap[widget.message.sender]?.nickname ?? widget.message.sender} ${"chat_room_leave".tr()}",
               style: const TextStyle(color: Colors.grey),
@@ -157,54 +175,76 @@ class _ChatBubbleMessageState extends State<ChatBubbleMessage> {
         ),
       );
     }
-    return Padding(
-      padding: widget.userName == widget.beforeUser
-          ? const EdgeInsets.only(top: 2)
-          : const EdgeInsets.only(top: 8),
-      child: Row(
-        mainAxisAlignment: isSentByCurrentUser
-            ? MainAxisAlignment.end
-            : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!isSentByCurrentUser &&
-              widget.message.sender != widget.beforeUser)
-            GestureDetector(
-              onTap: () {
-                // logger.d("profileOther/${widget.message.sender}");
-                context.push("/profileOther/${widget.message.sender}");
-              },
-              child: CircleAvatar(
-                  radius: 15,
-                  backgroundImage: ExtendedNetworkImageProvider(
-                    UserMap().userMap[widget.message.sender]?.profilePic == [] ? "default.png" : UserMap().userMap[widget.message.sender]!.profilePic[0],
-                    cache: true,
-                  )),
-            ),
-          if (!isSentByCurrentUser &&
-              widget.message.sender == widget.beforeUser)
-            const SizedBox(
-              width: 32,
-            ),
-          const SizedBox(
-            width: 6,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      children: [
+        if (widget.beforeTime == null ||widget.message.sendAt.difference(widget.beforeTime!).inDays > 0)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (widget.message.sender != widget.beforeUser &&
-                  !isSentByCurrentUser)
-                Text(
-                  UserMap().userMap[widget.message.sender]?.nickname ??
-                      widget.message.sender,
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  DateFormat.yMEd(context.locale.languageCode).format(widget.message.sendAt),
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
                 ),
-              _buildMessageBubble(
-                  context, isSentByCurrentUser, widget.message, widget.postId),
-              const SizedBox(height: 3),
+              ),
             ],
           ),
-        ],
-      ),
+        Padding(
+          padding: widget.userName == widget.beforeUser
+              ? const EdgeInsets.only(top: 2)
+              : const EdgeInsets.only(top: 8),
+          child: Row(
+            mainAxisAlignment: isSentByCurrentUser
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isSentByCurrentUser &&
+                  widget.message.sender != widget.beforeUser)
+                GestureDetector(
+                  onTap: () {
+                    // logger.d("profileOther/${widget.message.sender}");
+                    context.push("/profileOther/${widget.message.sender}");
+                  },
+                  child: CircleAvatar(
+                      radius: 15,
+                      backgroundImage: ExtendedNetworkImageProvider(
+                        UserMap().userMap[widget.message.sender]?.profilePic ==
+                                []
+                            ? "default.png"
+                            : UserMap()
+                                .userMap[widget.message.sender]!
+                                .profilePic[0],
+                        cache: true,
+                      )),
+                ),
+              if (!isSentByCurrentUser &&
+                  widget.message.sender == widget.beforeUser)
+                const SizedBox(
+                  width: 32,
+                ),
+              const SizedBox(
+                width: 6,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.message.sender != widget.beforeUser &&
+                      !isSentByCurrentUser)
+                    Text(
+                      UserMap().userMap[widget.message.sender]?.nickname ??
+                          widget.message.sender,
+                    ),
+                  _buildMessageBubble(context, isSentByCurrentUser,
+                      widget.message, widget.postId),
+                  const SizedBox(height: 3),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

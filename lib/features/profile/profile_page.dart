@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage>
     if (ableLanguage.endsWith(", ")) {
       ableLanguage = ableLanguage.substring(0, ableLanguage.length - 2);
     }
-    logger.d("${profileData!.profilePic[0]}");
+    logger.d(profileData!.profilePic[0]);
     setState(() {});
   }
 
@@ -135,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage>
         appBar: AppBar(
             title: Text(
               'my_page'.tr(),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -178,7 +178,7 @@ class _ProfilePageState extends State<ProfilePage>
                           ? Container(
                               height: 85,
                               width: 85,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: AppColors.primary),
                               child: ExtendedImage.asset(
@@ -209,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   loadStateChanged: (state) {
                                     if (state.extendedImageLoadState ==
                                         LoadState.loading) {
-                                      return Center(
+                                      return const Center(
                                         child: CircularProgressIndicator(),
                                       );
                                     }
@@ -229,6 +229,8 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                             )),
                   Positioned(
+                    right: 12,
+                    bottom: 0,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: TextButton(
@@ -252,15 +254,13 @@ class _ProfilePageState extends State<ProfilePage>
                         },
                         child: Text(
                           'edit_profile'.tr(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 15,
                             color: Colors.black,
                           ),
                         ),
                       ),
                     ),
-                    right: 12,
-                    bottom: 0,
                   )
                 ],
               ),
@@ -272,7 +272,7 @@ class _ProfilePageState extends State<ProfilePage>
                   Padding(
                     padding: const EdgeInsets.only(left: 20, top: 8),
                     child: profileData == null
-                        ? Text(
+                        ? const Text(
                             '닉네임',
                             style: TextStyle(
                               fontSize: 20,
@@ -288,7 +288,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     profileData!.nickname,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -298,7 +298,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   CountryCode.parse(
                                           profileData!.nation.toString())
                                       .symbol,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -307,7 +307,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 8.0, 0),
                                   child: RoundedBackgroundText(
-                                    "${profileData!.userType == 0 ? "foreigner" : "local"}"
+                                    (profileData!.userType == 0 ? "foreigner" : "local")
                                         .tr(),
                                     style: TextStyle(
                                         fontSize: 14,
@@ -350,18 +350,18 @@ class _ProfilePageState extends State<ProfilePage>
                                   padding: const EdgeInsets.only(left: 8),
                                   child: profileData!.userTemperature < 100
                                       ? SvgPicture.asset("assets/icons/ic_angry.svg",
-                                          colorFilter: ColorFilter.mode(
-                                              const Color.fromARGB(
+                                          colorFilter: const ColorFilter.mode(
+                                              Color.fromARGB(
                                                   255, 26, 26, 26),
                                               BlendMode.srcIn))
                                       : profileData!.userTemperature < 200
                                           ? SvgPicture.asset("assets/icons/ic_sad.svg",
-                                              colorFilter: ColorFilter.mode(
-                                                  const Color.fromARGB(
+                                              colorFilter: const ColorFilter.mode(
+                                                  Color.fromARGB(
                                                       255, 128, 128, 128),
                                                   BlendMode.srcIn))
                                           : profileData!.userTemperature < 300
-                                              ? Icon(
+                                              ? const Icon(
                                                   Icons
                                                       .sentiment_neutral_outlined,
                                                   color: Color.fromARGB(
@@ -369,7 +369,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                 )
                                               : profileData!.userTemperature <
                                                       400
-                                                  ? Icon(Icons.mood,
+                                                  ? const Icon(Icons.mood,
                                                       color: Color.fromARGB(
                                                           255, 99, 102, 241))
                                                   : profileData!.userTemperature <
@@ -377,8 +377,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                       ? SvgPicture.asset(
                                                           "assets/icons/ic_rofl.svg",
                                                           colorFilter:
-                                                              ColorFilter.mode(
-                                                                  const Color
+                                                              const ColorFilter.mode(
+                                                                  Color
                                                                       .fromARGB(
                                                                       255,
                                                                       247,
@@ -390,8 +390,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                       : SvgPicture.asset(
                                                           "assets/icons/ic_family_star.svg",
                                                           height: 20,
-                                                          colorFilter: ColorFilter.mode(
-                                                              const Color.fromARGB(255, 255, 96, 96),
+                                                          colorFilter: const ColorFilter.mode(
+                                                              Color.fromARGB(255, 255, 96, 96),
                                                               BlendMode.srcIn)),
 
                                   //
@@ -410,8 +410,8 @@ class _ProfilePageState extends State<ProfilePage>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20),
                       child: Icon(
                         CupertinoIcons.heart_solid,
                         color: Colors.red,
@@ -422,7 +422,7 @@ class _ProfilePageState extends State<ProfilePage>
                         child: profileData == null
                             ? Text(
                                 'interests'.tr(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -435,7 +435,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   profileData!.interests ?? "",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     color: Color.fromARGB(255, 125, 125, 125),
                                     fontWeight: FontWeight.w500,
@@ -453,8 +453,8 @@ class _ProfilePageState extends State<ProfilePage>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20),
                       child: Icon(
                         Icons.language,
                         color: Colors.blue,
@@ -465,7 +465,7 @@ class _ProfilePageState extends State<ProfilePage>
                         child: profileData == null
                             ? Text(
                                 'able_language'.tr(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 125, 125, 125),
                                   fontWeight: FontWeight.w400,
@@ -477,7 +477,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 ),
                                 child: Text(
                                   ableLanguage,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     color: Color.fromARGB(255, 125, 125, 125),
                                     fontWeight: FontWeight.w500,
@@ -498,7 +498,7 @@ class _ProfilePageState extends State<ProfilePage>
                         profileData?.description ?? "",
                         maxLines: 50,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -507,7 +507,18 @@ class _ProfilePageState extends State<ProfilePage>
                   ],
                 ),
               ),
-              Divider(),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                child: Text(
+                  "my_postings".tr(),
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 128, 128, 128),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                 child: Text(
@@ -521,12 +532,12 @@ class _ProfilePageState extends State<ProfilePage>
               ),
               ListTile(
                 leading:
-                    Icon(CupertinoIcons.heart_circle_fill, color: Colors.red),
+                    const Icon(CupertinoIcons.heart_circle_fill, color: Colors.red),
                 title: Text(
                   context.locale.languageCode != "en"
                       ? "like_meeting".tr()
                       : "Liked Meet-ups",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -536,13 +547,13 @@ class _ProfilePageState extends State<ProfilePage>
                 },
               ),
               ListTile(
-                leading: Icon(CupertinoIcons.check_mark_circled_solid,
+                leading: const Icon(CupertinoIcons.check_mark_circled_solid,
                     color: AppColors.primary),
                 title: Text(
                   context.locale.languageCode != "en"
                       ? "attend_meeting".tr()
                       : "Meet-ups I Applied",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -552,12 +563,12 @@ class _ProfilePageState extends State<ProfilePage>
                 },
               ),
               ListTile(
-                leading: Icon(Icons.edit_square, color: Colors.blue),
+                leading: const Icon(Icons.edit_square, color: Colors.blue),
                 title: Text(
                   context.locale.languageCode != "en"
                       ? "made_meeting".tr()
                       : "Meet-ups I made",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -566,6 +577,8 @@ class _ProfilePageState extends State<ProfilePage>
                   context.push('/meetingList/write/0');
                 },
               ),
+
+              
 
               //TODO:본인이 참가신청한 모임 리스트뷰와 본인이 좋아요 누른 모임 리스트뷰를 tabbar로 구현
 

@@ -154,5 +154,33 @@
     "review_notification" : "모임 후기를 남기러 갈까요?",
     "school_auth_delete_message" : "보내주신 사진은 승인 절차 이후에 폐기됩니다. 저희가 저장하지 않습니다.",
     "chat_room_enter" : "이(가) 들어왔습니다",
-    "chat_room_leave" : "이(가) 나갔습니다"
+    "chat_room_leave" : "이(가) 나갔습니다",
+    "seconds_ago" : {
+        "one" : "{} 초 전",
+        "other" : "{} 초 전"
+    },
+    "minutes_ago" : {
+        "one" : "{} 분 전",
+        "other" : "{} 분 전"
+    },
+    "hours_ago" : {
+        "one" : "{} 시간 전",
+        "other" : "{} 시간 전"
+    },
+    "days_ago" : {
+        "one" : "{} 일 전",
+        "other" : "{} 일 전"
+    },
+    "weeks_ago" : {
+        "one" : "{} 주 전",
+        "other" : "{} 주 전"
+    },
+    "months_ago" : {
+        "one" : "{} 개월 전",
+        "other" : "{} 개월 전"
+    },
+    "years_ago" : {
+        "one" : "{} 년 전",
+        "other" : "{} 년 전"
+    }
 }

@@ -153,5 +153,33 @@
   "review_notification" : "参加者のレビューを残すつもりですか？",
   "school_auth_delete_message" : "送信いただいた写真は、承認プロセスの後に廃棄されます。私たちはそれを保存しません。",
   "chat_room_enter" : "が部屋に入ってきた",
-    "chat_room_leave" :  "が退出しました"
+    "chat_room_leave" :  "が退出しました",
+    "seconds_ago" : {
+      "one" : "1 秒前",
+      "other" : "{} 秒前"
+  },
+  "minutes_ago" : {
+      "one" : "1 分前",
+      "other" : "{} 分前"
+  },
+  "hours_ago" : {
+      "one" : "1 時間前",
+      "other" : "{} 時間前"
+  },
+  "days_ago" : {
+      "one" : "1 日前",
+      "other" : "{} 日前"
+  },
+  "weeks_ago" : {
+      "one" : "1 週間前",
+      "other" : "{} 週間前"
+  },
+  "months_ago" : {
+      "one" : "1 ヶ月前",
+      "other" : "{} ヶ月前"
+  },
+  "years_ago" : {
+      "one" : "1 年前",
+      "other" : "{} 年前"
+  }
 }

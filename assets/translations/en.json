@@ -153,5 +153,34 @@
     "review_notification" : "Will you leave a review for the participants?",
     "school_auth_delete_message" : "The photo you have sent will be discarded after the approval process. We do not store it.",
     "chat_room_enter" : "has entered the room",
-    "chat_room_leave" :  "has left the room"
+    "chat_room_leave" :  "has left the room",
+    "hours_ago" : {
+        "one" : "{} hour ago",
+        "other" : "{} hours ago"
+    },
+    "days_ago" : {
+        "one" : "{} day ago",
+        "other" : "{} days ago"
+    
+    },
+    "weeks_ago" : {
+        "one" : "{} week ago",
+        "other" : "{} weeks ago"
+    },
+    "months_ago" : {
+        "one" : "{} month ago",
+        "other" : "{} months ago"
+    },
+    "years_ago" : {
+        "one" : "{} year ago",
+        "other" : "{} years ago"
+    },
+    "minutes_ago" : {
+        "one" : "{} minute ago",
+        "other" : "{} minutes ago"
+    },
+    "seconds_ago" : {
+        "one" : "{} second ago",
+        "other" : "{} seconds ago"
+    }
 }

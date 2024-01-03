@@ -11,4 +11,6 @@ class IBlockUser{
 
   late String blockedUserUniqId;
   late String blockedNickname;
+
+  
 }

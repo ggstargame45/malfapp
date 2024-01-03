@@ -14,7 +14,7 @@ class CommunityListScreen extends StatefulWidget {
 
 class _CommunityListScreenState extends State<CommunityListScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return Container();
   }
 }

@@ -287,6 +287,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                     height: 25,
                                     width: 25,
                                     child: FloatingActionButton(
+                                      heroTag: "clear_image",
                                       onPressed: () {
                                         setState(() {
                                           imageList.clear();

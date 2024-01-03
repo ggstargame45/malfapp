@@ -60,6 +60,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
               ),
               SizedBox(height: 16.0),
               FloatingActionButton(
+                heroTag: "login",
                 child: Text('login'.tr()),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {

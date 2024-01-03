@@ -279,10 +279,34 @@ class _DetailScreenState extends State<DetailScreen> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 3.5,
                 child: Swiper(
-                  viewportFraction: 0.8,
-                  scale: 0.9,
-                  pagination: const SwiperPagination(),
-                  control: const SwiperControl(),
+                  pagination: SwiperCustomPagination(builder:
+                      (BuildContext context, SwiperPluginConfig config) {
+                    return Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                          margin: const EdgeInsets.only(bottom: 16, right: 16),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              color: Colors.black.withOpacity(0.5),
+                              height: 22,
+                              width: 41,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      "${config.activeIndex + 1}/${detailData?.meetingPic.length ?? 0}",
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12)),
+                                ],
+                              ),
+                            ),
+                          )),
+                    );
+                  }),
                   scrollDirection: Axis.horizontal,
                   itemCount: detailData!.meetingPic
                       .length, // Assume banners is a list of your banner data.
@@ -673,15 +697,16 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
       context: contexta,
       backgroundColor: Colors.transparent,
       builder: (contextb) => Container(
-            padding: const EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(
+                top: 8.0, bottom: MediaQuery.of(contextb).viewPadding.bottom),
             width: MediaQuery.of(contextb).size.width,
-            height: 260,
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   width: 100,
@@ -782,7 +807,7 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                       await contexta.push('/edit', extra: detailData);
                       pagingController.refresh();
                       contexta
-                        ..go('/home')
+                        ..go('/community')
                         ..push('/detail/${detailData.postId}');
                     },
                     child: Container(

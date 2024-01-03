@@ -81,19 +81,19 @@ GoRouter appRouter = GoRouter(
               ),
             ],
           ),
-          StatefulShellBranch(
-            // navigatorKey: sectionANavigatorKey,
-            routes: <RouteBase>[
-              GoRoute(
-                // The screen to display as the root in the first tab of the
-                // bottom navigation bar.
-                path: '/notification',
-                builder: (BuildContext context, GoRouterState state) =>
-                    NotificationPage(),
-                routes: <RouteBase>[],
-              ),
-            ],
-          ),
+          // StatefulShellBranch(
+          //   // navigatorKey: sectionANavigatorKey,
+          //   routes: <RouteBase>[
+          //     GoRoute(
+          //       // The screen to display as the root in the first tab of the
+          //       // bottom navigation bar.
+          //       path: '/notification',
+          //       builder: (BuildContext context, GoRouterState state) =>
+          //           NotificationPage(),
+          //       routes: <RouteBase>[],
+          //     ),
+          //   ],
+          // ),
           StatefulShellBranch(
             // navigatorKey: sectionANavigatorKey,
             routes: <RouteBase>[

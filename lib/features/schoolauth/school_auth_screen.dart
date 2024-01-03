@@ -524,6 +524,7 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                                                     .width *
                                                 0.1,
                                             child: FloatingActionButton(
+                                              heroTag: "delete_school_image",
                                               backgroundColor:
                                                   const Color(0xFFD3D3D3),
                                               onPressed: () {

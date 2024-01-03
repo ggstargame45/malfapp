@@ -13,7 +13,7 @@ class ReportScreen extends StatefulWidget {
       required this.id,
       required this.title});
 
-  //chat, post, user
+  //chat, post, user, community, reply
   final String reportType;
   final String id;
   final String title;
@@ -142,7 +142,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                         final response = await dio.post(
                                           "/report/${widget.reportType}",
                                           data: {
-                                            if (widget.reportType == "post")
+                                            if (widget.reportType == "post" || widget.reportType == "community")
                                               "post_id": widget.id,
                                             if (widget.reportType == "user")
                                               "user_uniq_id": widget.id,

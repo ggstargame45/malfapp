@@ -154,5 +154,33 @@
   "review_notification": "您能为参与者留下评论吗?",
   "school_auth_delete_message" : "您发送的照片将在审核过程后被删除。我们不会保存它。",
   "chat_room_enter" : "参加了聊天",
-    "chat_room_leave" :  "退出了聊天"
+    "chat_room_leave" :  "退出了聊天",
+    "seconds_ago" : {
+        "one" : "1秒前",
+        "other" : "{}秒前"
+    },
+    "minutes_ago" : {
+        "one" : "1分钟前",
+        "other" : "{}分钟前"
+    },
+    "hours_ago" : {
+        "one" : "1小时前",
+        "other" : "{}小时前"
+    },
+    "days_ago" : {
+        "one" : "1天前",
+        "other" : "{}天前"
+    },
+    "weeks_ago" : {
+        "one" : "1周前",
+        "other" : "{}周前"
+    },
+    "months_ago" : {
+        "one" : "1个月前",
+        "other" : "{}个月前"
+    },
+    "years_ago" : {
+        "one" : "1年前",
+        "other" : "{}年前"
+    }
 }

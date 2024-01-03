@@ -10,6 +10,7 @@ import 'package:malf/config/routes/app_route.dart';
 import 'package:malf/features/home/home_list_provider.dart';
 import 'package:malf/shared/check.dart';
 import 'package:malf/shared/network/base_url.dart';
+import 'package:malf/shared/svg_strings.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/theme/test_styles.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
@@ -35,8 +36,6 @@ const List<String> dateRangePickString = [
   "会議を見る",
 ];
 
-const String calendarString =
-    "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 -960 960 960\" width=\"24\"><path d=\"M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z\"/></svg>";
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -184,10 +183,38 @@ class _HomePageState extends State<HomePage> {
                             width: maxWidth,
                             height: 220,
                             child: Swiper(
-                              viewportFraction: 0.8,
-                              scale: 0.9,
-                              pagination: const SwiperPagination(),
-                              control: const SwiperControl(),
+                              pagination: SwiperCustomPagination(builder:
+                                  (BuildContext context,
+                                      SwiperPluginConfig config) {
+                                return Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                      margin: const EdgeInsets.only(
+                                          top: 16, right: 16),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          color: Colors.black.withOpacity(0.5),
+                                          height: 22,
+                                          width: 41,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                  "${config.activeIndex + 1}/3",
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 12)),
+                                            ],
+                                          ),
+                                        ),
+                                      )),
+                                );
+                              }),
                               scrollDirection: Axis.horizontal,
                               itemCount:
                                   3, // Assume banners is a list of your banner data.
@@ -201,24 +228,25 @@ class _HomePageState extends State<HomePage> {
                                     ], context: context);
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      width: maxWidth,
-                                      height: maxWidth / 2,
-                                      alignment: Alignment.center,
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: ExtendedImage.network(
-                                              const [
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-1.png",
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-2.png",
-                                                "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-3.png"
-                                              ][index],
-                                              fit: BoxFit.contain,
+                                    padding: const EdgeInsets.all(0.0),
+                                    child: ClipRRect(
+                                      child: Container(
+                                        width: maxWidth,
+                                        height: 220,
+                                        child: Column(
+                                          children: [
+                                            Expanded(
+                                              child: ExtendedImage.network(
+                                                const [
+                                                  "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-1.png",
+                                                  "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-2.png",
+                                                  "https://malf-live.s3.ap-northeast-2.amazonaws.com/banner/banner2-3.png"
+                                                ][index],
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -779,7 +807,10 @@ class _HomePageState extends State<HomePage> {
         width: 60,
         child: FloatingActionButton(
           heroTag: "write",
-          child: const Icon(CupertinoIcons.add),
+          child: const Icon(
+            CupertinoIcons.add,
+            size: 35,
+          ),
           onPressed: () async {
             if (await doAuth(context)) {
               context.push('/write');
@@ -822,26 +853,25 @@ void customDateRangePicker(BuildContext context,
                 data: ThemeData.light().copyWith(
                   textButtonTheme: TextButtonThemeData(
                     style: ButtonStyle(
-                          // backgroundColor: MaterialStateProperty.all<Color>(
-                          //     AppColors.primary),
-                          foregroundColor: MaterialStateProperty.all<Color>(
-                              AppColors.primary), 
-                          surfaceTintColor: MaterialStateProperty.all<Color>(
-                              AppColors.primary),
-                          side: MaterialStateProperty.all<BorderSide>(
-                              const BorderSide(color: Colors.grey)),
-                          padding: MaterialStateProperty.all<EdgeInsets>(
-                              const EdgeInsets.all(16.0)),
-                          // shape:
-                          //     MaterialStateProperty.all<RoundedRectangleBorder>(
-                          //   RoundedRectangleBorder(
-                          //     borderRadius: BorderRadius.circular(10),
-                          //     side: BorderSide(color: Colors.grey.shade300),
-                          //   ),
-                          // ),
-                        ),
+                      // backgroundColor: MaterialStateProperty.all<Color>(
+                      //     AppColors.primary),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(AppColors.primary),
+                      surfaceTintColor:
+                          MaterialStateProperty.all<Color>(AppColors.primary),
+                      side: MaterialStateProperty.all<BorderSide>(
+                          const BorderSide(color: Colors.grey)),
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          const EdgeInsets.all(16.0)),
+                      // shape:
+                      //     MaterialStateProperty.all<RoundedRectangleBorder>(
+                      //   RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(10),
+                      //     side: BorderSide(color: Colors.grey.shade300),
+                      //   ),
+                      // ),
+                    ),
                   ),
-                  
                 ),
                 child: DateRangePickerDialog(
                   firstDate: DateTime.now(),
