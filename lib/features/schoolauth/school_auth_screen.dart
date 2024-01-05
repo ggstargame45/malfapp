@@ -13,12 +13,7 @@ import 'package:malf/shared/permission.dart';
 import 'package:http/http.dart' as http;
 import 'package:malf/shared/usecases/image_compress.dart';
 
-const List<String> postSucessMessage = [
-  "제출 성공",
-  "Submit Success",
-  "提交成功",
-  "提出成功"
-];
+
 
 class PostingBody {}
 
@@ -655,7 +650,7 @@ class _SchoolAuthScreenState extends State<SchoolAuthScreen> {
                         if (await postPosting(PostingBody(), imageList)) {
                           context.pop();
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(postSucessMessage[lan])));
+                              SnackBar(content: Text("post_sucess_message".tr())));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("post_fail".tr())));

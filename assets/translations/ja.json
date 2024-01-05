@@ -61,7 +61,7 @@
   "japanese/korean": "日本語/韓国語",
   "write_title": "ミートアップを紹介",
   "write_title_hint": "タイトルを入力してください。",
-  "write_content_hint": "紹介文を入力してください。",
+  "write_content_hint": "投稿を入力してください。",
   "write_time_title": "スケジュールと時間を入力",
   "write_place_capacity_title": "ミートアップの場所と定員を入力",
   "write_place_hint": "場所を入力してください。",
@@ -147,39 +147,57 @@
   "profile_edit_type_title": "外国人/現地人を選択してください。",
   "profile_edit_nation_title": "国籍を選択してください。",
   "profile_edit_gender_title": "性別を選択してください。",
-  "notification" :"通知",
-  "apply_rejected" : "参加申請が拒否されました。",
-  "apply_accepted" : "参加申請が承認されました。",
-  "review_notification" : "参加者のレビューを残すつもりですか？",
-  "school_auth_delete_message" : "送信いただいた写真は、承認プロセスの後に廃棄されます。私たちはそれを保存しません。",
-  "chat_room_enter" : "が部屋に入ってきた",
-    "chat_room_leave" :  "が退出しました",
-    "seconds_ago" : {
-      "one" : "1 秒前",
-      "other" : "{} 秒前"
+  "notification": "通知",
+  "apply_rejected": "参加申請が拒否されました。",
+  "apply_accepted": "参加申請が承認されました。",
+  "review_notification": "参加者のレビューを残すつもりですか？",
+  "school_auth_delete_message": "送信いただいた写真は、承認プロセスの後に廃棄されます。私たちはそれを保存しません。",
+  "chat_room_enter": "が部屋に入ってきた",
+  "chat_room_leave": "が退出しました",
+  "seconds_ago": {
+    "one": "1 秒前",
+    "other": "{} 秒前"
   },
-  "minutes_ago" : {
-      "one" : "1 分前",
-      "other" : "{} 分前"
+  "minutes_ago": {
+    "one": "1 分前",
+    "other": "{} 分前"
   },
-  "hours_ago" : {
-      "one" : "1 時間前",
-      "other" : "{} 時間前"
+  "hours_ago": {
+    "one": "1 時間前",
+    "other": "{} 時間前"
   },
-  "days_ago" : {
-      "one" : "1 日前",
-      "other" : "{} 日前"
+  "days_ago": {
+    "one": "1 日前",
+    "other": "{} 日前"
   },
-  "weeks_ago" : {
-      "one" : "1 週間前",
-      "other" : "{} 週間前"
+  "weeks_ago": {
+    "one": "1 週間前",
+    "other": "{} 週間前"
   },
-  "months_ago" : {
-      "one" : "1 ヶ月前",
-      "other" : "{} ヶ月前"
+  "months_ago": {
+    "one": "1 ヶ月前",
+    "other": "{} ヶ月前"
   },
-  "years_ago" : {
-      "one" : "1 年前",
-      "other" : "{} 年前"
-  }
+  "years_ago": {
+    "one": "1 年前",
+    "other": "{} 年前"
+  },
+  "post_sucess_message": "送信成功",
+  "block_posting": "この投稿をブロックしますか？",
+  "community_delete": "投稿を削除",
+  "community_write": "投稿の作成",
+  "community_edit": "投稿の編集",
+  "community_delete_message": "投稿を削除しますか?",
+  "postings": "投稿",
+  "my_posting": "私が書いた投稿",
+  "my_scrap_posting": "私がスクラップした投稿",
+  "scrap": "スクラップ",
+  "unscrap": "スクラップをキャンセルする",
+  "scrap_message": "投稿をスクラップしますか？",
+  "unscrap_message": "投稿をスクラップ解除しますか？",
+  "reply_enter_hint": "コメントを入力してください",
+  "reply_delete": "コメントを削除",
+  "reply_delete_message": "コメントを削除してもよろしいですか？",
+  "meeting_delete": "会議の削除",
+  "meeting_delete_message": "会議を削除しますか？"
 }

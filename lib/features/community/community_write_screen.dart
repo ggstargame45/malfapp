@@ -15,6 +15,7 @@ import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/permission.dart';
 import 'package:malf/shared/usecases/image_compress.dart';
+import 'package:malf/shared/usecases/loading.dart';
 import 'package:path_provider/path_provider.dart';
 
 const subUrl = "/community/posts";
@@ -48,16 +49,12 @@ Future<bool> postPosting(PostingBody data, String kind, List<XFile> imageList,
       ),
     );
     late final Response<dynamic> result;
-    if(kind == "write"){
+    if (kind == "write") {
       result = await dio.post(subUrl, data: data.toJson());
-      
-    }
-    else{
+    } else {
       result = await dio.patch("$subUrl/$postId", data: data.toJson());
-      
     }
-    if(result.statusCode==201)
-    {
+    if (result.statusCode == 201) {
       return true;
     }
 
@@ -84,8 +81,12 @@ Future<bool> postPosting(PostingBody data, String kind, List<XFile> imageList,
 
     try {
       while (!isUploaded) {
-        request = http.MultipartRequest(
-            'patch', Uri.parse(baseUrl + subUrl + postId.toString()));
+        if (kind == "write") {
+          request = http.MultipartRequest('post', Uri.parse(baseUrl + subUrl));
+        } else {
+          request = http.MultipartRequest(
+              'patch', Uri.parse("$baseUrl$subUrl/$postId"));
+        }
         try {
           for (int i = 0; i < imageFileList.length; i++) {
             request.files.add(await http.MultipartFile.fromPath(
@@ -108,7 +109,7 @@ Future<bool> postPosting(PostingBody data, String kind, List<XFile> imageList,
 
         request.fields.addAll(mapdata);
         StreamedResponse response = await request.send();
-        if (response.statusCode == 200) {
+        if (response.statusCode == 201) {
           logger.d('요청이 성공적으로 처리되었습니다.');
           return true;
         } else {
@@ -440,7 +441,7 @@ class _CommunityWriteScreenState extends State<CommunityWriteScreen> {
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500),
                           decoration: InputDecoration(
-                            hintText: "write_content_hint".tr(),
+                            hintText: "${"write_content_hint".tr()}${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}",
                             hintStyle: const TextStyle(
                               color: Color(0xFFBEBEBE),
                               fontSize: 16,
@@ -469,7 +470,7 @@ class _CommunityWriteScreenState extends State<CommunityWriteScreen> {
                         child: ElevatedButton(
                           child: Text(
                             (widget.kind == "write")
-                                ? "write".tr()
+                                ? "submit".tr()
                                 : "edit".tr(),
                           ),
                           onPressed: () async {
@@ -480,28 +481,55 @@ class _CommunityWriteScreenState extends State<CommunityWriteScreen> {
                                           "profile_edit_name_description_check"
                                               .tr())));
                             } else {
-                              if (await postPosting(
-                                  PostingBody(
-                                    title: title,
-                                    content: content,
-                                  ),
-                                  widget.kind,
-                                  imageList,
-                                  oldImageListString,
-                                  communityData?.postId??-1)) {
-                                communityPageController.refresh();
-                                logger.i("글쓰기 성공");
-                                context.pop();
-                                // try{
-                                //   GoRouter.of(context).go(
-                                //   '/home',
-                                //   );}
-                                // catch(e){
-                                //   logger.e(e);}
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('fail'.tr())));
-                              }
+                              await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      content: Text(
+                                          "${"writing_warning_first".tr()}\n${"writing_warning_second".tr()}"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () async {
+                                            loading(context);
+                                            if (await postPosting(
+                                                PostingBody(
+                                                  title: title,
+                                                  content: content,
+                                                ),
+                                                widget.kind,
+                                                imageList,
+                                                oldImageListString,
+                                                communityData?.postId ?? -1)) {
+                                              communityPageController.refresh();
+                                              logger.i("글쓰기 성공");
+                                              context.pop();
+                                              // try{
+                                              //   GoRouter.of(context).go(
+                                              //   '/home',
+                                              //   );}
+                                              // catch(e){
+                                              //   logger.e(e);}
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content:
+                                                          Text('fail'.tr())));
+                                            }
+                                            context.pop();
+                                          },
+                                          child: const Text('confirm').tr(),
+                                        ),
+                                        TextButton(
+                                            onPressed: () {
+                                              context.pop();
+                                            },
+                                            child: const Text('cancel',
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                )).tr())
+                                      ],
+                                    );
+                                  });
                             }
                           },
                         )),

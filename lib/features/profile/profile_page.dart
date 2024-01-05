@@ -10,6 +10,7 @@ import 'package:malf/features/profile/profile_model.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
+import 'package:malf/shared/svg_strings.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/usecases/nation_image.dart';
 import 'package:malf/shared/widgets/image_view_widget.dart';
@@ -307,7 +308,9 @@ class _ProfilePageState extends State<ProfilePage>
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 8.0, 0),
                                   child: RoundedBackgroundText(
-                                    (profileData!.userType == 0 ? "foreigner" : "local")
+                                    (profileData!.userType == 0
+                                            ? "foreigner"
+                                            : "local")
                                         .tr(),
                                     style: TextStyle(
                                         fontSize: 14,
@@ -349,17 +352,19 @@ class _ProfilePageState extends State<ProfilePage>
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8),
                                   child: profileData!.userTemperature < 100
-                                      ? SvgPicture.asset("assets/icons/ic_angry.svg",
+                                      ? SvgPicture.asset(
+                                          "assets/icons/ic_angry.svg",
                                           colorFilter: const ColorFilter.mode(
-                                              Color.fromARGB(
-                                                  255, 26, 26, 26),
+                                              Color.fromARGB(255, 26, 26, 26),
                                               BlendMode.srcIn))
                                       : profileData!.userTemperature < 200
-                                          ? SvgPicture.asset("assets/icons/ic_sad.svg",
-                                              colorFilter: const ColorFilter.mode(
-                                                  Color.fromARGB(
-                                                      255, 128, 128, 128),
-                                                  BlendMode.srcIn))
+                                          ? SvgPicture.asset(
+                                              "assets/icons/ic_sad.svg",
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                      Color.fromARGB(
+                                                          255, 128, 128, 128),
+                                                      BlendMode.srcIn))
                                           : profileData!.userTemperature < 300
                                               ? const Icon(
                                                   Icons
@@ -377,13 +382,14 @@ class _ProfilePageState extends State<ProfilePage>
                                                       ? SvgPicture.asset(
                                                           "assets/icons/ic_rofl.svg",
                                                           colorFilter:
-                                                              const ColorFilter.mode(
+                                                              const ColorFilter
+                                                                  .mode(
                                                                   Color
                                                                       .fromARGB(
-                                                                      255,
-                                                                      247,
-                                                                      119,
-                                                                      33),
+                                                                          255,
+                                                                          247,
+                                                                          119,
+                                                                          33),
                                                                   BlendMode
                                                                       .srcIn),
                                                         )
@@ -496,8 +502,8 @@ class _ProfilePageState extends State<ProfilePage>
                     Flexible(
                       child: Text(
                         profileData?.description ?? "",
-                        maxLines: 50,
                         overflow: TextOverflow.ellipsis,
+                        maxLines: 50,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -511,7 +517,7 @@ class _ProfilePageState extends State<ProfilePage>
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                 child: Text(
-                  "my_postings".tr(),
+                  "postings".tr(),
                   textAlign: TextAlign.start,
                   style: const TextStyle(
                     color: Color.fromARGB(255, 128, 128, 128),
@@ -519,6 +525,52 @@ class _ProfilePageState extends State<ProfilePage>
                   ),
                 ),
               ),
+              ListTile(
+                leading: const Icon(Icons.edit_square, color: Colors.blue),
+                title: Text(
+                  "my_posting".tr(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  context.push('/communityList/write/0');
+                },
+              ),
+              // ListTile(
+              //   leading: const Icon(CupertinoIcons.check_mark_circled_solid,
+              //       color: AppColors.primary),
+              //   title: Text("attend_meeting".tr(),
+              //     style: const TextStyle(
+              //       fontSize: 14,
+              //       fontWeight: FontWeight.w500,
+              //     ),
+              //   ),
+              //   onTap: () {
+              //     context.push('/meetingList/apply/0');
+              //   },
+              // ),
+              ListTile(
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: SvgPicture.string(
+                    scrapButtonFillSvgString,
+                    height: 20,
+                  ),
+                ),
+                title: Text(
+                  "my_scrap_posting".tr(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  context.push('/communityList/scrap/0');
+                },
+              ),
+
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                 child: Text(
@@ -531,12 +583,10 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
               ),
               ListTile(
-                leading:
-                    const Icon(CupertinoIcons.heart_circle_fill, color: Colors.red),
+                leading: const Icon(CupertinoIcons.heart_circle_fill,
+                    color: Colors.red),
                 title: Text(
-                  context.locale.languageCode != "en"
-                      ? "like_meeting".tr()
-                      : "Liked Meet-ups",
+                  "like_meeting".tr(),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -550,9 +600,7 @@ class _ProfilePageState extends State<ProfilePage>
                 leading: const Icon(CupertinoIcons.check_mark_circled_solid,
                     color: AppColors.primary),
                 title: Text(
-                  context.locale.languageCode != "en"
-                      ? "attend_meeting".tr()
-                      : "Meet-ups I Applied",
+                  "attend_meeting".tr(),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -563,11 +611,12 @@ class _ProfilePageState extends State<ProfilePage>
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.edit_square, color: Colors.blue),
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: SvgPicture.string(wrotePostSvgString),
+                ),
                 title: Text(
-                  context.locale.languageCode != "en"
-                      ? "made_meeting".tr()
-                      : "Meet-ups I made",
+                  "made_meeting".tr(),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -577,8 +626,6 @@ class _ProfilePageState extends State<ProfilePage>
                   context.push('/meetingList/write/0');
                 },
               ),
-
-              
 
               //TODO:본인이 참가신청한 모임 리스트뷰와 본인이 좋아요 누른 모임 리스트뷰를 tabbar로 구현
 

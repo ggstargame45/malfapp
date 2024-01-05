@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:isar/isar.dart';
 import 'package:malf/shared/collections/iblockmeeting.dart';
+import 'package:malf/shared/collections/iblockposting.dart';
 import 'package:malf/shared/collections/iblockuser.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/token.dart';
@@ -9,6 +10,7 @@ import 'package:malf/shared/network/token.dart';
 class BlockSet {
   Set<String> blockUserUniqIdSet = {};
   Set<int> blockMeetingPostIdSet = {};
+  Set<int> blockPostingPostIdSet = {};
   static final BlockSet _singletonModel = BlockSet._internal();
   factory BlockSet() => _singletonModel;
   BlockSet._internal();
@@ -16,6 +18,7 @@ class BlockSet {
   void setInit() {
     blockUserUniqIdSet = getBlockUserUniqIdSet();
     blockMeetingPostIdSet = getBlockMeetingPostIdSet();
+    blockPostingPostIdSet = getBlockPostingPostIdSet();
   }
 
   void addBlockUser({
@@ -33,6 +36,18 @@ class BlockSet {
   }) {
     blockMeetingPostIdSet.add(postId);
     setBlockMeeting(
+        blockedPostId: postId,
+        blockedTitle: title,
+        blockedAuthorNickname: authorNickname);
+  }
+
+  void addBlockPosting({
+    required int postId,
+    required String title,
+    required String authorNickname,
+  }) {
+    blockPostingPostIdSet.add(postId);
+    setBlockPosting(
         blockedPostId: postId,
         blockedTitle: title,
         blockedAuthorNickname: authorNickname);
@@ -68,12 +83,28 @@ class BlockSet {
     });
   }
 
+  void setBlockPosting({
+    required int blockedPostId,
+    required String blockedTitle,
+    required String blockedAuthorNickname,
+  }) {
+    final isar = Isar.getInstance();
+    final blockPosting = IBlockPosting();
+    blockPosting.ownUserUniqId = Token().userUniqId;
+    blockPosting.blockedPostId = blockedPostId;
+    blockPosting.blockedTitle = blockedTitle;
+    blockPosting.blockedAuthorNickname = blockedAuthorNickname;
+    isar!.writeTxnSync(() {
+      isar.iBlockPostings.putSync(blockPosting);
+    });
+  }
+
   void removeBlockUser({
     required String blockedUserUniqId,
   }) {
     final isar = Isar.getInstance();
     blockUserUniqIdSet.remove(blockedUserUniqId);
-    
+
     isar!.writeTxnSync(() {
       isar.iBlockUsers
           .where()
@@ -91,6 +122,21 @@ class BlockSet {
     blockMeetingPostIdSet.remove(blockedPostId);
     isar!.writeTxnSync(() {
       isar.iBlockMeetings
+          .where()
+          .ownUserUniqIdEqualTo(Token().userUniqId)
+          .filter()
+          .blockedPostIdEqualTo(blockedPostId)
+          .deleteAllSync();
+    });
+  }
+
+  void removeBlockPosting({
+    required int blockedPostId,
+  }) {
+    final isar = Isar.getInstance();
+    blockPostingPostIdSet.remove(blockedPostId);
+    isar!.writeTxnSync(() {
+      isar.iBlockPostings
           .where()
           .ownUserUniqIdEqualTo(Token().userUniqId)
           .filter()
@@ -125,6 +171,19 @@ class BlockSet {
     return blockMeetingUniqIdSet;
   }
 
+  Set<int> getBlockPostingPostIdSet() {
+    final isar = Isar.getInstance();
+    final blockPostingList = isar!.iBlockPostings
+        .where()
+        .ownUserUniqIdEqualTo(Token().userUniqId)
+        .findAllSync();
+    final blockPostingUniqIdSet = <int>{};
+    for (final blockPosting in blockPostingList) {
+      blockPostingUniqIdSet.add(blockPosting.blockedPostId);
+    }
+    return blockPostingUniqIdSet;
+  }
+
   List<IBlockMeeting> getBlockMeetingList() {
     final isar = Isar.getInstance();
     return isar!.iBlockMeetings
@@ -136,6 +195,14 @@ class BlockSet {
   List<IBlockUser> getBlockUserList() {
     final isar = Isar.getInstance();
     return isar!.iBlockUsers
+        .where()
+        .ownUserUniqIdEqualTo(Token().userUniqId)
+        .findAllSync();
+  }
+
+  List<IBlockPosting> getBlockPostingList() {
+    final isar = Isar.getInstance();
+    return isar!.iBlockPostings
         .where()
         .ownUserUniqIdEqualTo(Token().userUniqId)
         .findAllSync();

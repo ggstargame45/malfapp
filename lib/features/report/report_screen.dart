@@ -78,7 +78,8 @@ class _ReportScreenState extends State<ReportScreen> {
                     decoration: InputDecoration(
                       labelText: "context".tr(),
                       border: const OutlineInputBorder(),
-                      hintText: "${"report_hint".tr()}\n${"writing_warning_second".tr()}\n${"report_time_check".tr()}",
+                      hintText:
+                          "${"report_hint".tr()}\n${"writing_warning_second".tr()}\n${"report_time_check".tr()}",
                     ),
                     maxLines: 15,
                     validator: (value) {
@@ -140,9 +141,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                         logger.d(
                                             '$baseUrl/report/${widget.reportType}');
                                         final response = await dio.post(
-                                          "/report/${widget.reportType}",
+                                          (widget.reportType == "reply")
+                                              ? "/report/community/${widget.reportType}"
+                                              : "/report/${widget.reportType}",
                                           data: {
-                                            if (widget.reportType == "post" || widget.reportType == "community")
+                                            if (widget.reportType == "post" ||
+                                                widget.reportType ==
+                                                    "community")
                                               "post_id": widget.id,
                                             if (widget.reportType == "user")
                                               "user_uniq_id": widget.id,

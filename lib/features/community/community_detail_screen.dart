@@ -20,12 +20,11 @@ import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/svg_strings.dart';
 import 'package:malf/shared/theme/app_colors.dart';
+import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:malf/shared/widgets/image_view_widget.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 
 import '../../shared/network/base_url.dart';
-
-
 
 class CommunityDetailScreen extends StatefulWidget {
   final int postId;
@@ -46,8 +45,10 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
   bool insideCheck = false;
 
   int replyCount = 0;
+  int authorNation = 400;
 
   Map<String, String> idPictureMap = {};
+  Map<String, int> idNationMap = {};
   Future<String> _getPictureById(String id) async {
     final dio = Dio(BaseOptions(
       baseUrl: baseUrl,
@@ -63,6 +64,24 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
     } else {
       logger.e(response.statusCode);
       return "";
+    }
+  }
+
+  Future<int> _getNationById(String id) async {
+    final dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      headers: {'Authorization': Token().refreshToken},
+    ));
+    final response = await dio.get("/user/profile/$id");
+    logger.i(response.data);
+    if (response.data["status"] == 200) {
+      final int nation = response.data['data'][0]['nation'];
+      logger.i("nation: $nation");
+      idNationMap[id] = nation;
+      return nation;
+    } else {
+      logger.e(response.statusCode);
+      return 400;
     }
   }
 
@@ -85,15 +104,24 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
       logger.i("value: ${value.data}");
       if (value.data["status"] == 200) {
         final data = value.data['data'][0];
-        data["create_at"] = DateTime.parse(data["create_at"]).add(const Duration(hours: 9)).toString();
-        if(data["update_at"] != null) {
-          data["update_at"] = DateTime.parse(data["update_at"]).add(const Duration(hours: 9)).toString();
+        data["create_at"] = DateTime.parse(data["create_at"])
+            .add(const Duration(hours: 9))
+            .toString();
+        if (data["update_at"] != null) {
+          data["update_at"] = DateTime.parse(data["update_at"])
+              .add(const Duration(hours: 9))
+              .toString();
         }
         communityData = CommunityData.fromJson(data);
 
         scrapCheck = (communityData?.scrapCheck ?? 0) == 1 ? true : false;
         replyCount = communityData?.replyCount ?? 0;
-        setState(() {});
+        _getNationById(communityData!.userUniqId).then(
+          (value) {
+            authorNation = value;
+            setState(() {});
+          },
+        );
       } else {
         logger.e(value.statusCode);
       }
@@ -198,7 +226,10 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                               topRight: Radius.circular(10))),
                       builder: (contextb) {
                         return Container(
-                          padding: EdgeInsets.only(top: 8,bottom: MediaQuery.of(contextb).viewPadding.bottom),
+                          padding: EdgeInsets.only(
+                              top: 8,
+                              bottom:
+                                  MediaQuery.of(contextb).viewPadding.bottom),
                           width: MediaQuery.of(contextb).size.width,
                           decoration: const BoxDecoration(
                               color: Colors.white,
@@ -222,33 +253,69 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                   Token().userUniqId)
                                 GestureDetector(
                                   onTap: () async {
-                                    contextb.pop();
-                                    try {
-                                      final dio = Dio(BaseOptions(
-                                          baseUrl: baseUrl,
-                                          headers: {
-                                            'Authorization':
-                                                Token().refreshToken
-                                          },
-                                          responseType: ResponseType.json));
-                                      final response = await dio.delete(
-                                        "/community/posts/${communityData!.postId}",
-                                      );
-                                      if (response.statusCode == 201) {
-                                        communityPageController.refresh();
-                                        contexta.pop();
-                                      } else {
-                                        ScaffoldMessenger.of(contexta)
-                                            .showSnackBar(SnackBar(
-                                          content: Text("fail".tr()),
-                                        ));
-                                      }
+                                    await showDialog(
+                                        context: contextb,
+                                        builder: (contextc) {
+                                          return AlertDialog(
+                                            title:
+                                                Text("community_delete".tr()),
+                                            content: Text(
+                                                "community_delete_message"
+                                                    .tr()),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () async {
+                                                    try {
+                                                      final dio = Dio(
+                                                          BaseOptions(
+                                                              baseUrl: baseUrl,
+                                                              headers: {
+                                                                'Authorization':
+                                                                    Token()
+                                                                        .refreshToken
+                                                              },
+                                                              responseType:
+                                                                  ResponseType
+                                                                      .json));
+                                                      final response =
+                                                          await dio.delete(
+                                                        "/community/posts/${communityData!.postId}",
+                                                      );
+                                                      if (response.statusCode ==
+                                                          201) {
+                                                        communityPageController
+                                                            .refresh();
+                                                        contextc.pop();
+                                                        contextb.pop();
+                                                        contexta.pop();
+                                                      } else {
+                                                        contextc.pop();
+                                                        contextb.pop();
+                                                        ScaffoldMessenger.of(
+                                                                contexta)
+                                                            .showSnackBar(
+                                                                SnackBar(
+                                                          content:
+                                                              Text("fail".tr()),
+                                                        ));
+                                                      }
 
-                                      logger.d(response.data);
-                                      //return response.statusCode;
-                                    } catch (error) {
-                                      logger.d('오류: $error');
-                                    }
+                                                      logger.d(response.data);
+                                                      //return response.statusCode;
+                                                    } catch (error) {
+                                                      logger.d('오류: $error');
+                                                    }
+                                                  },
+                                                  child: Text("confirm".tr())),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    contextc.pop();
+                                                    contextb.pop();
+                                                  },
+                                                  child: Text("cancel".tr()))
+                                            ],
+                                          );
+                                        });
                                   },
                                   child: Container(
                                       padding: const EdgeInsets.all(15),
@@ -276,7 +343,7 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                   onTap: () async {
                                     contextb.pop();
                                     await contexta.push("/report", extra: {
-                                      "reportType": "post",
+                                      "reportType": "community",
                                       "id": communityData!.postId.toString(),
                                       "title": communityData!.title
                                     });
@@ -312,13 +379,13 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                 GestureDetector(
                                   onTap: () async {
                                     contextb.pop();
-                                    await contexta.push('/edit',
+                                    await contexta.push('/CommunityWrite/edit',
                                         extra: communityData!);
                                     communityPageController.refresh();
                                     contexta
                                       ..go('/home')
                                       ..push(
-                                          '/detail/${communityData!.postId}');
+                                          '/communityDetail/${communityData!.postId}');
                                   },
                                   child: Container(
                                       padding: const EdgeInsets.all(15),
@@ -351,7 +418,7 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                         builder: (contextc) {
                                           return AlertDialog(
                                             title: Text("block".tr()),
-                                            content: Text("block_meeting".tr()),
+                                            content: Text("block_posting".tr()),
                                             actions: [
                                               TextButton(
                                                   onPressed: () async {
@@ -393,13 +460,22 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                                     contextb.pop();
                                                     contexta.pop();
                                                     if (onlyDetail) {
-                                                      // CommunityBlockSet().addBlockMeeting(
-                                                      //   postId: communityData!.postId,
-                                                      //   title: communityData!.title,
-                                                      //   authorNickname: communityData!.authorNickname,
-                                                      // );
+                                                      BlockSet()
+                                                          .addBlockPosting(
+                                                        postId: communityData!
+                                                            .postId,
+                                                        title: communityData!
+                                                            .title,
+                                                        authorNickname:
+                                                            communityData!
+                                                                .authorNickname,
+                                                      );
                                                     } else {
-                                                      // CommunityBlockSet().addBlockUser(uniqId: communityData!.userUniqId, nickname: communityData!.authorNickname);
+                                                      BlockSet().addBlockUser(
+                                                          uniqId: communityData!
+                                                              .userUniqId,
+                                                          nickname: communityData!
+                                                              .authorNickname);
                                                     }
 
                                                     communityPageController
@@ -540,75 +616,85 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                       },
                     ),
                   ),
-                SizedBox(
-                  height: 80,
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-                        child: SizedBox(
-                          // height: 56,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: CircleAvatar(
-                              radius: 30,
-                              backgroundImage: ExtendedNetworkImageProvider(
-                                  communityData?.authorPic?[0] ?? "",
-                                  cache: true),
+                InkWell(
+                  onTap: () {
+                    context.push('/profileOther/${communityData!.userUniqId}');
+                  },
+                  child: SizedBox(
+                    height: 80,
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                          child: SizedBox(
+                            // height: 56,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: ExtendedNetworkImageProvider(
+                                    communityData?.authorPic?[0] ?? "",
+                                    cache: true),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if ((communityData?.authorStatus ?? 0) == 1)
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(4, 0, 0, 6),
-                                child: RoundedBackgroundText(
-                                  (communityData!.userType == 0
-                                          ? "foreigner"
-                                          : "local")
-                                      .tr(),
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: communityData!.userType == 0
-                                          ? AppColors.primary
-                                          : AppColors.white),
-                                  backgroundColor: communityData!.userType == 0
-                                      ? AppColors.extraLightGrey
-                                      : AppColors.primary,
-                                  innerRadius: 20.0,
-                                  outerRadius: 20.0,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if ((communityData?.authorStatus ?? 0) == 1)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(4, 0, 0, 6),
+                                  child: RoundedBackgroundText(
+                                    (communityData!.userType == 0
+                                            ? "foreigner"
+                                            : "local")
+                                        .tr(),
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: communityData!.userType == 0
+                                            ? AppColors.primary
+                                            : AppColors.white),
+                                    backgroundColor:
+                                        communityData!.userType == 0
+                                            ? AppColors.extraLightGrey
+                                            : AppColors.primary,
+                                    innerRadius: 20.0,
+                                    outerRadius: 20.0,
+                                  ),
                                 ),
-                              ),
-                            Text(
-                                "${CountryCode.tryParse("${communityData?.authorNation} ")?.symbol ?? ""}${communityData?.authorNickname ?? ""}",
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 128, 128, 128),
-                                )),
-                          ],
+                              Text(
+                                  "${((communityData?.authorStatus ?? 0) == 1) ? CountryCode.tryParse("$authorNation ")?.symbol ?? "" : ""}${communityData?.authorNickname ?? ""}",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color.fromARGB(255, 128, 128, 128),
+                                  )),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 const Divider(),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                          child: Text("${communityData?.createAt ?? ""}",
+                          child: Text(
+                              (communityData == null)
+                                  ? ""
+                                  : "${communityData!.createAt.year}.${(communityData!.createAt.month < 10) ? "0${communityData!.createAt.month}" : communityData!.createAt.month}.${(communityData!.createAt.day < 10) ? "0${communityData!.createAt.day}" : communityData!.createAt.day} | ${communityData!.createAt.hour < 10 ? "0${communityData!.createAt.hour}" : communityData!.createAt.hour.toString()}:${communityData!.createAt.minute < 10 ? "0${communityData!.createAt.minute}" : communityData!.createAt.minute}",
                               style: const TextStyle(
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 128, 128, 128))),
@@ -632,10 +718,12 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("scrap".tr()),
-                                    content: scrapCheck
+                                    title: scrapCheck
                                         ? Text("unscrap".tr())
                                         : Text("scrap".tr()),
+                                    content: scrapCheck
+                                        ? Text("unscrap_message".tr())
+                                        : Text("scrap_message".tr()),
                                     actions: [
                                       TextButton(
                                           onPressed: () async {
@@ -803,14 +891,39 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                                       outerRadius: 20.0,
                                                     ),
                                                   ),
-                                                Text(item.authorNickname,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      color: Color.fromARGB(
-                                                          255, 128, 128, 128),
-                                                    )),
+                                                Row(
+                                                  children: [
+                                                    if (item.authorStatus == 1)
+                                                      Text(
+                                                          CountryCode.tryParse(
+                                                                      "$authorNation ")
+                                                                  ?.symbol ??
+                                                              "",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    128,
+                                                                    128,
+                                                                    128),
+                                                          )),
+                                                    Text(item.authorNickname,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              128,
+                                                              128,
+                                                              128),
+                                                        )),
+                                                  ],
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -857,9 +970,13 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                                                         10))),
                                                     builder: (contextb) {
                                                       return Container(
-                                                        padding:
-                                                            EdgeInsets
-                                                                .only(top: 8,bottom: MediaQuery.of(contextb).viewPadding.bottom), 
+                                                        padding: EdgeInsets.only(
+                                                            top: 8,
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        contextb)
+                                                                    .viewPadding
+                                                                    .bottom),
                                                         width: MediaQuery.of(
                                                                 contextb)
                                                             .size
@@ -918,10 +1035,8 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                                                                       _replyPageController
                                                                           .refresh();
                                                                       replyCount--;
-                                                                      setState(() {
-                                                                        
-                                                                      });
-                                                                      
+                                                                      setState(
+                                                                          () {});
                                                                     } else {
                                                                       ScaffoldMessenger.of(
                                                                               contexta)
@@ -1188,7 +1303,7 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
                     contentPadding: const EdgeInsets.all(8),
                     filled: true,
                     fillColor: const Color.fromARGB(97, 158, 158, 158),
-                    hintText: "chat_room_input_hint".tr(),
+                    hintText: "reply_enter_hint".tr(),
                     hintStyle:
                         const TextStyle(fontSize: 15, color: Colors.grey),
                     border: const OutlineInputBorder(
@@ -1227,8 +1342,9 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
         if (value.statusCode == 201) {
           logger.i(communityPageController.itemList!
               .indexWhere((element) => element.postId == widget.postId));
-
+          replyCount++;
           _replyPageController.refresh();
+          setState(() {});
         } else {
           logger.e("댓글 작성 실패");
         }

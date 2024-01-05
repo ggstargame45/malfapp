@@ -36,7 +36,6 @@ const List<String> dateRangePickString = [
   "会議を見る",
 ];
 
-
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
@@ -152,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                     maxHeight: maxHeight, maxWidth: maxWidth);
               },
               icon: SvgPicture.string(
-                calendarString,
+                calendarSvgString,
                 height: 24,
                 width: 24,
                 colorFilter: ColorFilter.mode(
@@ -611,37 +610,45 @@ class _HomePageState extends State<HomePage> {
                                                 child: Row(
                                                   children: [
                                                     Flexible(
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border.all(
-                                                              color: const Color
-                                                                  .fromARGB(
-                                                                  255,
-                                                                  234,
-                                                                  234,
-                                                                  234),
-                                                              width: 2),
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          10.0)),
-                                                          color: const Color
-                                                              .fromARGB(255,
-                                                              247, 247, 247),
-                                                        ),
-                                                        child: Text(
-                                                          " ${item.meetingLocation} ",
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontFamily:
-                                                                'Pretendard',
-                                                            fontSize: 12,
-                                                            color: Colors.black,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                0, 0, 4.0, 0),
+                                                        child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            border: Border.all(
+                                                                color: const Color
+                                                                    .fromARGB(
+                                                                    255,
+                                                                    234,
+                                                                    234,
+                                                                    234),
+                                                                width: 2),
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                    .all(
+                                                                    Radius.circular(
+                                                                        10.0)),
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                247, 247, 247),
+                                                          ),
+                                                          child: Text(
+                                                            " ${item.meetingLocation} ",
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard',
+                                                              fontSize: 12,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -663,7 +670,7 @@ class _HomePageState extends State<HomePage> {
                                                             255, 247, 247, 247),
                                                       ),
                                                       child: Text(
-                                                        " ${item.meetingStartTime.year}.${item.meetingStartTime.month}.${item.meetingStartTime.day} | ${item.meetingStartTime.hour < 10 ? "0${item.meetingStartTime.hour}" : item.meetingStartTime.hour.toString()} : ${item.meetingStartTime.minute < 10 ? "0${item.meetingStartTime.minute}" : item.meetingStartTime.minute} ",
+                                                        " ${item.meetingStartTime.year}.${(item.meetingStartTime.month<10)?"0${item.meetingStartTime.month}":item.meetingStartTime.month}.${(item.meetingStartTime.day<10)?"0${item.meetingStartTime.day}":item.meetingStartTime.day} | ${item.meetingStartTime.hour < 10 ? "0${item.meetingStartTime.hour}" : item.meetingStartTime.hour.toString()}:${item.meetingStartTime.minute < 10 ? "0${item.meetingStartTime.minute}" : item.meetingStartTime.minute} ",
                                                         style: const TextStyle(
                                                           fontFamily:
                                                               'Pretendard',
@@ -851,16 +858,28 @@ void customDateRangePicker(BuildContext context,
                   maxHeight: maxHeight * 0.7, maxWidth: maxWidth * 0.9),
               child: Theme(
                 data: ThemeData.light().copyWith(
+                  // colorScheme: ColorScheme.light(
+                  //   primary: AppColors.primary,
+                  //   onPrimary: AppColors.white,
+                  //   onSurface: AppColors.white,
+                  // ),
                   textButtonTheme: TextButtonThemeData(
                     style: ButtonStyle(
-                      // backgroundColor: MaterialStateProperty.all<Color>(
-                      //     AppColors.primary),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          AppColors.primary),
                       foregroundColor:
-                          MaterialStateProperty.all<Color>(AppColors.primary),
+                          MaterialStateProperty.all<Color>(AppColors.white),
                       surfaceTintColor:
                           MaterialStateProperty.all<Color>(AppColors.primary),
-                      side: MaterialStateProperty.all<BorderSide>(
-                          const BorderSide(color: Colors.grey)),
+                      elevation: MaterialStateProperty.all<double>(10),
+                      // side: MaterialStateProperty.all<BorderSide>(
+                      //     const BorderSide(color: Colors.grey, )),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          // side: const BorderSide(color: Colors.grey, width: 2),
+                        ),
+                      ),
                       padding: MaterialStateProperty.all<EdgeInsets>(
                           const EdgeInsets.all(16.0)),
                       // shape:

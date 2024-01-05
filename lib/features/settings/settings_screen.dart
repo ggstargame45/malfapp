@@ -1,14 +1,80 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:app_version_update/app_version_update.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:malf/features/home/home_screen.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  String version = '';
+  @override
+  void initState() {
+    super.initState();
+
+    // InAppUpdateManager manager = InAppUpdateManager();
+    // manager.checkForUpdate().then(
+    //   (value) {
+    //     if (value == null) return;
+    //     if (value.updateAvailability ==
+    //         UpdateAvailability.developerTriggeredUpdateInProgress) {
+    //       ///If an in-app update is already running, resume the update.
+    //       manager.startAnUpdate(type: AppUpdateType.immediate);
+
+    //       ///message return null when run update success
+    //     } else if (value.updateAvailability ==
+    //         UpdateAvailability.updateAvailable) {
+    //       ///Update available
+    //       if (value.immediateAllowed) {
+    //         debugPrint('Start an immediate update');
+    //         manager.startAnUpdate(type: AppUpdateType.immediate);
+
+    //         ///message return null when run update success
+    //       } else if (value.flexibleAllowed) {
+    //         debugPrint('Start an flexible update');
+    //         manager.startAnUpdate(type: AppUpdateType.flexible);
+
+    //         ///message return null when run update success
+    //       } else {
+    //         debugPrint(
+    //             'Update available. Immediate & Flexible Update Flow not allow');
+    //       }
+    //     }
+    //   },
+    // );
+
+    // AppUpdateInfo? appUpdateInfo = await ;
+    //   appUpdateInfo!.availableVersionCode;
+    // PackageManager.getPackageInfo().then((value) {
+    //   UpgradeVersion.getiOSStoreVersion(
+    //     packageInfo: value,
+    //     // regionCode:
+    //     //     WidgetsBinding.instance.platformDispatcher.locale.countryCode
+    //   ).then(
+    //     (value) {
+    //       setState(() {
+    //         version = value.appStoreLink;
+    //       });
+    //     },
+    //   );
+    //   // setState(() {
+    //   //   version = value.version;
+    //   // });
+    // });
+    //"https://apps.apple.com/kr/app/malf/id6469673658"
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +83,32 @@ class SettingsScreen extends StatelessWidget {
         title: Text('setting'.tr()),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                // logger.d(await _getAndroidStoreVersion(await PackageInfo.fromPlatform()));
+                // logger.d(await _getiOSStoreVersion(await PackageInfo.fromPlatform()));
+                final appleId =
+                    '6469673658'; // If this value is null, its packagename will be considered
+                final playStoreId =
+                    'com.malf.malf'; // If this value is null, its packagename will be considered
+                // final country =
+                //     'br'; // If this value is null 'us' will be the default value
+                
+                await AppVersionUpdate.checkForUpdates(
+                  appleId: appleId,
+                  playStoreId: playStoreId,
+                ).then((data) async {
+                  logger.d(data.storeUrl);
+                  logger.d(data.storeVersion);
+                  
+                });
+              },
+              color: Colors.black,
+              icon: const Icon(Icons.close_outlined)),
+        ],
       ),
       body: ListView(
         children: [
@@ -75,7 +165,7 @@ class SettingsScreen extends StatelessWidget {
           //app version
           ListTile(
             title: Text("app_version".tr()),
-            subtitle: const Text("1.2.7"),
+            subtitle: Text(version),
             onTap: () async {
               // try {
               //   final image =

@@ -18,13 +18,12 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:malf/shared/network/base_url.dart';
-import 'package:malf/shared/shorebird.dart';
+// import 'package:malf/shared/shorebird.dart';
 
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:malf/shared/logger.dart';
 import 'package:random_name_generator/random_name_generator.dart';
 import 'package:restart_app/restart_app.dart';
-import 'package:update_available/update_available.dart';
 
 const Color mainColor = Color.fromARGB(255, 97, 195, 255);
 double maxHeight(BuildContext context) => MediaQuery.of(context).size.height;
@@ -165,56 +164,56 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> patchAvailable() async {
     bool isUpdated = false;
-    while (shorebirdCodePush.isShorebirdAvailable()) {
-      await showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext contextn) {
-            return AlertDialog.adaptive(
-              title: const Text('server_error_title').tr(),
-              content: const Text('server_error_title').tr(),
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    contextn.pop();
-                    return;
-                  },
-                  child: const Text('confirm').tr(),
-                ),
-              ],
-            );
-          });
-    }
+    // while (shorebirdCodePush.isShorebirdAvailable()) {
+    //   await showDialog(
+    //       barrierDismissible: false,
+    //       context: context,
+    //       builder: (BuildContext contextn) {
+    //         return AlertDialog.adaptive(
+    //           title: const Text('server_error_title').tr(),
+    //           content: const Text('server_error_title').tr(),
+    //           actions: [
+    //             TextButton(
+    //               onPressed: () async {
+    //                 contextn.pop();
+    //                 return;
+    //               },
+    //               child: const Text('confirm').tr(),
+    //             ),
+    //           ],
+    //         );
+    //       });
+    // }
     //TODO
-    while ((await shorebirdCodePush.isNewPatchAvailableForDownload())) {
-      await showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext contextn) {
-            return AlertDialog(
-              title: Text("update_title".tr()),
-              content: Text("update_message".tr()),
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    await patch();
-                    isUpdated = true;
-                    contextn.pop();
-                  },
-                  child: const Text('confirm').tr(),
-                ),
-                TextButton(
-                    onPressed: () {
-                      contextn.pop();
-                    },
-                    child: const Text('cancel',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        )).tr())
-              ],
-            );
-          });
-    }
+    // while ((await shorebirdCodePush.isNewPatchAvailableForDownload())) {
+    //   await showDialog(
+    //       barrierDismissible: false,
+    //       context: context,
+    //       builder: (BuildContext contextn) {
+    //         return AlertDialog(
+    //           title: Text("update_title".tr()),
+    //           content: Text("update_message".tr()),
+    //           actions: [
+    //             TextButton(
+    //               onPressed: () async {
+    //                 await patch();
+    //                 isUpdated = true;
+    //                 contextn.pop();
+    //               },
+    //               child: const Text('confirm').tr(),
+    //             ),
+    //             TextButton(
+    //                 onPressed: () {
+    //                   contextn.pop();
+    //                 },
+    //                 child: const Text('cancel',
+    //                     style: TextStyle(
+    //                       color: Colors.grey,
+    //                     )).tr())
+    //           ],
+    //         );
+    //       });
+    // }
     if (isUpdated) {
       Restart.restartApp();
     }
@@ -230,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> patch() async {
     loading(context);
-    await shorebirdCodePush.downloadUpdateIfAvailable();
+    // await shorebirdCodePush.downloadUpdateIfAvailable();
     context.pop();
   }
 
@@ -239,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // await _showUpdateDialog();
 
-    await patchAvailable();
+    // await patchAvailable();
 
     await checkVersion();
     await checkServer();
@@ -252,7 +251,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _showUpdateDialog() async {
-    while ((await getUpdateAvailability()) == const UpdateAvailable()) {
+    // PackageInfo _packageInfo =
+    //               await PackageManager.getPackageInfo();
+    // if(Platform.isAndroid){
+    //   AppUpdateInfo? appUpdateInfo = await InAppUpdateManager().checkForUpdate();
+    //   appUpdateInfo!.availableVersionCode;
+    // }
+    if(Platform.isIOS){
+      // while((await UpgradeVersion.getiOSStoreVersion(
+      //         packageInfo: _packageInfo,
+      //         regionCode:
+      //             WidgetsBinding.instance.platformDispatcher.locale.countryCode)).canUpdate))
+     
+    }
+    while (true) {
       await showDialog(
           context: context,
           builder: (context) {

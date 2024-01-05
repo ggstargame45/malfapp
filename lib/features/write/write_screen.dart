@@ -69,7 +69,6 @@ Future<bool> postPosting(PostingBody data, List<XFile> imageList) async {
         await compressImage(File(imageList[i].path), 90, imageList.length));
   }
 
-
   try {
     while (isUploaded < 10) {
       request = http.MultipartRequest('POST', Uri.parse(baseUrl + subUri));
@@ -800,6 +799,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                 content: Text("picture_unchose_warning".tr())));
                           } else {
                             // if(true){
+                            loading(context);
                             await showDialog(
                                 barrierDismissible: false,
                                 context: context,
@@ -812,8 +812,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                         onPressed: () async {
                                           loading(context);
 
-                                          if (
-                                            await postPosting(
+                                          if (await postPosting(
                                               PostingBody(
                                                 title: title,
                                                 content: content,
@@ -831,8 +830,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                                 capacity_travel:
                                                     travelCapacity.toString(),
                                               ),
-                                              imageList)
-                                              ) {
+                                              imageList)) {
                                             logger.i("글쓰기 성공");
                                             context.pop();
                                             context.pop();
@@ -845,6 +843,7 @@ class _WriteScreenState extends State<WriteScreen> {
                                                     content:
                                                         Text('fail'.tr())));
                                           }
+                                          context.pop();
                                         },
                                         child: const Text('confirm').tr(),
                                       ),

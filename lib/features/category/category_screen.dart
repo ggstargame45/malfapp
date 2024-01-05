@@ -10,6 +10,7 @@ import 'package:malf/shared/logger.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
+import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:rounded_background_text/rounded_background_text.dart';
 // import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -35,12 +36,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
         responseType: ResponseType.json,
       ),
     );
+
     List<dynamic> jsonData =
         (await dio.get("/bulletin-board/posts/?category=${widget.categoryId}"))
             .data["data"];
     setState(() {
       for (var element in jsonData) {
-        if (element['post_status'] != -1) {
+        if ((element['post_status'] == 1) &&
+            (DateTime.now().isBefore(DateTime.parse(element["meeting_start_time"]))) &&
+            (!BlockSet().blockUserUniqIdSet.contains(element["user_uniq_id"])) &&
+            (!BlockSet().blockMeetingPostIdSet.contains(element["post_id"]))) {
           categoryListData.add(ListItemData.fromJson(element));
         }
       }

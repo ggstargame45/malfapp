@@ -408,7 +408,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 color: Colors.grey,
                               )),
                           Text(
-                              "${detailData!.meetingStartTime.year}.${detailData!.meetingStartTime.month}.${detailData!.meetingStartTime.day} | ${detailData!.meetingStartTime.hour < 10 ? "0${detailData!.meetingStartTime.hour}" : detailData!.meetingStartTime.hour.toString()} : ${detailData!.meetingStartTime.minute < 10 ? "0${detailData!.meetingStartTime.minute}" : detailData!.meetingStartTime.minute}",
+                              "${detailData!.meetingStartTime.year}.${(detailData!.meetingStartTime.month < 10) ? "0${detailData!.meetingStartTime.month}" : detailData!.meetingStartTime.month}.${(detailData!.meetingStartTime.day < 10) ? "0${detailData!.meetingStartTime.day}" : detailData!.meetingStartTime.day} | ${detailData!.meetingStartTime.hour < 10 ? "0${detailData!.meetingStartTime.hour}" : detailData!.meetingStartTime.hour.toString()}:${detailData!.meetingStartTime.minute < 10 ? "0${detailData!.meetingStartTime.minute}" : detailData!.meetingStartTime.minute}",
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
@@ -516,7 +516,7 @@ class _DetailScreenState extends State<DetailScreen> {
               color: Colors.grey,
             ),
             if (detailData != null)
-              GestureDetector(
+              InkWell(
                 onTap: () {
                   context.push('/profileOther/${detailData!.userUniqId}');
                 },
@@ -722,28 +722,41 @@ void detailMoreSheet(BuildContext contexta, DetailData? detailData) {
                   GestureDetector(
                     onTap: () async {
                       contextb.pop();
-                      try {
-                        final dio = Dio(BaseOptions(
-                            baseUrl: baseUrl,
-                            headers: {'Authorization': Token().refreshToken},
-                            responseType: ResponseType.json));
-                        final response = await dio.delete(
-                          "/bulletin-board/posts/${detailData.postId}",
-                        );
-                        if (response.statusCode == 200) {
-                          pagingController.refresh();
-                          contexta.pop();
-                        } else {
-                          ScaffoldMessenger.of(contexta).showSnackBar(SnackBar(
-                            content: Text("fail".tr()),
-                          ));
-                        }
-
-                        logger.d(response.data);
-                        //return response.statusCode;
-                      } catch (error) {
-                        logger.d('오류: $error');
-                      }
+                      await showDialog(
+                          context: contextb,
+                          builder: (contextc) {
+                            return AlertDialog(
+                              title: Text("meeting_delete".tr()),
+                              content: Text("meeting_delete_message".tr()),
+                              actions: [
+                                TextButton(
+                                    onPressed: () async {
+                                      final dio = Dio(BaseOptions(
+                                          baseUrl: baseUrl,
+                                          headers: {
+                                            'Authorization':
+                                                Token().refreshToken
+                                          },
+                                          responseType: ResponseType.json));
+                                      final response = await dio.delete(
+                                          "/bulletin-board/posts/${detailData.postId}");
+                                      if (response.statusCode == 200) {
+                                        pagingController.refresh();
+                                        contextc.pop();
+                                        contexta.pop();
+                                        contexta.pop();
+                                      }
+                                    },
+                                    child: Text("confirm".tr())),
+                                TextButton(
+                                    onPressed: () {
+                                      contextc.pop();
+                                      contextb.pop();
+                                    },
+                                    child: Text("cancel".tr()))
+                              ],
+                            );
+                          });
                     },
                     child: Container(
                         padding: const EdgeInsets.all(15),
