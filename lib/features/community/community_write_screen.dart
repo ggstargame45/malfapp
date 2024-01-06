@@ -516,6 +516,7 @@ class _CommunityWriteScreenState extends State<CommunityWriteScreen> {
                                                           Text('fail'.tr())));
                                             }
                                             context.pop();
+                                            context.pop();
                                           },
                                           child: const Text('confirm').tr(),
                                         ),

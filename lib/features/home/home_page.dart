@@ -880,8 +880,8 @@ void customDateRangePicker(BuildContext context,
                           // side: const BorderSide(color: Colors.grey, width: 2),
                         ),
                       ),
-                      padding: MaterialStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.all(16.0)),
+                      // padding: MaterialStateProperty.all<EdgeInsets>(
+                      //     const EdgeInsets.all(16.0)),
                       // shape:
                       //     MaterialStateProperty.all<RoundedRectangleBorder>(
                       //   RoundedRectangleBorder(

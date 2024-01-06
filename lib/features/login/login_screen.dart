@@ -2,15 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:app_version_update/app_version_update.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:malf/shared/network/token.dart';
 import 'package:malf/shared/theme/app_colors.dart';
 import 'package:malf/shared/theme/test_styles.dart';
 import 'package:malf/shared/usecases/block_handle.dart';
 import 'package:malf/shared/usecases/loading.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS features.
@@ -236,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> initer() async {
     loading(context);
 
-    // await _showUpdateDialog();
+    await _showUpdateDialog();
 
     // await patchAvailable();
 
@@ -250,35 +253,43 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  int getExtendedVersionNumber(String version) {
+    List versionCells = version.split('.');
+    versionCells = versionCells.map((i) => int.parse(i)).toList();
+    return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
+  }
+
   _showUpdateDialog() async {
-    // PackageInfo _packageInfo =
-    //               await PackageManager.getPackageInfo();
-    // if(Platform.isAndroid){
-    //   AppUpdateInfo? appUpdateInfo = await InAppUpdateManager().checkForUpdate();
-    //   appUpdateInfo!.availableVersionCode;
-    // }
-    if(Platform.isIOS){
-      // while((await UpgradeVersion.getiOSStoreVersion(
-      //         packageInfo: _packageInfo,
-      //         regionCode:
-      //             WidgetsBinding.instance.platformDispatcher.locale.countryCode)).canUpdate))
-     
-    }
-    while (true) {
+    const appleId =
+        '6469673658'; // If this value is null, its packagename will be considered
+    const playStoreId =
+        'com.malf.malf'; // If this value is null, its packagename will be considered
+
+    final storeVersion = (await AppVersionUpdate.checkForUpdates(
+      appleId: appleId,
+      playStoreId: playStoreId,
+    ))
+        .storeVersion;
+    final currentVersion = ((await PackageInfo.fromPlatform()).version);
+    bool needUpdate = getExtendedVersionNumber(storeVersion ?? "10.10.10") >
+        getExtendedVersionNumber(currentVersion);
+    while (needUpdate) {
       await showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: Text("update_title".tr()),
-              content: Text("update_message".tr()),
+              content: Text("update_message".tr() + "\n $currentVersion -> $storeVersion"),
               actions: [
                 TextButton(
                   onPressed: () async {
-                    if(Platform.isAndroid){
-                      await launchUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.malf.malf"));
+                    if (Platform.isAndroid) {
+                      await launchUrl(Uri.parse(
+                          "https://play.google.com/store/apps/details?id=com.malf.malf"));
                     }
-                    if(Platform.isIOS){
-                      await launchUrl(Uri.parse("https://apps.apple.com/kr/app/malf/id6469673658"));
+                    if (Platform.isIOS) {
+                      await launchUrl(Uri.parse(
+                          "https://apps.apple.com/kr/app/malf/id6469673658"));
                     }
                     context.pop();
                   },
@@ -643,16 +654,21 @@ class _AuthScreenState extends State<AuthScreen> {
       ..addJavaScriptChannel("getToken",
           onMessageReceived: (JavaScriptMessage message) async {
         logger.d("log : ${message.message}");
-        final Map<String, dynamic> data = jsonDecode(message.message);
-        logger.d(data);
-        if (data['token']['refreshToken'] == null) {
-          logger.e("로그인 실패");
-          context.pop();
-          return;
+        try {
+          final Map<String, dynamic> data = jsonDecode(message.message);
+          logger.d(data);
+          if (data['token']['refreshToken'] == null) {
+            logger.e("로그인 실패");
+            context.pop();
+            return;
+          }
+          Token().setToken(
+              data['token']['refreshToken'], data['token']['accessToken']);
+          loadHome();
+        } on Exception catch (e) {
+          // TODO
+          logger.e(e);
         }
-        Token().setToken(
-            data['token']['refreshToken'], data['token']['accessToken']);
-        loadHome();
       })
       // ..addJavaScriptChannel(
       //   'Toaster',

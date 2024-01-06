@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:malf/features/home/home_screen.dart';
 import 'package:malf/shared/network/base_url.dart';
 import 'package:malf/shared/network/token.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -22,58 +23,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String version = '';
   @override
   void initState() {
+    PackageInfo.fromPlatform().then((value) {
+      setState(() {
+        version = value.version;
+      });
+    });
     super.initState();
-
-    // InAppUpdateManager manager = InAppUpdateManager();
-    // manager.checkForUpdate().then(
-    //   (value) {
-    //     if (value == null) return;
-    //     if (value.updateAvailability ==
-    //         UpdateAvailability.developerTriggeredUpdateInProgress) {
-    //       ///If an in-app update is already running, resume the update.
-    //       manager.startAnUpdate(type: AppUpdateType.immediate);
-
-    //       ///message return null when run update success
-    //     } else if (value.updateAvailability ==
-    //         UpdateAvailability.updateAvailable) {
-    //       ///Update available
-    //       if (value.immediateAllowed) {
-    //         debugPrint('Start an immediate update');
-    //         manager.startAnUpdate(type: AppUpdateType.immediate);
-
-    //         ///message return null when run update success
-    //       } else if (value.flexibleAllowed) {
-    //         debugPrint('Start an flexible update');
-    //         manager.startAnUpdate(type: AppUpdateType.flexible);
-
-    //         ///message return null when run update success
-    //       } else {
-    //         debugPrint(
-    //             'Update available. Immediate & Flexible Update Flow not allow');
-    //       }
-    //     }
-    //   },
-    // );
-
-    // AppUpdateInfo? appUpdateInfo = await ;
-    //   appUpdateInfo!.availableVersionCode;
-    // PackageManager.getPackageInfo().then((value) {
-    //   UpgradeVersion.getiOSStoreVersion(
-    //     packageInfo: value,
-    //     // regionCode:
-    //     //     WidgetsBinding.instance.platformDispatcher.locale.countryCode
-    //   ).then(
-    //     (value) {
-    //       setState(() {
-    //         version = value.appStoreLink;
-    //       });
-    //     },
-    //   );
-    //   // setState(() {
-    //   //   version = value.version;
-    //   // });
-    // });
-    //"https://apps.apple.com/kr/app/malf/id6469673658"
   }
 
   @override
@@ -85,30 +40,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => context.pop(),
         ),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                // logger.d(await _getAndroidStoreVersion(await PackageInfo.fromPlatform()));
-                // logger.d(await _getiOSStoreVersion(await PackageInfo.fromPlatform()));
-                final appleId =
-                    '6469673658'; // If this value is null, its packagename will be considered
-                final playStoreId =
-                    'com.malf.malf'; // If this value is null, its packagename will be considered
-                // final country =
-                //     'br'; // If this value is null 'us' will be the default value
+        // actions: [
+        //   IconButton(
+        //       onPressed: () async {
+        //         // logger.d(await _getAndroidStoreVersion(await PackageInfo.fromPlatform()));
+        //         // logger.d(await _getiOSStoreVersion(await PackageInfo.fromPlatform()));
                 
-                await AppVersionUpdate.checkForUpdates(
-                  appleId: appleId,
-                  playStoreId: playStoreId,
-                ).then((data) async {
-                  logger.d(data.storeUrl);
-                  logger.d(data.storeVersion);
-                  
-                });
-              },
-              color: Colors.black,
-              icon: const Icon(Icons.close_outlined)),
-        ],
+        //       },
+        //       color: Colors.black,
+        //       icon: const Icon(Icons.close_outlined)),
+        // ],
       ),
       body: ListView(
         children: [
